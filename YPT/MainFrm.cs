@@ -767,7 +767,7 @@ namespace YPT
                 SyncTimer.Enabled = false;
                 SyncTimer.Elapsed -= SyncTimer_Elapsed;
                 DateTime now = DateTime.Now;
-                SyncTimer.Interval = DateTime.Now.AddHours(1).AddMinutes(-DateTime.Now.Minute).AddSeconds(-DateTime.Now.Second).TimeOfDay.TotalMilliseconds - DateTime.Now.TimeOfDay.TotalMilliseconds;
+                SyncTimer.Interval = (DateTime.Now.AddHours(1).AddMinutes(-DateTime.Now.Minute).AddSeconds(-DateTime.Now.Second) - DateTime.Now).TotalMilliseconds;
                 SyncTimer.Elapsed += SyncTimer_Elapsed;
                 SyncTimer.Enabled = true;
                 SyncTimer.AutoReset = true;
