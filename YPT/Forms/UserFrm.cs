@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using YPT.PT;
 using YU.Core;
 using YU.Core.DataEntity;
 using YU.Core.Log;
@@ -18,6 +20,10 @@ namespace YPT.Forms
     public partial class UserFrm : Form
     {
         public PTUser User { get; set; }
+
+        private bool isWriteCookie = false;
+
+        private string cookie = string.Empty;
 
         public UserFrm(PTUser user)
         {
@@ -48,6 +54,9 @@ namespace YPT.Forms
 
         private void btnConfirm_Click(object sender, EventArgs e)
         {
+            var pt = PTFactory.GetPT(User.Site.Id, User) as AbstractPT;
+            bool isExistCookie = File.Exists(pt.GetCookieFilePath());
+
             List<string> fields = new List<string>();
             if (cmbSite.SelectedValue.TryPareValue(0) <= 0)
             {
@@ -57,7 +66,7 @@ namespace YPT.Forms
             {
                 fields.Add("[用户名]");
             }
-            if (txtPassWord.Text.IsNullOrEmptyOrWhiteSpace())
+            if (txtPassWord.Text.IsNullOrEmptyOrWhiteSpace() && !isWriteCookie && !isExistCookie)
             {
                 fields.Add("[密码]");
             }
@@ -101,8 +110,28 @@ namespace YPT.Forms
                     }
                     else
                     {
+                        if (isWriteCookie)
+                        {
+                            HttpUtils.WriteCookiesToDisk(pt.GetCookieFilePath(), cookie);
+                        }
+                        else
+                        {
+                            if (isExistCookie)
+                            {
+                                if (MessageBox.Show(string.Format("账户发生变更，是否删除[{0}][{1}]对应的Cookie?", User.Site.Name, User.UserName), "温馨提示", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                                {
+                                    try
+                                    {
+                                        (pt as AbstractPT).DelLocalCookie();
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Logger.Error(string.Format("{0} 用户名：{1} 删除Cookie出错。", User.Site.Name, User.UserName), ex);
+                                    }
+                                }
+                            }
+                        }
                         this.DialogResult = DialogResult.OK;
-                        Close();
                     }
                 }
                 catch (SQLiteException ex)
@@ -124,21 +153,26 @@ namespace YPT.Forms
 
         private void btnGetCookie_Click(object sender, EventArgs e)
         {
-            //this.ImeMode = ImeMode.Off;
-            //System.Diagnostics.Process.Start("https://ourbits.club/index.php");
-            //System.Threading.Thread.Sleep(2000);
-            //SendKeys.SendWait("{F12}");
-            //System.Threading.Thread.Sleep(2000);
-            //SendKeys.SendWait("document.cookie");
-            //SendKeys.SendWait("{ENTER}");
-            //SendKeys.SendWait("{ENTER}");
+            this.ImeMode = ImeMode.Off;
+            System.Diagnostics.Process.Start(User.Site.Url);
+            System.Threading.Thread.Sleep(2000);
+            SendKeys.SendWait("{F12}");
+            System.Threading.Thread.Sleep(1000);
+            SendKeys.SendWait("document.cookie");
+            SendKeys.SendWait("{ENTER}");
+            SendKeys.SendWait("{ENTER}");
+            System.Threading.Thread.Sleep(1000);
+
 
             InputFrm frm = new InputFrm();
-            frm.DefaultText = "将浏览器返回的红色结果粘贴到此处。";
-            frm.Focus();
+            frm.Text = "在此窗口输入浏览器中返回的Cookie";
             if (frm.ShowDialog() == DialogResult.OK)
             {
-
+                if (!frm.ReturnText.IsNullOrEmptyOrWhiteSpace())
+                {
+                    cookie = frm.ReturnText;
+                    isWriteCookie = true;
+                }
             }
 
         }

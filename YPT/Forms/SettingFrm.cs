@@ -189,15 +189,6 @@ namespace YPT.Forms
         {
             if (e.User != null)
             {
-                try
-                {
-                    var pt = PTFactory.GetPT(e.User.Site.Id, e.User);
-                    (pt as AbstractPT).DelLocalCookie();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(string.Format("{0} 用户名：{1} 删除Cookie出错。", e.User.Site.Id, e.User.UserName), ex);
-                }
                 Global.InitUser();
                 InitUser();
                 if (UserChanged != null)

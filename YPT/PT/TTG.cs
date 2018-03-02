@@ -89,7 +89,7 @@ namespace YPT.PT
             var result = HttpUtils.PostData(Site.LoginUrl, postData, _cookie, true);
             string htmlResult = result.Item1;
 
-            if (htmlResult.Contains(User.UserName))
+            if (!htmlResult.Contains("登录失败") && htmlResult.Contains(User.UserName) && (htmlResult.Contains("欢迎回来") || htmlResult.Contains("Welcome") || htmlResult.Contains("歡迎回來")))
             {
                 User.Id = GetUserId(htmlResult);
                 _cookie = result.Item2.CookieContainer;
@@ -98,7 +98,7 @@ namespace YPT.PT
             }
             else
             {
-                if (RecursiveNum > 2)
+                if (RecursiveNum > 1)
                 {
                     HtmlDocument htmlDocument = new HtmlDocument();
                     htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载

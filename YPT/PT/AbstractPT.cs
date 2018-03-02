@@ -110,7 +110,7 @@ namespace YPT.PT
             string postData = string.Format("username={0}&password={1}", User.UserName, User.PassWord);
             var result = HttpUtils.PostData(Site.LoginUrl, postData, _cookie);
             string htmlResult = result.Item1;
-            if (htmlResult.Contains(User.UserName) && (htmlResult.Contains("欢迎回来") || htmlResult.Contains("Welcome") || htmlResult.Contains("歡迎回來")))
+            if (!htmlResult.Contains("登录失败") && htmlResult.Contains(User.UserName) && (htmlResult.Contains("欢迎回来") || htmlResult.Contains("Welcome") || htmlResult.Contains("歡迎回來")))
             {
                 User.Id = GetUserId(htmlResult);
                 _cookie = result.Item2.CookieContainer;
@@ -419,8 +419,8 @@ namespace YPT.PT
         /// <returns></returns>
         protected CookieContainer GetLocalCookie()
         {
-            string cookiePath = Path.Combine(YUConst.PATH_LOCALCOOKIE, string.Format("{0}_{1}.cookie", Site.Name, User.UserName));
-            return HttpUtils.ReadCookiesFromDisk(cookiePath);
+            string cookiePath = GetCookieFilePath();
+            return HttpUtils.ReadCookiesFromDisk(Site.Url, cookiePath);
         }
 
         /// <summary>
@@ -429,15 +429,21 @@ namespace YPT.PT
         /// <param name="_cookie"></param>
         protected void SetLocalCookie(CookieContainer _cookie)
         {
-            string cookiePath = Path.Combine(YUConst.PATH_LOCALCOOKIE, string.Format("{0}_{1}.cookie", Site.Name, User.UserName));
+            string cookiePath = GetCookieFilePath();
             HttpUtils.WriteCookiesToDisk(cookiePath, _cookie);
         }
 
         public void DelLocalCookie()
         {
-            string cookiePath = Path.Combine(YUConst.PATH_LOCALCOOKIE, string.Format("{0}_{1}.cookie", Site.Name, User.UserName));
+            string cookiePath = GetCookieFilePath();
             if (File.Exists(cookiePath))
                 File.Delete(cookiePath);
+        }
+
+        public string GetCookieFilePath()
+        {
+            string cookiePath = Path.Combine(YUConst.PATH_LOCALCOOKIE, string.Format("{0}_{1}.cookie", Site.Name, User.UserName));
+            return cookiePath;
         }
 
         /// <summary>

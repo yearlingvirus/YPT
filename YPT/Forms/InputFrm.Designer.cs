@@ -30,26 +30,13 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InputFrm));
-            this.rtbInput = new YU.Core.YUComponent.YURichTextBox(this.components);
             this.mainPanel = new System.Windows.Forms.Panel();
+            this.rtbInput = new YU.Core.YUComponent.YURichTextBox(this.components);
             this.bottomPanel = new System.Windows.Forms.Panel();
             this.btnConfirm = new System.Windows.Forms.Button();
             this.mainPanel.SuspendLayout();
             this.bottomPanel.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // rtbInput
-            // 
-            this.rtbInput.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtbInput.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbInput.EmptyTextTip = "请输入你的账号";
-            this.rtbInput.IsShowCursor = true;
-            this.rtbInput.Location = new System.Drawing.Point(0, 0);
-            this.rtbInput.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.rtbInput.Name = "rtbInput";
-            this.rtbInput.Size = new System.Drawing.Size(666, 419);
-            this.rtbInput.TabIndex = 0;
-            this.rtbInput.Text = "";
             // 
             // mainPanel
             // 
@@ -60,6 +47,18 @@
             this.mainPanel.Name = "mainPanel";
             this.mainPanel.Size = new System.Drawing.Size(666, 419);
             this.mainPanel.TabIndex = 1;
+            // 
+            // rtbInput
+            // 
+            this.rtbInput.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbInput.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbInput.IsShowCursor = true;
+            this.rtbInput.Location = new System.Drawing.Point(0, 0);
+            this.rtbInput.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.rtbInput.Name = "rtbInput";
+            this.rtbInput.Size = new System.Drawing.Size(666, 419);
+            this.rtbInput.TabIndex = 0;
+            this.rtbInput.Text = "";
             // 
             // bottomPanel
             // 
@@ -97,7 +96,9 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "InputFrm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "InputFrm";
+            this.TopMost = true;
             this.mainPanel.ResumeLayout(false);
             this.bottomPanel.ResumeLayout(false);
             this.ResumeLayout(false);

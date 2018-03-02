@@ -90,7 +90,7 @@ namespace YU.Core.Utils
                 {
                     return "Network error:" + new ArgumentNullException("httpWebRequest").Message;
                 }
-                req.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8";
+                req.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*;q=0.8";
                 req.Method = "POST";
                 req.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36";
                 req.KeepAlive = true;
@@ -213,27 +213,50 @@ namespace YU.Core.Utils
         {
             if (!Directory.Exists(Path.GetDirectoryName(file)))
                 Directory.CreateDirectory(Path.GetDirectoryName(file));
-            using (FileStream stream = File.Create(file))
+            //using (FileStream stream = File.Create(file))
+            //{
+            //    try
+            //    {
+            //        BinaryFormatter formatter = new BinaryFormatter();
+            //        formatter.Serialize(stream, cc);
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        Logger.Error(string.Format("Cookie写入文件失败，文件名[{0}]", file), e);
+            //    }
+            //}
+            try
             {
-                try
+                StringBuilder sb = new StringBuilder();
+                List<Cookie> cooklist = GetAllCookies(cc);
+                if (cooklist != null && cooklist.Count > 0)
                 {
-                    BinaryFormatter formatter = new BinaryFormatter();
-                    formatter.Serialize(stream, cc);
+                    foreach (var cookie in cooklist)
+                    {
+                        sb.AppendLine(string.Format("{0}={1}; ", cookie.Name, cookie.Value));
+                    }
+                    File.WriteAllText(file, sb.ToString(), Encoding.UTF8);
                 }
-                catch (Exception e)
-                {
-                    Logger.Error(string.Format("Cookie写入文件失败，文件名[{0}]", file), e);
-                }
+
             }
-            //try
-            //{
-            //    List<Cookie> cooklist = GetAllCookies(cc);
-            //    File.WriteAllText(file, JsonConvert.SerializeObject(cooklist), Encoding.UTF8);
-            //}
-            //catch (Exception e)
-            //{
-            //    Logger.Error(string.Format("Cookie写入文件失败，文件名[{0}]", file), e);
-            //}
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Cookie写入文件失败，文件名[{0}]", file), e);
+            }
+        }
+
+        public static void WriteCookiesToDisk(string file, string cookies)
+        {
+            if (!Directory.Exists(Path.GetDirectoryName(file)))
+                Directory.CreateDirectory(Path.GetDirectoryName(file));
+            try
+            {
+                File.WriteAllText(file, cookies, Encoding.UTF8);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Cookie写入文件失败，文件名[{0}]", file), e);
+            }
         }
 
         public static CookieContainer ReadCookiesFromDisk(string file)
@@ -258,23 +281,43 @@ namespace YU.Core.Utils
                 Logger.Error(string.Format("从文件读取Cookie失败，文件名[{0}]", file), e);
                 return null;
             }
-            //try
-            //{
-            //    CookieContainer cc = new CookieContainer();
-            //    var cookies = JsonConvert.DeserializeObject<List<Cookie>>(File.ReadAllText(file, Encoding.UTF8));
-            //    if (cookies != null && cookies.Count > 0)
-            //    {
-            //        cookies.ForEach(x => cc.Add(x));
-            //        return cc;
-            //    }
-            //    else
-            //        return null;
-            //}
-            //catch (Exception e)
-            //{
-            //    Logger.Error(string.Format("从文件读取Cookie失败，文件名[{0}]", file), e);
-            //    return null;
-            //}
+        }
+
+        public static CookieContainer ReadCookiesFromDisk(string url, string file)
+        {
+            try
+            {
+                Uri uri = new Uri(url);
+                CookieContainer cc = new CookieContainer();
+                string cookieStr = File.ReadAllText(file, Encoding.UTF8);
+                if (!cookieStr.IsNullOrEmptyOrWhiteSpace())
+                {
+                    string[] cookieArr = cookieStr.Split(new char[] { ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (cookieArr != null && cookieArr.Length > 0)
+                    {
+                        foreach (var cookieKvr in cookieArr)
+                        {
+                            string[] cookie = cookieKvr.Split('=');
+                            if (cookie.Length == 2)
+                            {
+                                Cookie c = new Cookie();
+                                c.Name = cookie[0].Trim();
+                                c.Value = cookie[1].Trim();
+                                c.Domain = uri.Host;
+                                c.Expires = DateTime.Now.AddYears(1);
+                                cc.Add(c);
+                            }
+
+                        }
+                    }
+                }
+                return cc;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("从文件读取Cookie失败，文件名[{0}]", file), e);
+                return null;
+            }
         }
 
         /// <summary>
@@ -313,7 +356,7 @@ namespace YU.Core.Utils
                 httpWebRequest.Method = "GET";
                 httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36";
                 httpWebRequest.KeepAlive = true;
-                httpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8";
+                httpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*;q=0.8";
                 httpWebRequest.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip, deflate, br");
                 httpWebRequest.Headers.Add(HttpRequestHeader.AcceptLanguage, "zh");
                 httpWebRequest.CookieContainer = cookie;

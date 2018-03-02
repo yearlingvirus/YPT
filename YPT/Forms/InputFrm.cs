@@ -12,10 +12,6 @@ namespace YPT.Forms
 {
     public partial class InputFrm : Form
     {
-        /// <summary>
-        /// 默认文本
-        /// </summary>
-        public string DefaultText { get; set; }
 
         /// <summary>
         /// 返回文本
@@ -33,7 +29,6 @@ namespace YPT.Forms
             ReturnText = rtbInput.Text;
             this.DialogResult = DialogResult.OK;
         }
-
 
     }
 }
