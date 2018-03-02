@@ -20,6 +20,8 @@ Microsoft [.NET Framework 4] or higher.
 
 1. Find YPT icon in application directory
 2. You can add user in setting menu
+3. Some sites may need to be verified, please set them according to the site requirements.
+4. You can use F12 to find the corresponding security question number on the website.
 
 #### Search
 
