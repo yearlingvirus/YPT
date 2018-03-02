@@ -46,6 +46,12 @@ namespace YPT.PT
             {
                 instance = TypesContainer.CreateInstance<IPT>(_mapServer[type], args);
             }
+            else
+            {
+                var argList = args.ToList();
+                argList.Add(type);
+                instance = TypesContainer.CreateInstance<IPT>("YPT.PT.ExtendPT,YPT", argList.ToArray());
+            }
             if (instance == null)
                 throw new Exception("instance==null");
             return instance;

@@ -59,20 +59,5 @@ namespace YU.Core
         /// </summary>
         public const string PATH_LOCALCOOKIE = "COOKIE";
 
-
-        /// <summary>
-        /// 促销图片资源
-        /// </summary>
-        public static Dictionary<YUEnums.PromotionType, string> PromotionImgDict = new Dictionary<YUEnums.PromotionType, string>()
-                {
-                    { YUEnums.PromotionType.FREE, "Resource/freeicon.gif"},
-                    { YUEnums.PromotionType.FREE2UP, "Resource/2upfree.gif"},
-                    { YUEnums.PromotionType.HALF2X, "Resource/2up50down.png"},
-                    { YUEnums.PromotionType.HALFDOWN, "Resource/halfdown.gif"},
-                    //{ YUEnums.PromotionType.NORMAL, "Resource/normal.png"},
-                    { YUEnums.PromotionType.THIRTYPERDOWN, "Resource/ico_30.gif"},
-                    { YUEnums.PromotionType.TWOUP, "Resource/2up.gif"},
-                };
-
     }
 }

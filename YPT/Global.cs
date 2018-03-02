@@ -23,17 +23,21 @@ namespace YPT
     /// </summary>
     public static class Global
     {
-
         /// <summary>
         /// 全局配置
         /// </summary>
         public static Config Config { get; set; }
+
+        public static List<PTSite> Sites { get { return _sites; } }
+
+        private static List<PTSite> _sites;
 
         public static List<PTUser> Users { get; set; }
 
 
         public static void Init()
         {
+            InitSites();
             Config = new Config();
             string dbName = ConfigUtil.GetConfigValue(YUConst.SETTING_SQLLITEDB);
             string dbPassWord = ConfigUtil.GetConfigValue(YUConst.SETTING_SQLLITEDBPASSWORD);
@@ -62,6 +66,35 @@ namespace YPT
             }
         }
 
+        public static void InitSites()
+        {
+            _sites = ObjectUtils.CreateCopy<List<PTSite>>(PTSite.Sites);
+            if (File.Exists(PTSiteConst.RESOURCE_SITES))
+            {
+                string siteJson = File.ReadAllText(PTSiteConst.RESOURCE_SITES);
+                try
+                {
+                    var extendSites = JsonConvert.DeserializeObject<List<PTSite>>(siteJson);
+                    if (extendSites != null && extendSites.Count > 0)
+                    {
+                        foreach (var extendSite in extendSites)
+                        {
+                            if (_sites.Where(x => x.Id == extendSite.Id || x.Name.EqualIgnoreCase(extendSite.Name)).Count() <= 0)
+                                _sites.Add(extendSite);
+                        }
+                    }
+                }
+                catch
+                {
+                    Logger.Info(string.Format("序列化站点失败 ，请检查[{0}]文件。", PTSiteConst.RESOURCE_SITES));
+                }
+            }
+            else
+            {
+                Logger.Info(string.Format("站点配置文件不存在，请检查[{0}]文件。", PTSiteConst.RESOURCE_SITES));
+            }
+        }
+
 
         /// <summary>
         /// 初始化用户数据
@@ -81,7 +114,10 @@ namespace YPT
                 user.isEnableTwo_StepVerification = dr["ISENABLETWO_STEPVERIFICATION"].TryPareValue(false);
                 user.SecuityAnswer = dr["SECUITYANSWER"].TryPareValue(string.Empty);
                 user.SecurityQuestionOrder = dr["SECURITYQUESTIONORDER"].TryPareValue(-1);
-                user.Site = PTSite.Sites.Where(x => (int)x.Id == siteId).FirstOrDefault();
+                user.Site = Sites.Where(x => (int)x.Id == siteId).FirstOrDefault();
+                //如果找不到相应站点，这里就直接跳过该用户了。
+                if (user.Site == null)
+                    continue;
                 Users.Add(user);
             }
         }

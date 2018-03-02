@@ -54,6 +54,7 @@ namespace YPT
             InitSync(this, null);
             InitTorrentSite(this, null);
             InitTorrentCmb();
+
         }
 
 
@@ -453,7 +454,7 @@ namespace YPT
                     if (cb.Checked && cb.Tag is YUEnums.PTEnum)
                     {
                         YUEnums.PTEnum siteId = (YUEnums.PTEnum)cb.Tag;
-                        var site = PTSite.Sites.Where(x => x.Id == siteId).FirstOrDefault();
+                        var site = Global.Sites.Where(x => x.Id == siteId).FirstOrDefault();
                         if (site != null && !searchSites.Contains(site))
                             searchSites.Add(site);
                     }
@@ -497,13 +498,16 @@ namespace YPT
                         catch (Exception ex)
                         {
                             lock (syncSearchObject)
+                            {
+                                Logger.Error(string.Format("{0} 搜索过程中发生错误。", site.Name), ex);
                                 sb.AppendLine(ex.GetInnerExceptionMessage());
+                            }
                         }
 
                     });
                 }, cts.Token);
                 progressPanel.BeginLoading(20000);
-                System.Timers.Timer canelTimer = new System.Timers.Timer(1000);
+                System.Timers.Timer canelTimer = new System.Timers.Timer(20000);
                 canelTimer.Elapsed += new System.Timers.ElapsedEventHandler((s, e) => OnTimedEvent(s, e, cts));
                 canelTimer.AutoReset = false;
                 canelTimer.Start();
@@ -602,16 +606,17 @@ namespace YPT
                 var searchTorrents = dgvTorrent.Tag as List<PTTorrent>;
                 DataGridViewCellCollection cells = dgvTorrent.SelectedRows[0].Cells;
                 string torrentId = cells["Id"].Value.TryPareValue<string>();
-                YUEnums.PTEnum siteId = (YUEnums.PTEnum)EnumUtils.GetKeyByValue<YUEnums.PTEnum>(cells["SiteId"].Value.TryPareValue<string>());
 
+                //YUEnums.PTEnum siteId = (YUEnums.PTEnum)EnumUtils.GetKeyByValue<YUEnums.PTEnum>(cells["SiteId"].Value.TryPareValue<string>());
+                int siteId = cells["SiteId"].Value.TryPareValue<int>();
                 if (searchTorrents != null && searchTorrents.Count > 0)
                 {
-                    var torrent = searchTorrents.Where(x => x.Id == torrentId && x.SiteId == siteId).FirstOrDefault();
+                    var torrent = searchTorrents.Where(x => x.Id == torrentId && (int)x.SiteId == siteId).FirstOrDefault();
                     if (torrent != null)
                     {
                         Task t = Task.Factory.StartNew(() =>
                         {
-                            IPT pt = PTFactory.GetPT(siteId, Global.Users.Where(x => x.Site.Id == siteId).FirstOrDefault());
+                            IPT pt = PTFactory.GetPT((YUEnums.PTEnum)siteId, Global.Users.Where(x => (int)x.Site.Id == siteId).FirstOrDefault());
                             string fileName = pt.GetTorrentDownFileName(torrent);
                             string filePath = string.Empty;
                             this.Invoke(new Action(() =>
@@ -636,7 +641,7 @@ namespace YPT
 
                 else
                 {
-                    LogMessage(PTSite.Sites.Where(x => x.Id == siteId).FirstOrDefault(), string.Format("下载失败，失败原因：获取种子信息失败。"), true);
+                    LogMessage(Global.Sites.Where(x => (int)x.Id == siteId).FirstOrDefault(), string.Format("下载失败，失败原因：获取种子信息失败。"), true);
                 }
             }
         }
@@ -804,7 +809,7 @@ namespace YPT
                 bool isFill = false;
                 StringBuilder sb = new StringBuilder();
                 var cts = new CancellationTokenSource();
-                
+
                 Task task = new Task(() =>
                 {
                     List<PTInfo> infos = new List<PTInfo>();
@@ -832,7 +837,7 @@ namespace YPT
                 if (!isBack)
                     progressPanel.BeginLoading();
                 LogMessage(null, "正在同步个人信息。");
-                System.Timers.Timer canelTimer = new System.Timers.Timer(1000);
+                System.Timers.Timer canelTimer = new System.Timers.Timer(20000);
                 canelTimer.Elapsed += new System.Timers.ElapsedEventHandler((s, e) => OnTimedEvent(s, e, cts));
                 canelTimer.AutoReset = false;
                 canelTimer.Start();

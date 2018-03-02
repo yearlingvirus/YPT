@@ -29,44 +29,6 @@ namespace YPT.PT
             }
         }
 
-        protected override Dictionary<YUEnums.TorrentMap, int> GetTorrentMaps()
-        {
-            //0资源类型，1种子Ttile和URL，2评论，3时长，4大小，5上传，6下载，7完成，9发布者
-            return new Dictionary<YUEnums.TorrentMap, int>()
-            {
-                { YUEnums.TorrentMap.ResourceType, 0},
-                { YUEnums.TorrentMap.Detail, 1},
-                { YUEnums.TorrentMap.PromotionType, 1},
-                { YUEnums.TorrentMap.TimeAlive, 3},
-                { YUEnums.TorrentMap.Size, 4},
-                { YUEnums.TorrentMap.SeederNumber, 5},
-                { YUEnums.TorrentMap.LeecherNumber, 6},
-                { YUEnums.TorrentMap.SnatchedNumber, 7},
-                { YUEnums.TorrentMap.UpLoader, 9},
-            };
-        }
-
-
-        /// <summary>
-        /// 获取用户信息
-        /// </summary>
-        /// <returns></returns>
-        protected override Dictionary<YUEnums.PersonInfoMap, int> GetInfoMaps()
-        {
-            return new Dictionary<YUEnums.PersonInfoMap, int>()
-            {
-                { YUEnums.PersonInfoMap.RegisterDate, 2},
-                { YUEnums.PersonInfoMap.ShareRate, 7},
-                { YUEnums.PersonInfoMap.UpSize, 7},
-                { YUEnums.PersonInfoMap.DownSize, 7},
-                { YUEnums.PersonInfoMap.SeedRate, 8},
-                { YUEnums.PersonInfoMap.SeedTimes, 8},
-                { YUEnums.PersonInfoMap.DownTimes, 8},
-                { YUEnums.PersonInfoMap.SeedNumber, 8},
-                { YUEnums.PersonInfoMap.Rank, 10},
-                { YUEnums.PersonInfoMap.Bonus, 13},
-            };
-        }
 
         protected override bool SetTorrentSubTitle(HtmlNode node, PTTorrent torrent)
         {

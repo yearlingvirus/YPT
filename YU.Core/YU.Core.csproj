@@ -85,6 +85,7 @@
     <Compile Include="DataEntity\PTTorrentGridEntity.cs" />
     <Compile Include="Event\OnTwoStepVerificationEventArgs.cs" />
     <Compile Include="Event\OnUserChangeEventArgs.cs" />
+    <Compile Include="PTSiteConst.cs" />
     <Compile Include="Utils\EnumUtils.cs" />
     <Compile Include="Utils\ObjectUtils.cs" />
     <Compile Include="Utils\SingleProcessUtils.cs" />

@@ -1,0 +1,35 @@
+﻿//[{                                                          //
+//    "Url": "https://ptsite.club",                           // 主页
+//    "Name": "ptsite",                                       // 站点名称
+//    "LoginUrl": "https://ptsite.club/takelogin.php",        // 登录
+//    "SignUrl": "https://ptsite.club/attendance.php",        // 签到
+//    "SearchUrl": "https://ptsite.club/torrents.php",        // 搜索
+//    "InfoUrl": "https://ptsite.club/userdetails.php?id={0}",// 个人信息
+//    "IsEableSecurityQuestion": false,                       // 是否启用安全提问
+//    "IsEnableVerificationCode": false,                      // 是否启用验证码
+//    "isEnableTwo_StepVerification": false,                  // 是否启用二级验证
+//    "PersonInfoMaps": {                                     // 个人信息行映射
+//        "RegisterDate": 2,                                  // 注册日期
+//        "ShareRate": 7,                                     // 分享率
+//        "UpSize": 7,                                        // 上传量
+//        "DownSize": 7,                                      // 下载量
+//        "SeedRate": 8,                                      // 做种率
+//        "SeedTimes": 8,                                     // 做种天数
+//        "DownTimes": 8,                                     // 下载天数
+//        "SeedNumber": 8,                                    // 做种数量 -> 目前无意义
+//        "Rank": 10,                                         // 等级 
+//        "Bonus": 13                                         // 积分
+//    },                                                      // 
+//    "TorrentMaps": {                                        // 种子行映射
+//        "ResourceType": 0,                                  // 资源类型
+//        "Detail": 1,                                        // 详情
+//        "PromotionType": 1,                                 // 促销类型
+//        "TimeAlive": 3,                                     // 发布时间
+//        "Size": 4,                                          // 大小
+//        "SeederNumber": 5,                                  // 做种人数
+//        "LeecherNumber": 6,                                 // 下载人数
+//        "SnatchedNumber": 7,                                // 完成人数
+//        "UpLoader": 9                                       // 发布者
+//    },                                                      // 
+//    "Id": 10000                                             // 站点Id，自定义，必须大于10000
+//}]                                                          //

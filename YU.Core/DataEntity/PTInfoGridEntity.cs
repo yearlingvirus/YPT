@@ -13,8 +13,14 @@ namespace YU.Core.DataEntity
         /// <summary>
         /// 站点
         /// </summary>
+        [GridView("站点", false, 100)]
+        public int SiteId { get; set; }
+
+        /// <summary>
+        /// 站点
+        /// </summary>
         [GridView("站点", true, 100)]
-        public YUEnums.PTEnum SiteId { get; set; }
+        public string SiteName { get; set; }
 
         /// <summary>
         /// Id

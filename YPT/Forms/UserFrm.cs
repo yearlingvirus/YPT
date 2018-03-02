@@ -31,7 +31,7 @@ namespace YPT.Forms
 
             //绑定数据源，必须是属性，不能为字段
             BindingSource bs = new BindingSource();
-            bs.DataSource = PTSite.Sites.ToDictionary(x => x.Id, x => x.Name);
+            bs.DataSource = Global.Sites.ToDictionary(x => x.Id, x => x.Name);
             cmbSite.ValueMember = "Key";
             cmbSite.DisplayMember = "Value";
             cmbSite.DataSource = bs;
@@ -117,11 +117,30 @@ namespace YPT.Forms
 
         private void cmbSite_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var site = PTSite.Sites.Where(x => (int)x.Id == (int)cmbSite.SelectedValue).FirstOrDefault();
+            var site = Global.Sites.Where(x => (int)x.Id == (int)cmbSite.SelectedValue).FirstOrDefault();
             if (site != null)
                 User.Site = site;
         }
 
+        private void btnGetCookie_Click(object sender, EventArgs e)
+        {
+            //this.ImeMode = ImeMode.Off;
+            //System.Diagnostics.Process.Start("https://ourbits.club/index.php");
+            //System.Threading.Thread.Sleep(2000);
+            //SendKeys.SendWait("{F12}");
+            //System.Threading.Thread.Sleep(2000);
+            //SendKeys.SendWait("document.cookie");
+            //SendKeys.SendWait("{ENTER}");
+            //SendKeys.SendWait("{ENTER}");
 
+            InputFrm frm = new InputFrm();
+            frm.DefaultText = "将浏览器返回的红色结果粘贴到此处。";
+            frm.Focus();
+            if (frm.ShowDialog() == DialogResult.OK)
+            {
+
+            }
+
+        }
     }
 }

@@ -216,13 +216,13 @@ namespace YPT.PT
         protected override void SetTorrentOtherInfo(HtmlNodeCollection nodes, PTTorrent torrent)
         {
             //设置资源类型
-            var imgNode = nodes[TorrentMaps[YUEnums.TorrentMap.ResourceType]].SelectSingleNode(".//img");
+            var imgNode = nodes[Site.TorrentMaps[YUEnums.TorrentMap.ResourceType]].SelectSingleNode(".//img");
             if (imgNode != null && imgNode.Attributes.Contains("alt"))
             {
                 torrent.ResourceType = imgNode.Attributes["alt"].Value;
             }
 
-            string uploadTimeStr = nodes[TorrentMaps[YUEnums.TorrentMap.TimeAlive]].InnerText;
+            string uploadTimeStr = nodes[Site.TorrentMaps[YUEnums.TorrentMap.TimeAlive]].InnerText;
             if (!uploadTimeStr.IsNullOrEmptyOrWhiteSpace() && uploadTimeStr.Length >= 18)
             {
                 string dateStr = uploadTimeStr.Substring(0, 10);
@@ -230,9 +230,9 @@ namespace YPT.PT
                 torrent.UpLoadTime = string.Format("{0} {1}", dateStr, timeStr).TryPareValue<DateTime>();
             }
 
-            torrent.Size = nodes[TorrentMaps[YUEnums.TorrentMap.Size]].InnerText;
+            torrent.Size = nodes[Site.TorrentMaps[YUEnums.TorrentMap.Size]].InnerText;
 
-            var seedNodes = nodes[TorrentMaps[YUEnums.TorrentMap.SeederNumber]].SelectNodes("./b");
+            var seedNodes = nodes[Site.TorrentMaps[YUEnums.TorrentMap.SeederNumber]].SelectNodes("./b");
             if (seedNodes != null && seedNodes.Count > 0)
             {
                 torrent.SeederNumber = seedNodes[0].InnerText.TryPareValue<int>();
@@ -240,12 +240,12 @@ namespace YPT.PT
                     torrent.LeecherNumber = seedNodes[1].InnerText.TryPareValue<int>();
             }
 
-            var snatchNode = nodes[TorrentMaps[YUEnums.TorrentMap.SnatchedNumber]].SelectSingleNode("./text()");
+            var snatchNode = nodes[Site.TorrentMaps[YUEnums.TorrentMap.SnatchedNumber]].SelectSingleNode("./text()");
             if (snatchNode != null)
                 torrent.SnatchedNumber = snatchNode.InnerText.TryPareValue<int>();
 
 
-            torrent.UpLoader = nodes[TorrentMaps[YUEnums.TorrentMap.UpLoader]].InnerText;
+            torrent.UpLoader = nodes[Site.TorrentMaps[YUEnums.TorrentMap.UpLoader]].InnerText;
         }
 
         protected override string BuildSearchUrl(string searchKey, YUEnums.PromotionType promotionType = YUEnums.PromotionType.ALL, YUEnums.AliveType aliveType = YUEnums.AliveType.ALL, YUEnums.FavType favType = YUEnums.FavType.ALL)
@@ -274,22 +274,6 @@ namespace YPT.PT
             return Site.SearchUrl + queryString;
         }
 
-        protected override Dictionary<YUEnums.TorrentMap, int> GetTorrentMaps()
-        {
-            //0资源类型，1种子Ttile和URL，2评论，3时长，4大小，5上传，6下载，7完成，8发布者（正常8应该是进度，但是进度的Class没有rowfollow，所以忽略了。）
-            return new Dictionary<YUEnums.TorrentMap, int>()
-            {
-                { YUEnums.TorrentMap.ResourceType, 0},
-                { YUEnums.TorrentMap.Detail, 1},
-                { YUEnums.TorrentMap.PromotionType, 1},
-                { YUEnums.TorrentMap.TimeAlive, 4},
-                { YUEnums.TorrentMap.Size, 6},
-                { YUEnums.TorrentMap.SeederNumber, 8},
-                { YUEnums.TorrentMap.LeecherNumber, 8},
-                { YUEnums.TorrentMap.SnatchedNumber, 7},
-                { YUEnums.TorrentMap.UpLoader, 9},
-            };
-        }
 
         protected override int GetUserId(string htmlResult)
         {
@@ -306,22 +290,6 @@ namespace YPT.PT
             return id;
         }
 
-        protected override Dictionary<YUEnums.PersonInfoMap, int> GetInfoMaps()
-        {
-            return new Dictionary<YUEnums.PersonInfoMap, int>()
-            {
-                { YUEnums.PersonInfoMap.RegisterDate, 0},
-                { YUEnums.PersonInfoMap.ShareRate, 5},
-                { YUEnums.PersonInfoMap.UpSize, 3},
-                { YUEnums.PersonInfoMap.DownSize, 4},
-                { YUEnums.PersonInfoMap.SeedRate, 6},
-                { YUEnums.PersonInfoMap.SeedTimes, 6},
-                { YUEnums.PersonInfoMap.DownTimes, 6},
-                { YUEnums.PersonInfoMap.SeedNumber, 6},
-                { YUEnums.PersonInfoMap.Rank, 8},
-                { YUEnums.PersonInfoMap.Bonus, 10},
-            };
-        }
 
         public override PTInfo GetPersonInfo()
         {
@@ -342,7 +310,7 @@ namespace YPT.PT
                 {
                     #region Convert
                     //注册日期
-                    var node = nodes[InfoMaps[YUEnums.PersonInfoMap.RegisterDate]];
+                    var node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.RegisterDate]];
                     if (node != null)
                     {
                         var childNode = node.SelectSingleNode("./td[2]/text()");
@@ -351,7 +319,7 @@ namespace YPT.PT
                     }
 
                     //分享率
-                    node = nodes[InfoMaps[YUEnums.PersonInfoMap.ShareRate]];
+                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.ShareRate]];
                     if (node != null)
                     {
                         var childNode = node.SelectSingleNode(".//td/font/text()");
@@ -360,7 +328,7 @@ namespace YPT.PT
                     }
 
                     //上传量
-                    node = nodes[InfoMaps[YUEnums.PersonInfoMap.UpSize]];
+                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.UpSize]];
                     if (node != null)
                     {
                         var childNode = node.SelectSingleNode("./td[2]/text()");
@@ -369,7 +337,7 @@ namespace YPT.PT
                     }
 
                     //下载量
-                    node = nodes[InfoMaps[YUEnums.PersonInfoMap.DownSize]];
+                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.DownSize]];
                     if (node != null)
                     {
                         var childNode = node.SelectSingleNode("./td[2]/text()");
@@ -378,7 +346,7 @@ namespace YPT.PT
                     }
 
                     //做种率
-                    node = nodes[InfoMaps[YUEnums.PersonInfoMap.SeedRate]];
+                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.SeedRate]];
                     if (node != null)
                     {
                         var childNode = node.SelectSingleNode(".//td/font/text()");
@@ -388,7 +356,7 @@ namespace YPT.PT
 
 
                     //做种时间 下载时间
-                    node = nodes[InfoMaps[YUEnums.PersonInfoMap.DownTimes]];
+                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.DownTimes]];
                     if (node != null)
                     {
                         var childNode = node.SelectSingleNode(".//td[2]/text()[last()]");
@@ -401,7 +369,7 @@ namespace YPT.PT
                     }
 
                     //等级
-                    node = nodes[InfoMaps[YUEnums.PersonInfoMap.Rank]];
+                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.Rank]];
                     if (node != null)
                     {
                         var childNode = node.SelectSingleNode("./td[2]");
@@ -412,7 +380,7 @@ namespace YPT.PT
                     }
 
                     //积分
-                    node = nodes[InfoMaps[YUEnums.PersonInfoMap.Bonus]];
+                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.Bonus]];
                     if (node != null)
                     {
                         var childNode = node.SelectSingleNode(".//td[2]");
@@ -425,6 +393,7 @@ namespace YPT.PT
                     info.LastSyncDate = DateTime.Now;
                     info.Id = User.Id;
                     info.SiteId = SiteId;
+                    info.SiteName = Site.Name;
                     info.Name = User.UserName;
 
                     #endregion

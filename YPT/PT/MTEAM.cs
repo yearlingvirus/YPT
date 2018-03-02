@@ -86,40 +86,6 @@ namespace YPT.PT
             return "我也想签到，可是站点不支持。";
         }
 
-        protected override Dictionary<YUEnums.TorrentMap, int> GetTorrentMaps()
-        {
-            //0资源类型，1种子Ttile和URL，2评论，3时长，4大小，5上传，6下载，7完成，8发布者
-            return new Dictionary<YUEnums.TorrentMap, int>()
-            {
-                { YUEnums.TorrentMap.ResourceType, 0},
-                { YUEnums.TorrentMap.Detail, 1},
-                { YUEnums.TorrentMap.PromotionType, 1},
-                { YUEnums.TorrentMap.TimeAlive, 3},
-                { YUEnums.TorrentMap.Size, 4},
-                { YUEnums.TorrentMap.SeederNumber, 5},
-                { YUEnums.TorrentMap.LeecherNumber, 6},
-                { YUEnums.TorrentMap.SnatchedNumber, 7},
-                { YUEnums.TorrentMap.UpLoader, 9},
-            };
-        }
-
-        protected override Dictionary<YUEnums.PersonInfoMap, int> GetInfoMaps()
-        {
-            return new Dictionary<YUEnums.PersonInfoMap, int>()
-            {
-                { YUEnums.PersonInfoMap.RegisterDate, 1},
-                { YUEnums.PersonInfoMap.ShareRate, 5},
-                { YUEnums.PersonInfoMap.UpSize, 5},
-                { YUEnums.PersonInfoMap.DownSize, 5},
-                { YUEnums.PersonInfoMap.SeedRate, 7},
-                { YUEnums.PersonInfoMap.SeedTimes, 7},
-                { YUEnums.PersonInfoMap.DownTimes, 7},
-                { YUEnums.PersonInfoMap.SeedNumber, 7},
-                { YUEnums.PersonInfoMap.Rank, 10},
-                { YUEnums.PersonInfoMap.Bonus, 13},
-            };
-        }
-
 
         protected override bool SetTorrentSubTitle(HtmlNode node, PTTorrent torrent)
         {

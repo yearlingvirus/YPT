@@ -26,6 +26,11 @@ namespace YU.Core.DataEntity
         /// </summary>
         public YUEnums.PTEnum SiteId { get; set; }
 
+        /// <summary>
+        /// 站点名称
+        /// </summary>
+        public string SiteName { get; set; }
+
         public string Id { get; set; }
 
         /// <summary>
@@ -107,15 +112,16 @@ namespace YU.Core.DataEntity
             entity.PromotionType = this.PromotionType;
             entity.ResourceType = this.ResourceType;
             entity.SeederNumber = this.SeederNumber;
-            entity.SiteId = this.SiteId;
+            entity.SiteId = (int)this.SiteId;
+            entity.SiteName = this.SiteName;
             entity.Size = this.Size;
             entity.RealSize = YUUtils.ParseB(this.Size);
             entity.SnatchedNumber = this.SnatchedNumber;
             entity.UpLoader = this.UpLoader;
             entity.UpLoadTime = this.UpLoadTime;
             entity.IsHR = this.IsHR;
-            if (YUConst.PromotionImgDict.ContainsKey(entity.PromotionType) && !YUConst.PromotionImgDict[entity.PromotionType].IsNullOrEmptyOrWhiteSpace())
-                entity.image = FormUtils.GetImage(YUConst.PromotionImgDict[entity.PromotionType]);
+            if (PTSiteConst.RESOURCE_PROMOTIONIMG.ContainsKey(entity.PromotionType) && !PTSiteConst.RESOURCE_PROMOTIONIMG[entity.PromotionType].IsNullOrEmptyOrWhiteSpace())
+                entity.image = FormUtils.GetImage(PTSiteConst.RESOURCE_PROMOTIONIMG[entity.PromotionType]);
 
             StringBuilder sb = new StringBuilder();
             if (!this.Title.IsNullOrEmptyOrWhiteSpace())

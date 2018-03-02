@@ -43,7 +43,7 @@ namespace YPT.PT
                 html = node.InnerHtml.Replace(torrent.Subtitle, "");
             torrent.PromotionType = YUEnums.PromotionType.NORMAL;
 
-            foreach (var item in PromoptionDict)
+            foreach (var item in PTSiteConst.PromoptionDict)
             {
                 foreach (var value in item.Value)
                 {

@@ -18,6 +18,12 @@ namespace YU.Core.DataEntity
         public YUEnums.PTEnum SiteId { get; set; }
 
         /// <summary>
+        /// 站点
+        /// </summary>
+        [DefaultValue("")]
+        public string SiteName { get; set; }
+
+        /// <summary>
         /// Id
         /// </summary>
         public int Id { get; set; }
@@ -129,7 +135,8 @@ namespace YU.Core.DataEntity
             entity.SeedRate = this.SeedRate.Trim().TryPareValue<double>();
             entity.SeedTimes = this.SeedTimes;
             entity.ShareRate = this.ShareRate.Trim().TryPareValue<double>();
-            entity.SiteId = this.SiteId;
+            entity.SiteId = (int)this.SiteId;
+            entity.SiteName = this.SiteName;
             entity.UpSize = this.UpSize;
             entity.RealUpSize = YUUtils.ParseB(this.UpSize);
 

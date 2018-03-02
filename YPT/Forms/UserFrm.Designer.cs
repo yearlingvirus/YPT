@@ -48,6 +48,7 @@ namespace YPT.Forms
             this.txtAnswer = new System.Windows.Forms.TextBox();
             this.lblSecurityQuestion = new System.Windows.Forms.Label();
             this.btnConfirm = new System.Windows.Forms.Button();
+            this.btnGetCookie = new System.Windows.Forms.Button();
             this.backPanel.SuspendLayout();
             this.grUserInfo.SuspendLayout();
             this.grOther.SuspendLayout();
@@ -57,6 +58,7 @@ namespace YPT.Forms
             // backPanel
             // 
             this.backPanel.BackColor = System.Drawing.Color.White;
+            this.backPanel.Controls.Add(this.btnGetCookie);
             this.backPanel.Controls.Add(this.grUserInfo);
             this.backPanel.Controls.Add(this.grOther);
             this.backPanel.Controls.Add(this.btnConfirm);
@@ -219,13 +221,23 @@ namespace YPT.Forms
             // 
             // btnConfirm
             // 
-            this.btnConfirm.Location = new System.Drawing.Point(166, 408);
+            this.btnConfirm.Location = new System.Drawing.Point(41, 408);
             this.btnConfirm.Name = "btnConfirm";
             this.btnConfirm.Size = new System.Drawing.Size(88, 30);
             this.btnConfirm.TabIndex = 6;
             this.btnConfirm.Text = "确定";
             this.btnConfirm.UseVisualStyleBackColor = true;
             this.btnConfirm.Click += new System.EventHandler(this.btnConfirm_Click);
+            // 
+            // btnGetCookie
+            // 
+            this.btnGetCookie.Location = new System.Drawing.Point(142, 408);
+            this.btnGetCookie.Name = "btnGetCookie";
+            this.btnGetCookie.Size = new System.Drawing.Size(256, 30);
+            this.btnGetCookie.TabIndex = 13;
+            this.btnGetCookie.Text = "不想输入密码，点这里获取Cookie";
+            this.btnGetCookie.UseVisualStyleBackColor = true;
+            this.btnGetCookie.Click += new System.EventHandler(this.btnGetCookie_Click);
             // 
             // UserFrm
             // 
@@ -271,5 +283,6 @@ namespace YPT.Forms
         private System.Windows.Forms.CheckBox cbTwo_StepVerification;
         private System.Windows.Forms.NumericUpDown nudOrder;
         private System.Windows.Forms.Label lblTip;
+        private System.Windows.Forms.Button btnGetCookie;
     }
 }

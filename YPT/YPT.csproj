@@ -108,6 +108,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\InputFrm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\InputFrm.Designer.cs">
+      <DependentUpon>InputFrm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SettingFrm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -141,6 +147,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PT\ExtendPT.cs" />
     <Compile Include="PT\IPT.cs" />
     <Compile Include="PT\AbstractPT.cs" />
     <Compile Include="PT\CHDBITS.cs" />
@@ -149,6 +156,9 @@
     <Compile Include="PT\OURBITS.cs" />
     <Compile Include="PT\PTFactory.cs" />
     <Compile Include="PT\TTG.cs" />
+    <EmbeddedResource Include="Forms\InputFrm.resx">
+      <DependentUpon>InputFrm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingFrm.resx">
       <DependentUpon>SettingFrm.cs</DependentUpon>
     </EmbeddedResource>
@@ -184,6 +194,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="Resource\data\PTSite.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -203,28 +216,28 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resource\2up.gif">
+    <Content Include="Resource\icon\2up.gif">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resource\2up50down.png">
+    <Content Include="Resource\icon\2up50down.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resource\2upfree.gif">
+    <Content Include="Resource\icon\2upfree.gif">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resource\freeicon.gif">
+    <Content Include="Resource\icon\freeicon.gif">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resource\halfdown.gif">
+    <Content Include="Resource\icon\halfdown.gif">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resource\ico_30.gif">
+    <Content Include="Resource\icon\ico_30.gif">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resource\YPT.ico">
+    <Content Include="Resource\icon\YPT.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resource\YPT.png">
+    <Content Include="Resource\icon\YPT.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="YPT.ico" />

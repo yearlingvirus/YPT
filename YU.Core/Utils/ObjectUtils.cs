@@ -13,15 +13,16 @@ namespace YU.Core.Utils
 {
     public static class ObjectUtils
     {
-        
+
         /// <summary>
         /// 为对象创建一个拷贝
         /// </summary>
         /// <param name="obj">需要创建拷贝的对象</param>
         /// <returns>新建立的拷贝对象</returns>
-        public static object CreateCopy(object obj)
+        public static T CreateCopy<T>(object obj)
+            where T : class
         {
-            return ObjectUtils.CreateCopy(obj, YUEnums.FormatterType.BinaryFormatter);
+            return  (T)ObjectUtils.CreateCopy(obj, YUEnums.FormatterType.BinaryFormatter);
         }
 
         /// <summary>
