@@ -235,13 +235,13 @@ namespace YPT
         private void 登录ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             tabMain.SelectTab("tabLog");
-            Task t = Task.Run(() => Login());
+            Task t = Task.Factory.StartNew(() => Login());
         }
 
         private void 签到ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             tabMain.SelectTab("tabLog");
-            Task.Run(() => Sign());
+            Task t = Task.Factory.StartNew(() => Sign());
         }
 
 
@@ -297,7 +297,7 @@ namespace YPT
 
         private void InitTorrentCmb()
         {
-         
+
             BindingSource bs = new BindingSource();
             bs.DataSource = EnumUtils.GetEnumAllKeyDescs<YUEnums.PromotionType>();
             cmbPromotion.ValueMember = "Key";
@@ -476,7 +476,7 @@ namespace YPT
 
                 YUEnums.PromotionType promotionType = (YUEnums.PromotionType)cmbPromotion.SelectedValue;
                 YUEnums.AliveType aliveType = (YUEnums.AliveType)cmbAlive.SelectedValue;
-                YUEnums.FavType favType = (YUEnums.FavType)cmbFav.SelectedValue; 
+                YUEnums.FavType favType = (YUEnums.FavType)cmbFav.SelectedValue;
 
                 Task task = new Task(() =>
                 {
@@ -503,6 +503,10 @@ namespace YPT
                     });
                 }, cts.Token);
                 progressPanel.BeginLoading(20000);
+                System.Timers.Timer canelTimer = new System.Timers.Timer(1000);
+                canelTimer.Elapsed += new System.Timers.ElapsedEventHandler((s, e) => OnTimedEvent(s, e, cts));
+                canelTimer.AutoReset = false;
+                canelTimer.Start();
                 task.Start();
                 cts.Token.Register(new Action(() =>
                 {
@@ -514,7 +518,6 @@ namespace YPT
                             LogMessage(null, "搜索过程出现错误，错误原因：超时。", isOpen);
                     }
                 }));
-                cts.CancelAfter(20000);
                 task.ContinueWith(result =>
                 {
                     if (!cts.Token.IsCancellationRequested && !isFill)
@@ -606,7 +609,7 @@ namespace YPT
                     var torrent = searchTorrents.Where(x => x.Id == torrentId && x.SiteId == siteId).FirstOrDefault();
                     if (torrent != null)
                     {
-                        Task t = Task.Run(() =>
+                        Task t = Task.Factory.StartNew(() =>
                         {
                             IPT pt = PTFactory.GetPT(siteId, Global.Users.Where(x => x.Site.Id == siteId).FirstOrDefault());
                             string fileName = pt.GetTorrentDownFileName(torrent);
@@ -619,7 +622,7 @@ namespace YPT
                                 if (sfd.ShowDialog() == DialogResult.OK)
                                 {
                                     filePath = sfd.FileName;
-                                    var downTask = Task.Run(() =>
+                                    var downTask = Task.Factory.StartNew(() =>
                                     {
                                         HttpUtils.DownLoadFiles(torrent.DownUrl, filePath, 1024, (pt as AbstractPT).Cookie, isOepn);
                                     });
@@ -740,11 +743,11 @@ namespace YPT
                 switch (sortMode)
                 {
                     case SortOrder.Ascending:
-                        dgv.DataSource = dataSource.OrderBy(x => Convert.ChangeType(propertyInfo.GetValue(x), propertyInfo.PropertyType)).ToList();
+                        dgv.DataSource = dataSource.OrderBy(x => Convert.ChangeType(propertyInfo.GetValue(x, null), propertyInfo.PropertyType)).ToList();
                         //dgvTorrent.DataSource = dataSource.OrderBy(lambda.ompile() as Func<T, string>).ToList();
                         break;
                     case SortOrder.Descending:
-                        dgv.DataSource = dataSource.OrderByDescending(x => Convert.ChangeType(propertyInfo.GetValue(x), propertyInfo.PropertyType)).ToList();
+                        dgv.DataSource = dataSource.OrderByDescending(x => Convert.ChangeType(propertyInfo.GetValue(x, null), propertyInfo.PropertyType)).ToList();
                         //dgvTorrent.DataSource = dataSource.OrderByDescending(lambda.Compile() as Func<T, string>).ToList();
                         break;
                 }
@@ -783,20 +786,25 @@ namespace YPT
 
         private void SyncTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            SyncTimer.Interval = 60 * 60 * 1000;
             SyncPersonInfo(true);
         }
 
         private void SyncPersonInfo(bool isBack = false)
         {
-            this.Invoke(new Action(() =>
+            if (!isBack)
             {
-                tabMain.SelectTab("tabPersonInfo");
-            }));
+                this.Invoke(new Action(() =>
+                {
+                    tabMain.SelectTab("tabPersonInfo");
+                }));
+            }
             if (Global.Users != null || Global.Users.Count > 0)
             {
                 bool isFill = false;
                 StringBuilder sb = new StringBuilder();
                 var cts = new CancellationTokenSource();
+                
                 Task task = new Task(() =>
                 {
                     List<PTInfo> infos = new List<PTInfo>();
@@ -823,8 +831,12 @@ namespace YPT
                 }, cts.Token);
                 if (!isBack)
                     progressPanel.BeginLoading();
+                LogMessage(null, "正在同步个人信息。");
+                System.Timers.Timer canelTimer = new System.Timers.Timer(1000);
+                canelTimer.Elapsed += new System.Timers.ElapsedEventHandler((s, e) => OnTimedEvent(s, e, cts));
+                canelTimer.AutoReset = false;
+                canelTimer.Start();
                 task.Start();
-                cts.CancelAfter(20000);
                 task.ContinueWith(result =>
                 {
                     if (!isBack)
@@ -844,9 +856,14 @@ namespace YPT
                             LogMessage(null, errMsg, isOpen);
                         }
                     }
-
+                    LogMessage(null, "同步个人信息完成。");
                 });
             }
+        }
+
+        private void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e, CancellationTokenSource cts)
+        {
+            cts.Cancel();
         }
 
         /// <summary>

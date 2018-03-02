@@ -43,8 +43,12 @@ namespace YPT
             this.panelTorrent = new System.Windows.Forms.Panel();
             this.dgvTorrent = new System.Windows.Forms.DataGridView();
             this.panelSearch = new System.Windows.Forms.Panel();
+            this.lblFav = new System.Windows.Forms.Label();
+            this.cmbFav = new YU.Core.YUComponent.YUComboBox(this.components);
             this.lblAlive = new System.Windows.Forms.Label();
             this.lblPromotion = new System.Windows.Forms.Label();
+            this.cmbAlive = new YU.Core.YUComponent.YUComboBox(this.components);
+            this.cmbPromotion = new YU.Core.YUComponent.YUComboBox(this.components);
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.panelSite = new System.Windows.Forms.Panel();
@@ -52,6 +56,7 @@ namespace YPT
             this.dgvPersonInfo = new System.Windows.Forms.DataGridView();
             this.tabLog = new System.Windows.Forms.TabPage();
             this.logPanel = new System.Windows.Forms.Panel();
+            this.rtbLog = new YU.Core.YUComponent.YURichTextBox(this.components);
             this.btnClearLog = new System.Windows.Forms.Button();
             this.nfyMain = new System.Windows.Forms.NotifyIcon(this.components);
             this.nfyContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -61,11 +66,6 @@ namespace YPT
             this.toolStripMenuDown = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuIDownAndOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemCopy = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblFav = new System.Windows.Forms.Label();
-            this.cmbFav = new YU.Core.YUComponent.YUComboBox(this.components);
-            this.cmbAlive = new YU.Core.YUComponent.YUComboBox(this.components);
-            this.cmbPromotion = new YU.Core.YUComponent.YUComboBox(this.components);
-            this.rtbLog = new YU.Core.YUComponent.YURichTextBox(this.components);
             this.mainMenuStrip.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tabSearch.SuspendLayout();
@@ -91,7 +91,7 @@ namespace YPT
             this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.mainMenuStrip.Name = "mainMenuStrip";
             this.mainMenuStrip.Padding = new System.Windows.Forms.Padding(7, 3, 0, 3);
-            this.mainMenuStrip.Size = new System.Drawing.Size(1009, 27);
+            this.mainMenuStrip.Size = new System.Drawing.Size(1092, 27);
             this.mainMenuStrip.TabIndex = 0;
             this.mainMenuStrip.Text = "menuStrip1";
             // 
@@ -134,7 +134,7 @@ namespace YPT
             this.tabMain.Margin = new System.Windows.Forms.Padding(4);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
-            this.tabMain.Size = new System.Drawing.Size(1009, 602);
+            this.tabMain.Size = new System.Drawing.Size(1092, 631);
             this.tabMain.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabMain.TabIndex = 1;
             this.tabMain.TabStop = false;
@@ -146,7 +146,7 @@ namespace YPT
             this.tabSearch.Location = new System.Drawing.Point(4, 29);
             this.tabSearch.Name = "tabSearch";
             this.tabSearch.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSearch.Size = new System.Drawing.Size(1001, 569);
+            this.tabSearch.Size = new System.Drawing.Size(1084, 598);
             this.tabSearch.TabIndex = 1;
             this.tabSearch.Text = "种子搜索";
             this.tabSearch.UseVisualStyleBackColor = true;
@@ -158,7 +158,7 @@ namespace YPT
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMain.Location = new System.Drawing.Point(139, 3);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(859, 563);
+            this.panelMain.Size = new System.Drawing.Size(942, 592);
             this.panelMain.TabIndex = 1;
             // 
             // panelTorrent
@@ -167,7 +167,7 @@ namespace YPT
             this.panelTorrent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelTorrent.Location = new System.Drawing.Point(0, 92);
             this.panelTorrent.Name = "panelTorrent";
-            this.panelTorrent.Size = new System.Drawing.Size(859, 471);
+            this.panelTorrent.Size = new System.Drawing.Size(942, 500);
             this.panelTorrent.TabIndex = 1;
             // 
             // dgvTorrent
@@ -181,7 +181,7 @@ namespace YPT
             this.dgvTorrent.Name = "dgvTorrent";
             this.dgvTorrent.RowTemplate.Height = 23;
             this.dgvTorrent.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTorrent.Size = new System.Drawing.Size(859, 471);
+            this.dgvTorrent.Size = new System.Drawing.Size(942, 500);
             this.dgvTorrent.TabIndex = 0;
             this.dgvTorrent.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTorrent_CellMouseDown);
             this.dgvTorrent.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgv_ColumnHeaderMouseClick);
@@ -200,14 +200,32 @@ namespace YPT
             this.panelSearch.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelSearch.Location = new System.Drawing.Point(0, 0);
             this.panelSearch.Name = "panelSearch";
-            this.panelSearch.Size = new System.Drawing.Size(859, 92);
+            this.panelSearch.Size = new System.Drawing.Size(942, 92);
             this.panelSearch.TabIndex = 0;
             this.panelSearch.Paint += new System.Windows.Forms.PaintEventHandler(this.panelSearch_Paint);
+            // 
+            // lblFav
+            // 
+            this.lblFav.AutoSize = true;
+            this.lblFav.Location = new System.Drawing.Point(557, 55);
+            this.lblFav.Name = "lblFav";
+            this.lblFav.Size = new System.Drawing.Size(65, 20);
+            this.lblFav.TabIndex = 7;
+            this.lblFav.Text = "显示收藏";
+            // 
+            // cmbFav
+            // 
+            this.cmbFav.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFav.FormattingEnabled = true;
+            this.cmbFav.Location = new System.Drawing.Point(639, 51);
+            this.cmbFav.Name = "cmbFav";
+            this.cmbFav.Size = new System.Drawing.Size(121, 28);
+            this.cmbFav.TabIndex = 6;
             // 
             // lblAlive
             // 
             this.lblAlive.AutoSize = true;
-            this.lblAlive.Location = new System.Drawing.Point(261, 55);
+            this.lblAlive.Location = new System.Drawing.Point(300, 55);
             this.lblAlive.Name = "lblAlive";
             this.lblAlive.Size = new System.Drawing.Size(71, 20);
             this.lblAlive.TabIndex = 5;
@@ -216,18 +234,36 @@ namespace YPT
             // lblPromotion
             // 
             this.lblPromotion.AutoSize = true;
-            this.lblPromotion.Location = new System.Drawing.Point(39, 55);
+            this.lblPromotion.Location = new System.Drawing.Point(46, 55);
             this.lblPromotion.Name = "lblPromotion";
             this.lblPromotion.Size = new System.Drawing.Size(65, 20);
             this.lblPromotion.TabIndex = 4;
             this.lblPromotion.Text = "促销类型";
+            // 
+            // cmbAlive
+            // 
+            this.cmbAlive.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbAlive.FormattingEnabled = true;
+            this.cmbAlive.Location = new System.Drawing.Point(385, 51);
+            this.cmbAlive.Name = "cmbAlive";
+            this.cmbAlive.Size = new System.Drawing.Size(121, 28);
+            this.cmbAlive.TabIndex = 3;
+            // 
+            // cmbPromotion
+            // 
+            this.cmbPromotion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPromotion.FormattingEnabled = true;
+            this.cmbPromotion.Location = new System.Drawing.Point(128, 51);
+            this.cmbPromotion.Name = "cmbPromotion";
+            this.cmbPromotion.Size = new System.Drawing.Size(121, 28);
+            this.cmbPromotion.TabIndex = 2;
             // 
             // btnSearch
             // 
             this.btnSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSearch.FlatAppearance.BorderSize = 0;
             this.btnSearch.ForeColor = System.Drawing.Color.Black;
-            this.btnSearch.Location = new System.Drawing.Point(712, 23);
+            this.btnSearch.Location = new System.Drawing.Point(795, 23);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(108, 49);
             this.btnSearch.TabIndex = 1;
@@ -243,7 +279,7 @@ namespace YPT
             this.txtSearch.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.txtSearch.Location = new System.Drawing.Point(43, 15);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(635, 26);
+            this.txtSearch.Size = new System.Drawing.Size(718, 26);
             this.txtSearch.TabIndex = 0;
             this.txtSearch.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSearch_KeyPress);
             // 
@@ -252,7 +288,7 @@ namespace YPT
             this.panelSite.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelSite.Location = new System.Drawing.Point(3, 3);
             this.panelSite.Name = "panelSite";
-            this.panelSite.Size = new System.Drawing.Size(136, 563);
+            this.panelSite.Size = new System.Drawing.Size(136, 592);
             this.panelSite.TabIndex = 0;
             this.panelSite.Paint += new System.Windows.Forms.PaintEventHandler(this.panelSite_Paint);
             // 
@@ -262,7 +298,7 @@ namespace YPT
             this.tabPersonInfo.Location = new System.Drawing.Point(4, 29);
             this.tabPersonInfo.Name = "tabPersonInfo";
             this.tabPersonInfo.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPersonInfo.Size = new System.Drawing.Size(1001, 569);
+            this.tabPersonInfo.Size = new System.Drawing.Size(1084, 598);
             this.tabPersonInfo.TabIndex = 2;
             this.tabPersonInfo.Text = "个人信息";
             this.tabPersonInfo.UseVisualStyleBackColor = true;
@@ -277,7 +313,7 @@ namespace YPT
             this.dgvPersonInfo.Location = new System.Drawing.Point(3, 3);
             this.dgvPersonInfo.Name = "dgvPersonInfo";
             this.dgvPersonInfo.RowTemplate.Height = 23;
-            this.dgvPersonInfo.Size = new System.Drawing.Size(995, 563);
+            this.dgvPersonInfo.Size = new System.Drawing.Size(1078, 592);
             this.dgvPersonInfo.TabIndex = 1;
             this.dgvPersonInfo.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgv_ColumnHeaderMouseClick);
             this.dgvPersonInfo.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgv_DataBindingComplete);
@@ -289,7 +325,7 @@ namespace YPT
             this.tabLog.Margin = new System.Windows.Forms.Padding(4);
             this.tabLog.Name = "tabLog";
             this.tabLog.Padding = new System.Windows.Forms.Padding(4);
-            this.tabLog.Size = new System.Drawing.Size(1001, 569);
+            this.tabLog.Size = new System.Drawing.Size(1084, 598);
             this.tabLog.TabIndex = 0;
             this.tabLog.Text = "日志";
             this.tabLog.UseVisualStyleBackColor = true;
@@ -301,17 +337,33 @@ namespace YPT
             this.logPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.logPanel.Location = new System.Drawing.Point(4, 4);
             this.logPanel.Name = "logPanel";
-            this.logPanel.Size = new System.Drawing.Size(993, 561);
+            this.logPanel.Size = new System.Drawing.Size(1076, 590);
             this.logPanel.TabIndex = 2;
+            // 
+            // rtbLog
+            // 
+            this.rtbLog.BackColor = System.Drawing.Color.White;
+            this.rtbLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbLog.IsShowCursor = false;
+            this.rtbLog.Location = new System.Drawing.Point(0, 0);
+            this.rtbLog.Margin = new System.Windows.Forms.Padding(4);
+            this.rtbLog.Name = "rtbLog";
+            this.rtbLog.ReadOnly = true;
+            this.rtbLog.Size = new System.Drawing.Size(1076, 544);
+            this.rtbLog.TabIndex = 0;
+            this.rtbLog.TabStop = false;
+            this.rtbLog.Text = "";
+            this.rtbLog.TextChanged += new System.EventHandler(this.rtbLog_TextChanged);
             // 
             // btnClearLog
             // 
             this.btnClearLog.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnClearLog.FlatAppearance.BorderSize = 0;
             this.btnClearLog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnClearLog.Location = new System.Drawing.Point(0, 515);
+            this.btnClearLog.Location = new System.Drawing.Point(0, 544);
             this.btnClearLog.Name = "btnClearLog";
-            this.btnClearLog.Size = new System.Drawing.Size(993, 46);
+            this.btnClearLog.Size = new System.Drawing.Size(1076, 46);
             this.btnClearLog.TabIndex = 1;
             this.btnClearLog.TabStop = false;
             this.btnClearLog.Text = "清空";
@@ -379,63 +431,11 @@ namespace YPT
             this.toolStripMenuItemCopy.Text = "复制链接";
             this.toolStripMenuItemCopy.Click += new System.EventHandler(this.toolStripMenuItemCopy_Click);
             // 
-            // lblFav
-            // 
-            this.lblFav.AutoSize = true;
-            this.lblFav.Location = new System.Drawing.Point(482, 55);
-            this.lblFav.Name = "lblFav";
-            this.lblFav.Size = new System.Drawing.Size(65, 20);
-            this.lblFav.TabIndex = 7;
-            this.lblFav.Text = "显示收藏";
-            // 
-            // cmbFav
-            // 
-            this.cmbFav.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbFav.FormattingEnabled = true;
-            this.cmbFav.Location = new System.Drawing.Point(557, 51);
-            this.cmbFav.Name = "cmbFav";
-            this.cmbFav.Size = new System.Drawing.Size(121, 28);
-            this.cmbFav.TabIndex = 6;
-            // 
-            // cmbAlive
-            // 
-            this.cmbAlive.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbAlive.FormattingEnabled = true;
-            this.cmbAlive.Location = new System.Drawing.Point(338, 51);
-            this.cmbAlive.Name = "cmbAlive";
-            this.cmbAlive.Size = new System.Drawing.Size(121, 28);
-            this.cmbAlive.TabIndex = 3;
-            // 
-            // cmbPromotion
-            // 
-            this.cmbPromotion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbPromotion.FormattingEnabled = true;
-            this.cmbPromotion.Location = new System.Drawing.Point(111, 51);
-            this.cmbPromotion.Name = "cmbPromotion";
-            this.cmbPromotion.Size = new System.Drawing.Size(121, 28);
-            this.cmbPromotion.TabIndex = 2;
-            // 
-            // rtbLog
-            // 
-            this.rtbLog.BackColor = System.Drawing.Color.White;
-            this.rtbLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtbLog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbLog.IsShowCursor = false;
-            this.rtbLog.Location = new System.Drawing.Point(0, 0);
-            this.rtbLog.Margin = new System.Windows.Forms.Padding(4);
-            this.rtbLog.Name = "rtbLog";
-            this.rtbLog.ReadOnly = true;
-            this.rtbLog.Size = new System.Drawing.Size(993, 515);
-            this.rtbLog.TabIndex = 0;
-            this.rtbLog.TabStop = false;
-            this.rtbLog.Text = "";
-            this.rtbLog.TextChanged += new System.EventHandler(this.rtbLog_TextChanged);
-            // 
             // MainFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1009, 629);
+            this.ClientSize = new System.Drawing.Size(1092, 658);
             this.Controls.Add(this.tabMain);
             this.Controls.Add(this.mainMenuStrip);
             this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));

@@ -8,7 +8,7 @@ using YU.Core.DataEntity;
 namespace YU.Core.Event
 {
     [Serializable]
-    public  class OnUserChangeEventArgs
+    public  class OnUserChangeEventArgs : EventArgs
     {
         public PTUser User { get; set; }
     }

@@ -99,7 +99,7 @@ namespace YU.Core.DataEntity
                 if (atts != null && atts.Length > 0)
                 {
                     var att = atts[0] as DefaultValueAttribute;
-                    p.SetValue(this, att.Value);
+                    p.SetValue(this, att.Value, null);
                 }
             }
         }
