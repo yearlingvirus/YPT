@@ -112,7 +112,7 @@ namespace YPT.Forms
                     {
                         if (isWriteCookie)
                         {
-                            HttpUtils.WriteCookiesToDisk(pt.GetCookieFilePath(), cookie);
+                            YUUtils.WriteCookiesToDisk(pt.GetCookieFilePath(), cookie);
                         }
                         else
                         {
@@ -158,11 +158,8 @@ namespace YPT.Forms
             System.Threading.Thread.Sleep(2000);
             SendKeys.SendWait("{F12}");
             System.Threading.Thread.Sleep(1000);
-            SendKeys.SendWait("document.cookie");
-            SendKeys.SendWait("{ENTER}");
-            SendKeys.SendWait("{ENTER}");
+            SendKeys.SendWait("{F5}");
             System.Threading.Thread.Sleep(1000);
-
 
             InputFrm frm = new InputFrm();
             frm.Text = "在此窗口输入浏览器中返回的Cookie";

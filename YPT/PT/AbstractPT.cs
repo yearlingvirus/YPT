@@ -205,7 +205,7 @@ namespace YPT.PT
             var trNodes = GetTorrentNodes(htmlDocument);
             //如果只有一个节点，那么应该是Table的标题，这里忽略，从第二个节点开始算。
             if (trNodes == null)
-                throw new Exception(string.Format("{0}无法搜索到对应结果，请尝试更换其他关键字。", SiteId));
+                throw new Exception(string.Format("{0}无法搜索到对应结果，请尝试更换其他关键字。", Site.Name));
             else
             {
                 List<PTTorrent> torrents = new List<PTTorrent>();
@@ -420,7 +420,8 @@ namespace YPT.PT
         protected CookieContainer GetLocalCookie()
         {
             string cookiePath = GetCookieFilePath();
-            return HttpUtils.ReadCookiesFromDisk(Site.Url, cookiePath);
+            string cookie = YUUtils.ReadCookiesFromDisk(cookiePath);
+            return YUUtils.GetContainerFromCookie(cookie, new Uri(Site.Url));
         }
 
         /// <summary>
@@ -430,7 +431,7 @@ namespace YPT.PT
         protected void SetLocalCookie(CookieContainer _cookie)
         {
             string cookiePath = GetCookieFilePath();
-            HttpUtils.WriteCookiesToDisk(cookiePath, _cookie);
+            YUUtils.WriteCookiesToDisk(cookiePath, YUUtils.GetCookieFromContainer(_cookie, new Uri(Site.Url)));
         }
 
         public void DelLocalCookie()
@@ -504,12 +505,21 @@ namespace YPT.PT
                 throw new Exception("获取种子文件名称失败，失败原因：无法获取到种子信息。");
         }
 
-
         public virtual PTInfo GetPersonInfo()
         {
             PTInfo info = new PTInfo();
             if (User.Id == 0)
-                throw new Exception(string.Format("{0} 无法获取用户Id，请尝试重新登录。", SiteId));
+            {
+                string htmlResult = HttpUtils.GetDataGetHtml(Site.Url, _cookie);
+                int id = GetUserId(htmlResult);
+                if (id == 0)
+                    throw new Exception(string.Format("{0} 无法获取用户Id，请尝试重新登录。", Site.Name));
+                else
+                {
+                    User.Id = id;
+                    return GetPersonInfo();
+                }
+            }
             else
             {
                 string url = string.Format(Site.InfoUrl, User.Id);
@@ -519,7 +529,7 @@ namespace YPT.PT
                 htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
                 HtmlNodeCollection nodes = htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]/tr/td/table/tr");//跟Xpath一样
                 if (nodes == null || nodes.Count <= 0)
-                    throw new Exception(string.Format("{0} 获取用户详细信息失败，请稍后重试。", SiteId));
+                    throw new Exception(string.Format("{0} 获取用户详细信息失败，请稍后重试。", Site.Name));
                 else
                 {
                     #region Convert

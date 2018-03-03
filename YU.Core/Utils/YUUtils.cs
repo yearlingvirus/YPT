@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using YU.Core.Log;
 
 namespace YU.Core.Utils
 {
@@ -91,7 +95,7 @@ namespace YU.Core.Utils
         /// <param name="container"></param>
         /// <param name="uri"></param>
         /// <returns></returns>
-        public static string GetCookieFromContainer(CookieContainer container,Uri uri)
+        public static string GetCookieFromContainer(CookieContainer container, Uri uri)
         {
             List<string> cookieStr = new List<string>();
             CookieCollection cookies = container.GetCookies(uri);
@@ -103,6 +107,149 @@ namespace YU.Core.Utils
                 }
             }
             return string.Join("; ", cookieStr);
+        }
+
+        /// <summary>
+        /// 获取CookieContainer
+        /// </summary>
+        /// <param name="cookieStr"></param>
+        /// <param name="uri"></param>
+        /// <returns></returns>
+        public static CookieContainer GetContainerFromCookie(string cookieStr, Uri uri)
+        {
+            CookieContainer cc = new CookieContainer();
+            Dictionary<string, string> AddCookies = new Dictionary<string, string>();
+            if (!cookieStr.IsNullOrEmptyOrWhiteSpace())
+            {
+                var cookies = cookieStr.Split(new char[] { ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                if (cookies != null && cookies.Length > 0)
+                {
+                    foreach (var cookieKvr in cookies)
+                    {
+                        string[] cookie = cookieKvr.Split('=');
+                        if (cookie.Length == 2)
+                        {
+                            string name = cookie[0];
+                            string value = cookie[1];
+                            Cookie c = new Cookie();
+                            c.Name = name;
+                            c.Value = value;
+                            c.Domain = uri.Host;
+                            if (AddCookies.ContainsKey(name))
+                                continue;
+                            else
+                            {
+                                AddCookies.Add(name, value);
+                                cc.Add(c);
+                            }
+                        }
+                    }
+                }
+            }
+            return cc;
+        }
+
+
+        public static void WriteCookiesContainerToDisk(string file, CookieContainer cc)
+        {
+            if (!Directory.Exists(Path.GetDirectoryName(file)))
+                Directory.CreateDirectory(Path.GetDirectoryName(file));
+            using (FileStream stream = File.Create(file))
+            {
+                try
+                {
+                    BinaryFormatter formatter = new BinaryFormatter();
+                    formatter.Serialize(stream, cc);
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(string.Format("Cookie写入文件失败，文件名[{0}]", file), e);
+                }
+            }
+        }
+
+        public static void WriteCookiesToDisk(string file, string cookies)
+        {
+            if (!Directory.Exists(Path.GetDirectoryName(file)))
+                Directory.CreateDirectory(Path.GetDirectoryName(file));
+            try
+            {
+                File.WriteAllText(file, cookies, Encoding.UTF8);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("Cookie写入文件失败，文件名[{0}]", file), e);
+            }
+        }
+
+        public static CookieContainer ReadCookiesContainerFromDisk(string file)
+        {
+            try
+            {
+                if (File.Exists(file))
+                {
+                    using (Stream stream = File.Open(file, FileMode.Open))
+                    {
+                        BinaryFormatter formatter = new BinaryFormatter();
+                        return (CookieContainer)formatter.Deserialize(stream);
+                    }
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("从文件读取Cookie失败，文件名[{0}]", file), e);
+                return null;
+            }
+        }
+
+        public static string ReadCookiesFromDisk(string file)
+        {
+            try
+            {
+                Dictionary<string, string> AddCookies = new Dictionary<string, string>();
+                List<string> result = new List<string>();
+                string cookieStr = File.ReadAllText(file, Encoding.UTF8);
+                if (!cookieStr.IsNullOrEmptyOrWhiteSpace())
+                {
+                    var cookies = cookieStr.Split(new char[] { ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (cookies != null && cookies.Length > 0)
+                    {
+                        foreach (var cookieKvr in cookies)
+                        {
+                            string[] cookie = cookieKvr.Split('=');
+                            if (cookie.Length == 2)
+                            {
+                                string name = cookie[0];
+                                string value = cookie[1];
+                                if (AddCookies.ContainsKey(name))
+                                    continue;
+                                else
+                                {
+                                    AddCookies.Add(name, value);
+                                }
+                            }
+                        }
+                    }
+                    if (AddCookies.Count > 0)
+                    {
+                        foreach (var item in AddCookies)
+                        {
+                            result.Add(string.Format("{0}={1}", item.Key, item.Value));
+                        }
+                        return string.Join("; ", result);
+                    }
+                }
+                return null;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(string.Format("从文件读取Cookie失败，文件名[{0}]", file), e);
+                return null;
+            }
         }
     }
 }

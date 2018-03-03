@@ -113,7 +113,8 @@ namespace YU.Core.Utils
                 }
                 else
                 {
-                    req.CookieContainer = cookie;
+                    req.Headers.Add(HttpRequestHeader.Cookie, YUUtils.GetCookieFromContainer(cookie, uri));
+                    //req.CookieContainer = cookie;
                 }
 
                 Stream outStream = req.GetRequestStream();
@@ -157,14 +158,15 @@ namespace YU.Core.Utils
                 httpWebRequest.Timeout = 10000;
                 httpWebRequest.ServicePoint.Expect100Continue = false;
 
-                if (cookie.Count == 0)
+                if (cookie == null || cookie.Count == 0)
                 {
                     httpWebRequest.CookieContainer = new CookieContainer();
                     cookie = httpWebRequest.CookieContainer;
                 }
                 else
                 {
-                    httpWebRequest.CookieContainer = cookie;
+                    httpWebRequest.Headers.Add(HttpRequestHeader.Cookie, YUUtils.GetCookieFromContainer(cookie, new Uri(url)));
+                    //httpWebRequest.CookieContainer = cookie;
                 }
 
                 HttpWebResponse webRespon = (HttpWebResponse)httpWebRequest.GetResponse();
@@ -186,137 +188,6 @@ namespace YU.Core.Utils
                 string msg = "网络错误(Network error)：" + ex.GetInnerExceptionMessage();
                 Logger.Error(msg, ex);
                 return msg;
-            }
-        }
-
-        public static List<Cookie> GetAllCookies(CookieContainer cc)
-        {
-            List<Cookie> lstCookies = new List<Cookie>();
-
-            Hashtable table = (Hashtable)cc.GetType().InvokeMember("m_domainTable",
-                System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.GetField |
-                System.Reflection.BindingFlags.Instance, null, cc, new object[] { });
-
-            foreach (object pathList in table.Values)
-            {
-                SortedList lstCookieCol = (SortedList)pathList.GetType().InvokeMember("m_list",
-                    System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.GetField
-                    | System.Reflection.BindingFlags.Instance, null, pathList, new object[] { });
-                foreach (CookieCollection colCookies in lstCookieCol.Values)
-                    foreach (Cookie c in colCookies) lstCookies.Add(c);
-            }
-
-            return lstCookies;
-        }
-
-        public static void WriteCookiesToDisk(string file, CookieContainer cc)
-        {
-            if (!Directory.Exists(Path.GetDirectoryName(file)))
-                Directory.CreateDirectory(Path.GetDirectoryName(file));
-            //using (FileStream stream = File.Create(file))
-            //{
-            //    try
-            //    {
-            //        BinaryFormatter formatter = new BinaryFormatter();
-            //        formatter.Serialize(stream, cc);
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        Logger.Error(string.Format("Cookie写入文件失败，文件名[{0}]", file), e);
-            //    }
-            //}
-            try
-            {
-                StringBuilder sb = new StringBuilder();
-                List<Cookie> cooklist = GetAllCookies(cc);
-                if (cooklist != null && cooklist.Count > 0)
-                {
-                    foreach (var cookie in cooklist)
-                    {
-                        sb.AppendLine(string.Format("{0}={1}; ", cookie.Name, cookie.Value));
-                    }
-                    File.WriteAllText(file, sb.ToString(), Encoding.UTF8);
-                }
-
-            }
-            catch (Exception e)
-            {
-                Logger.Error(string.Format("Cookie写入文件失败，文件名[{0}]", file), e);
-            }
-        }
-
-        public static void WriteCookiesToDisk(string file, string cookies)
-        {
-            if (!Directory.Exists(Path.GetDirectoryName(file)))
-                Directory.CreateDirectory(Path.GetDirectoryName(file));
-            try
-            {
-                File.WriteAllText(file, cookies, Encoding.UTF8);
-            }
-            catch (Exception e)
-            {
-                Logger.Error(string.Format("Cookie写入文件失败，文件名[{0}]", file), e);
-            }
-        }
-
-        public static CookieContainer ReadCookiesFromDisk(string file)
-        {
-            try
-            {
-                if (File.Exists(file))
-                {
-                    using (Stream stream = File.Open(file, FileMode.Open))
-                    {
-                        BinaryFormatter formatter = new BinaryFormatter();
-                        return (CookieContainer)formatter.Deserialize(stream);
-                    }
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Error(string.Format("从文件读取Cookie失败，文件名[{0}]", file), e);
-                return null;
-            }
-        }
-
-        public static CookieContainer ReadCookiesFromDisk(string url, string file)
-        {
-            try
-            {
-                Uri uri = new Uri(url);
-                CookieContainer cc = new CookieContainer();
-                string cookieStr = File.ReadAllText(file, Encoding.UTF8);
-                if (!cookieStr.IsNullOrEmptyOrWhiteSpace())
-                {
-                    string[] cookieArr = cookieStr.Split(new char[] { ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    if (cookieArr != null && cookieArr.Length > 0)
-                    {
-                        foreach (var cookieKvr in cookieArr)
-                        {
-                            string[] cookie = cookieKvr.Split('=');
-                            if (cookie.Length == 2)
-                            {
-                                Cookie c = new Cookie();
-                                c.Name = cookie[0].Trim();
-                                c.Value = cookie[1].Trim();
-                                c.Domain = uri.Host;
-                                c.Expires = DateTime.Now.AddYears(1);
-                                cc.Add(c);
-                            }
-
-                        }
-                    }
-                }
-                return cc;
-            }
-            catch (Exception e)
-            {
-                Logger.Error(string.Format("从文件读取Cookie失败，文件名[{0}]", file), e);
-                return null;
             }
         }
 

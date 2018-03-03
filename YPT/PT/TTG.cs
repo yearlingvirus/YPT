@@ -295,7 +295,17 @@ namespace YPT.PT
         {
             PTInfo info = new PTInfo();
             if (User.Id == 0)
-                throw new Exception(string.Format("{0} 无法获取用户Id，请尝试重新登录。", SiteId));
+            {
+                string htmlResult = HttpUtils.GetDataGetHtml(Site.Url, _cookie);
+                int id = GetUserId(htmlResult);
+                if (id == 0)
+                    throw new Exception(string.Format("{0} 无法获取用户Id，请尝试重新登录。", Site.Name));
+                else
+                {
+                    User.Id = id;
+                    return GetPersonInfo();
+                }
+            }
             else
             {
                 string url = string.Format(Site.InfoUrl, User.Id);
@@ -305,7 +315,7 @@ namespace YPT.PT
                 htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
                 HtmlNodeCollection nodes = htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]/tr/td/table/tr");//跟Xpath一样
                 if (nodes == null || nodes.Count <= 0)
-                    throw new Exception(string.Format("{0} 获取用户详细信息失败，请稍后重试。", SiteId));
+                    throw new Exception(string.Format("{0} 获取用户详细信息失败，请稍后重试。", Site.Name));
                 else
                 {
                     #region Convert
