@@ -192,6 +192,59 @@ namespace YU.Core.Utils
         }
 
         /// <summary>
+        /// HttpWebRequest 通过get
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="cookie"></param>
+        /// <returns></returns>
+        public static Tuple<string, HttpWebRequest, HttpWebResponse> GetData(string url, CookieContainer cookie)
+        {
+            try
+            {
+                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+
+                httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+                httpWebRequest.Method = "GET";
+                httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36";
+                //对发送的数据不使用缓存
+                httpWebRequest.AllowWriteStreamBuffering = false;
+                httpWebRequest.Timeout = 10000;
+                httpWebRequest.ServicePoint.Expect100Continue = false;
+
+                if (cookie == null || cookie.Count == 0)
+                {
+                    httpWebRequest.CookieContainer = new CookieContainer();
+                    cookie = httpWebRequest.CookieContainer;
+                }
+                else
+                {
+                    httpWebRequest.Headers.Add(HttpRequestHeader.Cookie, YUUtils.GetCookieFromContainer(cookie, new Uri(url)));
+                    //httpWebRequest.CookieContainer = cookie;
+                }
+
+                HttpWebResponse webRespon = (HttpWebResponse)httpWebRequest.GetResponse();
+                Stream webStream = webRespon.GetResponseStream();
+                if (webStream == null)
+                {
+                    return new Tuple<string, HttpWebRequest, HttpWebResponse>("网络错误(Network error)：" + new ArgumentNullException("webStream").Message, httpWebRequest, webRespon);
+                }
+                StreamReader streamReader = new StreamReader(webStream, Encoding.UTF8);
+                string responseContent = streamReader.ReadToEnd();
+
+                webRespon.Close();
+                streamReader.Close();
+
+                return new Tuple<string, HttpWebRequest, HttpWebResponse>(responseContent, httpWebRequest, webRespon);
+            }
+            catch (Exception ex)
+            {
+                string msg = "网络错误(Network error)：" + ex.GetInnerExceptionMessage();
+                Logger.Error(msg, ex);
+                return new Tuple<string, HttpWebRequest, HttpWebResponse>(msg, null, null);
+            }
+        }
+
+        /// <summary>
         /// Http下载文件
         /// </summary>
         /// <param name="uri">下载地址</param>

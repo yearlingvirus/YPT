@@ -31,60 +31,29 @@ namespace YPT.PT
             }
         }
 
-        public override string Login()
+        public override Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginPostWithOutCookie(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult, string otpCode)
         {
             string postData = string.Format("username={0}&password={1}", User.UserName, User.PassWord);
             var result = HttpUtils.PostData(Site.LoginUrl, postData, _cookie);
 
-            //这里没必要判断是否启用两步验证了，因为返回的结果Url就能知道是不是两步验证。 User.isEnableTwo_StepVerification
-            if (Site.isEnableTwo_StepVerification && result.Item3 != null && result.Item3.ResponseUri.OriginalString.Contains("verify"))
+            //如果返回的页面是二级验证页面，则继续请求
+            if (result.Item3 != null && result.Item3.ResponseUri.OriginalString.Contains("verify"))
             {
-                OnTwoStepVerificationEventArgs e = new OnTwoStepVerificationEventArgs();
-                e.Site = Site;
-                string code = OnTwoStepVerification(e);
-                if (code.IsNullOrEmptyOrWhiteSpace())
-                    return "登录失败，无法获取正确的二级验证码。";
+                if (otpCode.IsNullOrEmptyOrWhiteSpace())
+                {
+                    throw new Exception("无法获取到正确的二级验证码，请重新尝试。");
+                }
                 else
                 {
-                    postData = string.Format("otp={0}", code);
+                    postData = string.Format("otp={0}", otpCode);
                     _cookie = result.Item2.CookieContainer;
-                    result = HttpUtils.PostData(result.Item3.ResponseUri.OriginalString, postData, _cookie);
-                    return DoLogin(result);
+                    return result = HttpUtils.PostData(result.Item3.ResponseUri.OriginalString, postData, _cookie);
                 }
             }
             else
-            {
-                return DoLogin(result);
-            }
+                return result;
         }
 
-        private string DoLogin(Tuple<string, HttpWebRequest, HttpWebResponse> result)
-        {
-            string htmlResult = result.Item1;
-            if (htmlResult.Contains(User.UserName) && (htmlResult.Contains("欢迎回来") || htmlResult.Contains("Welcome") || htmlResult.Contains("歡迎回來")))
-            {
-                User.Id = GetUserId(htmlResult);
-                _cookie = result.Item2.CookieContainer;
-                SetLocalCookie(_cookie);
-                return "登录成功。";
-            }
-            else
-            {
-                HtmlDocument htmlDocument = new HtmlDocument();
-                htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
-                HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"nav_block\"]/table/tr/td/table/tr/td");//跟Xpath一样
-                string errMsg = htmlResult;
-                if (node != null)
-                    errMsg = node.InnerText;
-                return string.Format("登录失败，失败原因：{0}", errMsg);
-            }
-        }
-
-
-        public override string Sign()
-        {
-            return "我也想签到，可是站点不支持。";
-        }
 
 
         protected override bool SetTorrentSubTitle(HtmlNode node, PTTorrent torrent)

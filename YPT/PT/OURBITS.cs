@@ -51,7 +51,7 @@ namespace YPT.PT
 
         public override string Sign()
         {
-            if (_cookie != null)
+            if (_cookie != null && _cookie.Count > 0)
             {
                 string htmlResult = HttpUtils.PostDataGetHtml(Site.SignUrl, "", _cookie);
 

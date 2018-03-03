@@ -32,35 +32,22 @@ namespace YPT.PT
             }
         }
 
-        public override string Login()
-        {
-            return DoLogin();
-        }
 
-        private string DoLogin(int RecursiveNum = 0, bool isForceVerification = false)
+        public override Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginPostWithOutCookie(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult, string otpCode)
         {
-            RecursiveNum++;
             StringBuilder sb = new StringBuilder();
             Dictionary<string, string> postDict = new Dictionary<string, string>();
             postDict.Add("username", User.UserName);
             postDict.Add("password", User.PassWord);
             postDict.Add("otp", "");
 
-            //如果Cookie存在，则先不要求提交二级验证码
-            if (isForceVerification || (_cookie == null || _cookie.Count <= 0))
+            //启用了二级验证
+            if (Site.isEnableTwo_StepVerification && User.isEnableTwo_StepVerification)
             {
-                //如果启用了二级验证
-                if (Site.isEnableTwo_StepVerification && User.isEnableTwo_StepVerification)
-                {
-                    OnTwoStepVerificationEventArgs e = new OnTwoStepVerificationEventArgs();
-                    e.Site = Site;
-                    string code = OnTwoStepVerification(e);
-                    postDict["otp"] = code;
-                }
+                postDict["otp"] = otpCode;
             }
-
-
-            //TTG启用了安全提问
+            
+            //启用了安全提问
             if (Site.IsEableSecurityQuestion)
             {
                 if (!(User.SecurityQuestionOrder == -1 || User.SecuityAnswer.IsNullOrEmptyOrWhiteSpace()))
@@ -74,6 +61,7 @@ namespace YPT.PT
                     postDict.Add("passid", "0");
                 }
             }
+
             postDict.Add("lang", "0");
             postDict.Add("rememberme", "yes");
             foreach (var item in postDict)
@@ -84,38 +72,15 @@ namespace YPT.PT
                 sb.AppendLine(item.Value);
             }
             sb.AppendLine(string.Format("{0}--", YUConst.POST_BOUNDARY));
+
             string postData = sb.ToString();
-
-            var result = HttpUtils.PostData(Site.LoginUrl, postData, _cookie, true);
-            string htmlResult = result.Item1;
-
-            if (!htmlResult.Contains("登录失败") && htmlResult.Contains(User.UserName) && (htmlResult.Contains("欢迎回来") || htmlResult.Contains("Welcome") || htmlResult.Contains("歡迎回來")))
-            {
-                User.Id = GetUserId(htmlResult);
-                _cookie = result.Item2.CookieContainer;
-                SetLocalCookie(_cookie);
-                return "登录成功。";
-            }
-            else
-            {
-                if (RecursiveNum > 1)
-                {
-                    HtmlDocument htmlDocument = new HtmlDocument();
-                    htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
-                    HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"main_table\"]/tr[1]/td/table/tr/td/table/tr/td");//跟Xpath一样
-                    string errMsg = htmlResult;
-                    if (node != null)
-                        errMsg = node.InnerText;
-                    return string.Format("登录失败，失败原因：{0}", errMsg);
-                }
-                else
-                    return DoLogin(RecursiveNum, true);
-            }
+            return HttpUtils.PostData(Site.LoginUrl, postData, _cookie, true);
         }
+
 
         public override string Sign()
         {
-            if (_cookie != null)
+            if (_cookie != null && _cookie.Count > 0)
             {
                 //TTG签到需要时间戳和TOKEN，所以这里需要用Cookie请求一下网页拿到
                 string htmlResult = HttpUtils.PostDataGetHtml(Site.Url, "", _cookie);

@@ -208,6 +208,8 @@ namespace YU.Core.Utils
 
         public static string ReadCookiesFromDisk(string file)
         {
+            if (!File.Exists(file))
+                return null;
             try
             {
                 Dictionary<string, string> AddCookies = new Dictionary<string, string>();

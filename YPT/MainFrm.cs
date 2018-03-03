@@ -743,17 +743,13 @@ namespace YPT
 
             try
             {
-                //var param = Expression.Parameter(entityType);
-                //var lambda = Expression.Lambda(Expression.MakeMemberAccess(param, propertyInfo), param);
                 switch (sortMode)
                 {
                     case SortOrder.Ascending:
                         dgv.DataSource = dataSource.OrderBy(x => Convert.ChangeType(propertyInfo.GetValue(x, null), propertyInfo.PropertyType)).ToList();
-                        //dgvTorrent.DataSource = dataSource.OrderBy(lambda.ompile() as Func<T, string>).ToList();
                         break;
                     case SortOrder.Descending:
                         dgv.DataSource = dataSource.OrderByDescending(x => Convert.ChangeType(propertyInfo.GetValue(x, null), propertyInfo.PropertyType)).ToList();
-                        //dgvTorrent.DataSource = dataSource.OrderByDescending(lambda.Compile() as Func<T, string>).ToList();
                         break;
                 }
                 dgv.Refresh();

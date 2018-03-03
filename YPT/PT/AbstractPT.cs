@@ -105,15 +105,34 @@ namespace YPT.PT
             _cookie = GetLocalCookie();
         }
 
-        public virtual string Login()
+        public string Login()
         {
-            string postData = string.Format("username={0}&password={1}", User.UserName, User.PassWord);
-            var result = HttpUtils.PostData(Site.LoginUrl, postData, _cookie);
-            string htmlResult = result.Item1;
-            if (!htmlResult.Contains("登录失败") && htmlResult.Contains(User.UserName) && (htmlResult.Contains("欢迎回来") || htmlResult.Contains("Welcome") || htmlResult.Contains("歡迎回來")))
+            Tuple<string, HttpWebRequest, HttpWebResponse> result = null;
+            if (_cookie != null && _cookie.Count > 0)
             {
-                User.Id = GetUserId(htmlResult);
+                result = HttpUtils.GetData(Site.Url, _cookie);
+                if (IsLoginSuccess(result.Item1))
+                {
+                    User.Id = GetUserId(result.Item1);
+                    return "登录成功。";
+                }
+            }
+
+            //如果前面Cookie登录没有成功，则下面尝试没有Cookie的情况。
+            string otpCode = string.Empty;
+            if (Site.isEnableTwo_StepVerification && User.isEnableTwo_StepVerification)
+            {
+                OnTwoStepVerificationEventArgs e = new OnTwoStepVerificationEventArgs();
+                e.Site = Site;
+                otpCode = OnTwoStepVerification(e);
+            }
+
+            result = DoLoginPostWithOutCookie(result, otpCode);
+            string htmlResult = result.Item1;
+            if (IsLoginSuccess(htmlResult))
+            {
                 _cookie = result.Item2.CookieContainer;
+                User.Id = GetUserId(result.Item1);
                 SetLocalCookie(_cookie);
                 return "登录成功。";
             }
@@ -121,12 +140,32 @@ namespace YPT.PT
             {
                 HtmlDocument htmlDocument = new HtmlDocument();
                 htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
-                HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"nav_block\"]/table/tr/td/table/tr/td");//跟Xpath一样
+                HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//table/tr/td/table/tr/td");//跟Xpath一样
                 string errMsg = htmlResult;
                 if (node != null)
                     errMsg = node.InnerText;
                 return string.Format("登录失败，失败原因：{0}", errMsg);
             }
+        }
+
+        /// <summary>
+        /// LoginPost->实际的登录操作
+        /// </summary>
+        /// <param name="cookieResult">如果存在Cookie时，请求主页的返回结果，如果不存在Cookie，则为空</param>
+        /// <param name="otpCode">二级验证Code</param>
+        /// <returns></returns>
+        public virtual Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginPostWithOutCookie(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult, string otpCode)
+        {
+            string postData = string.Format("username={0}&password={1}", User.UserName, User.PassWord);
+            return HttpUtils.PostData(Site.LoginUrl, postData, _cookie);
+        }
+
+        protected bool IsLoginSuccess(string htmlResult)
+        {
+            if (!htmlResult.Contains("登录失败") && htmlResult.Contains(User.UserName) && (htmlResult.Contains("欢迎回来") || htmlResult.Contains("Welcome") || htmlResult.Contains("歡迎回來")))
+                return true;
+            else
+                return false;
         }
 
         /// <summary>
@@ -152,7 +191,12 @@ namespace YPT.PT
         /// <summary>
         /// 签到
         /// </summary>
-        public virtual string Sign() { return "签到尚未实现，革命仍需努力。"; }
+        public virtual string Sign()
+        {
+            if (Site.SignUrl.IsNullOrEmptyOrWhiteSpace())
+                return "该站点并没有签到，无能为力啊。";
+            return "签到尚未实现，革命仍需努力。";
+        }
 
         /// <summary>
         /// 触发验证码事件
