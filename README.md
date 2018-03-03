@@ -34,6 +34,16 @@ Microsoft [.NET Framework 4] or higher.
 
 1. Some sites may not support search options and will be displayed in a generic form
 
+#### Precautions
+
+1. If you do not enter the password and configure the correct secondary authentication and other information, the use of cookies, if the search and synchronization is normal, do not log in again, so as to avoid misuse of information led to the failure to log in, resulting in the IP was BAN.
+2. If allowed, it is recommended to use the system's built-in login, unless the custom site, the program does not do for the custom site logon Cookie Login, some sites may also need to select the mailbox and other information.
+3. You can see more information in the Wiki.
+
+#### Disclaimer
+
+The program is only used as an auxiliary, please contact the site management group is within the scope of the rules, such as the account IP is BAN, the program is not responsible for any.
+
 #### License
 
 GPLv3
