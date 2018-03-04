@@ -29,9 +29,9 @@ namespace YU.Core.DataEntity
 
         public bool isEnableTwo_StepVerification { get; set; }
 
-        private Dictionary<YUEnums.PersonInfoMap, int> _personInfoMaps;
+        private Dictionary<YUEnums.PersonInfoMap, string[]> _personInfoMaps;
 
-        public Dictionary<YUEnums.PersonInfoMap, int> PersonInfoMaps
+        public Dictionary<YUEnums.PersonInfoMap, string[]> PersonInfoMaps
         {
             get
             {
@@ -82,19 +82,6 @@ namespace YU.Core.DataEntity
                     { YUEnums.TorrentMap.SnatchedNumber, 7},
                     { YUEnums.TorrentMap.UpLoader, 9},
                 },
-                _personInfoMaps =  new Dictionary<YUEnums.PersonInfoMap, int>()
-                {
-                    { YUEnums.PersonInfoMap.RegisterDate, 0},
-                    { YUEnums.PersonInfoMap.ShareRate, 5},
-                    { YUEnums.PersonInfoMap.UpSize, 3},
-                    { YUEnums.PersonInfoMap.DownSize, 4},
-                    { YUEnums.PersonInfoMap.SeedRate, 6},
-                    { YUEnums.PersonInfoMap.SeedTimes, 6},
-                    { YUEnums.PersonInfoMap.DownTimes, 6},
-                    { YUEnums.PersonInfoMap.SeedNumber, 6},
-                    { YUEnums.PersonInfoMap.Rank, 8},
-                    { YUEnums.PersonInfoMap.Bonus, 10},
-                },
             },
             new PTSite() {
                 Url = "https://tp.m-team.cc",
@@ -115,19 +102,6 @@ namespace YU.Core.DataEntity
                     { YUEnums.TorrentMap.LeecherNumber, 6},
                     { YUEnums.TorrentMap.SnatchedNumber, 7},
                     { YUEnums.TorrentMap.UpLoader, 9},
-                },
-                _personInfoMaps = new Dictionary<YUEnums.PersonInfoMap, int>()
-                {
-                    { YUEnums.PersonInfoMap.RegisterDate, 2},
-                    { YUEnums.PersonInfoMap.ShareRate, 6},
-                    { YUEnums.PersonInfoMap.UpSize, 6},
-                    { YUEnums.PersonInfoMap.DownSize, 6},
-                    { YUEnums.PersonInfoMap.SeedRate, 8},
-                    { YUEnums.PersonInfoMap.SeedTimes, 8},
-                    { YUEnums.PersonInfoMap.DownTimes, 8},
-                    { YUEnums.PersonInfoMap.SeedNumber, 8},
-                    { YUEnums.PersonInfoMap.Rank, 11},
-                    { YUEnums.PersonInfoMap.Bonus, 14},
                 },
             },
             new PTSite() {
@@ -157,19 +131,6 @@ namespace YU.Core.DataEntity
                     { YUEnums.TorrentMap.LeecherNumber, 6},
                     { YUEnums.TorrentMap.SnatchedNumber, 7},
                     { YUEnums.TorrentMap.UpLoader, 9},
-                },
-                _personInfoMaps = new Dictionary<YUEnums.PersonInfoMap, int>()
-                {
-                    { YUEnums.PersonInfoMap.RegisterDate, 2},
-                    { YUEnums.PersonInfoMap.ShareRate, 7},
-                    { YUEnums.PersonInfoMap.UpSize, 7},
-                    { YUEnums.PersonInfoMap.DownSize, 7},
-                    { YUEnums.PersonInfoMap.SeedRate, 8},
-                    { YUEnums.PersonInfoMap.SeedTimes, 8},
-                    { YUEnums.PersonInfoMap.DownTimes, 8},
-                    { YUEnums.PersonInfoMap.SeedNumber, 8},
-                    { YUEnums.PersonInfoMap.Rank, 10},
-                    { YUEnums.PersonInfoMap.Bonus, 13},
                 },
             },
             new PTSite() {
@@ -202,18 +163,27 @@ namespace YU.Core.DataEntity
                     { YUEnums.TorrentMap.SnatchedNumber, 7},
                     { YUEnums.TorrentMap.UpLoader, 8},
                 },
-                _personInfoMaps = new Dictionary<YUEnums.PersonInfoMap, int>()
+            },
+            new PTSite() {
+                Url = "https://pt.gztown.net",
+                Name = "GZTOWN",
+                Id = YUEnums.PTEnum.GZTOWN,
+                IsEnableVerificationCode = true,
+                LoginUrl =  "https://pt.gztown.net/takelogin.php",
+                InfoUrl = "https://pt.gztown.net/userdetails.php?id={0}",
+                SignUrl = "https://pt.gztown.net/attendance.php",
+                SearchUrl = "https://pt.gztown.net/torrents.php",
+                _torrentMaps = new Dictionary<YUEnums.TorrentMap, int>()
                 {
-                    { YUEnums.PersonInfoMap.RegisterDate, 2},
-                    { YUEnums.PersonInfoMap.ShareRate, 5},
-                    { YUEnums.PersonInfoMap.UpSize, 5},
-                    { YUEnums.PersonInfoMap.DownSize, 5},
-                    { YUEnums.PersonInfoMap.SeedRate, 6},
-                    { YUEnums.PersonInfoMap.SeedTimes, 6},
-                    { YUEnums.PersonInfoMap.DownTimes, 6},
-                    { YUEnums.PersonInfoMap.SeedNumber, 6},
-                    { YUEnums.PersonInfoMap.Rank, 9},
-                    { YUEnums.PersonInfoMap.Bonus, 12},
+                    { YUEnums.TorrentMap.ResourceType, 0},
+                    { YUEnums.TorrentMap.Detail, 1},
+                    { YUEnums.TorrentMap.PromotionType, 1},
+                    { YUEnums.TorrentMap.TimeAlive, 3},
+                    { YUEnums.TorrentMap.Size, 4},
+                    { YUEnums.TorrentMap.SeederNumber, 5},
+                    { YUEnums.TorrentMap.LeecherNumber, 6},
+                    { YUEnums.TorrentMap.SnatchedNumber, 7},
+                    { YUEnums.TorrentMap.UpLoader, 9},
                 },
             },
         };
@@ -235,20 +205,20 @@ namespace YU.Core.DataEntity
             };
         }
 
-        private Dictionary<YUEnums.PersonInfoMap, int> GetDefaultPersonInfoMaps()
+        private Dictionary<YUEnums.PersonInfoMap, string[]> GetDefaultPersonInfoMaps()
         {
-            return new Dictionary<YUEnums.PersonInfoMap, int>()
+            return new Dictionary<YUEnums.PersonInfoMap, string[]>()
             {
-                { YUEnums.PersonInfoMap.RegisterDate, 2},
-                { YUEnums.PersonInfoMap.ShareRate, 6},
-                { YUEnums.PersonInfoMap.UpSize, 6},
-                { YUEnums.PersonInfoMap.DownSize, 6},
-                { YUEnums.PersonInfoMap.SeedRate, 7},
-                { YUEnums.PersonInfoMap.SeedTimes, 7},
-                { YUEnums.PersonInfoMap.DownTimes, 7},
-                { YUEnums.PersonInfoMap.SeedNumber, 7},
-                { YUEnums.PersonInfoMap.Rank, 9},
-                { YUEnums.PersonInfoMap.Bonus, 12},
+                { YUEnums.PersonInfoMap.Bonus, new string[] { "Karma Points", "魔力值", "积分", "Bonus", "포인트" }},
+                { YUEnums.PersonInfoMap.RegisterDate, new string[] { "Join date", "加入日期", "注册日期", "가입 날짜" } },
+                { YUEnums.PersonInfoMap.ShareRate, new string[] { "Transfers", "传输", "傳送", "分享率", "Ratio" }},
+                { YUEnums.PersonInfoMap.DownSize, new string[] { "Transfers", "传输", "傳送", "下载量", "Downloaded", "다운로드" }},
+                { YUEnums.PersonInfoMap.UpSize, new string[] { "Transfers", "传输", "傳送", "上传量", "Uploaded", "업로드" }},
+                { YUEnums.PersonInfoMap.SeedRate, new string[] { "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
+                { YUEnums.PersonInfoMap.SeedTimes, new string[] { "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
+                { YUEnums.PersonInfoMap.DownTimes, new string[] { "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
+                { YUEnums.PersonInfoMap.SeedNumber, new string[] { "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
+                { YUEnums.PersonInfoMap.Rank, new string[] { "Class	", "等级", "等級", "등급" }}
             };
         }
 

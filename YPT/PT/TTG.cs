@@ -278,63 +278,75 @@ namespace YPT.PT
 
                 HtmlDocument htmlDocument = new HtmlDocument();
                 htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
-                HtmlNodeCollection nodes = htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]/tr/td/table/tr");//跟Xpath一样
+
+
+                HtmlNodeCollection headNodes =
+                   htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]//td[contains(concat(' ', normalize-space(@class), ' '), ' rowhead ')]");
+
+                if (headNodes == null || headNodes.Count <= 0)
+                    throw new Exception(string.Format("{0} 无法获取用户信息中的RowHeader，请稍后重试。", Site.Name));
+
+                //根据行头获取映射
+                var infoMaps = GetInfoMaps(headNodes);
+                
+                HtmlNodeCollection nodes = 
+                    htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]//td[contains(concat(' ', normalize-space(@class), ' '), ' embedded ')]//td[contains(concat(' ', normalize-space(@align), ' '), ' left ')]");//跟Xpath一样
                 if (nodes == null || nodes.Count <= 0)
                     throw new Exception(string.Format("{0} 获取用户详细信息失败，请稍后重试。", Site.Name));
                 else
                 {
                     #region Convert
                     //注册日期
-                    var node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.RegisterDate]];
+                    var node = nodes[infoMaps[YUEnums.PersonInfoMap.RegisterDate]];
                     if (node != null)
                     {
-                        var childNode = node.SelectSingleNode("./td[2]/text()");
+                        var childNode = node.SelectSingleNode("./text()");
                         if (childNode != null)
                             info.RegisterDate = childNode.InnerText.TryPareValue<DateTime>();
                     }
 
                     //分享率
-                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.ShareRate]];
+                    node = nodes[infoMaps[YUEnums.PersonInfoMap.ShareRate]];
                     if (node != null)
                     {
-                        var childNode = node.SelectSingleNode(".//td/font/text()");
+                        var childNode = node.SelectSingleNode(".//font/text()");
                         if (childNode != null)
                             info.ShareRate = childNode.InnerText;
                     }
 
                     //上传量
-                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.UpSize]];
+                    node = nodes[infoMaps[YUEnums.PersonInfoMap.UpSize]];
                     if (node != null)
                     {
-                        var childNode = node.SelectSingleNode("./td[2]/text()");
+                        var childNode = node.SelectSingleNode("./text()");
                         if (childNode != null)
                             info.UpSize = childNode.InnerText;
                     }
 
                     //下载量
-                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.DownSize]];
+                    node = nodes[infoMaps[YUEnums.PersonInfoMap.DownSize]];
                     if (node != null)
                     {
-                        var childNode = node.SelectSingleNode("./td[2]/text()");
+                        var childNode = node.SelectSingleNode("./text()");
                         if (childNode != null)
                             info.DownSize = childNode.InnerText;
                     }
 
                     //做种率
-                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.SeedRate]];
+                    node = nodes[infoMaps[YUEnums.PersonInfoMap.SeedRate]];
                     if (node != null)
                     {
-                        var childNode = node.SelectSingleNode(".//td/font/text()");
+                        var childNode = node.SelectSingleNode("./font/text()");
                         if (childNode != null)
                             info.SeedRate = childNode.InnerText;
                     }
 
 
                     //做种时间 下载时间
-                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.DownTimes]];
+                    node = nodes[infoMaps[YUEnums.PersonInfoMap.DownTimes]];
                     if (node != null)
                     {
-                        var childNode = node.SelectSingleNode(".//td[2]/text()[last()]");
+                        var childNode = node.SelectSingleNode("./text()[last()]");
                         if (childNode != null)
                         {
                             string[] arr = childNode.InnerText.Split('[', ']', ',', ':', '，');
@@ -344,25 +356,17 @@ namespace YPT.PT
                     }
 
                     //等级
-                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.Rank]];
+                    node = nodes[infoMaps[YUEnums.PersonInfoMap.Rank]];
                     if (node != null)
                     {
-                        var childNode = node.SelectSingleNode("./td[2]");
-                        if (childNode != null)
-                        {
-                            info.Rank = childNode.InnerText;
-                        }
+                        info.Rank = node.InnerText;
                     }
 
                     //积分
-                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.Bonus]];
+                    node = nodes[infoMaps[YUEnums.PersonInfoMap.Bonus]];
                     if (node != null)
                     {
-                        var childNode = node.SelectSingleNode(".//td[2]");
-                        if (childNode != null)
-                        {
-                            info.Bonus = childNode.InnerText.TryPareValue<double>();
-                        }
+                        info.Bonus = node.InnerText.TryPareValue<double>();
                     }
 
                     info.LastSyncDate = DateTime.Now;

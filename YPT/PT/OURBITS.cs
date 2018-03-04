@@ -53,7 +53,7 @@ namespace YPT.PT
         {
             if (_cookie != null && _cookie.Count > 0)
             {
-                string htmlResult = HttpUtils.PostDataGetHtml(Site.SignUrl, "", _cookie);
+                string htmlResult = HttpUtils.GetDataGetHtml(Site.SignUrl, _cookie);
 
                 HtmlDocument htmlDocument = new HtmlDocument();
                 htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载

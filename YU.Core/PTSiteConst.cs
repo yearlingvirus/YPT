@@ -37,6 +37,28 @@ namespace YU.Core
         };
 
         /// <summary>
+        /// 等级图片字典
+        /// </summary>
+        public readonly static Dictionary<string, string> CLASSIMGS = new Dictionary<string, string>()
+        {
+            { "Peasant", "Peasant"},
+            { "User", "User"},
+            { "Power", "Power User"},
+            { "Elite", "Elite User"},
+            { "Crazy", "Crazy User"},
+            { "Insane", "Insane User"},
+            { "Veteran", "Veteran User"},
+            { "Extreme", "Extreme User"},
+            { "Ultimate", "Ultimate User"},
+            { "Nexus", "Nexus User"},
+            { "VIP", "VIP"},
+            { "Retiree", "Retiree"},
+            { "Uploader", "Uploader"},
+            { "Moderator", "Moderator"},
+            { "Administrator", "Administrator"},
+        };
+
+        /// <summary>
         /// 站点配置
         /// </summary>
         public const string RESOURCE_SITES = "Resource/data/PTSite.json";

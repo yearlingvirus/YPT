@@ -1,25 +1,21 @@
-﻿using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
-using YPT.Forms;
 using YU.Core;
 using YU.Core.DataEntity;
-using YU.Core.Event;
 using YU.Core.Utils;
+using HtmlDocument = HtmlAgilityPack.HtmlDocument;
+using HtmlAgilityPack;
+using System.Web;
 
 namespace YPT.PT
 {
-    public class BTSCHOOL : AbstractPT
+    public class GZTOWN : AbstractPT
     {
-        public BTSCHOOL(PTUser user)
+        public GZTOWN(PTUser user)
             : base(user)
         {
 
@@ -29,16 +25,11 @@ namespace YPT.PT
         {
             get
             {
-                return YUEnums.PTEnum.BTSCHOOL;
+                return YUEnums.PTEnum.GZTOWN;
             }
         }
 
 
-        protected override void SetTorrentHR(HtmlNode node, PTTorrent torrent)
-        {
-            //BTSCHOOL 全站HR
-            torrent.IsHR = true;
-        }
 
         public override string Sign()
         {
@@ -50,18 +41,19 @@ namespace YPT.PT
                 htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
 
                 //这个是每次第一次签到的
-                HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"outer\"]//tr//a");
+                HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"outer\"]/table/tr/td/table/tr/td/p");//跟Xpath一样，轻松的定位到相应节点下
+                if (node == null)
+                    //这个是已经签到过的
+                    node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"outer\"]/table/tr/td/table/tr/td");
                 if (node != null)
-                    return node.InnerText.Contains("魔力值") ? node.InnerText : "无法获取签到信息，可能已经签到成功。";
+                    return node.InnerText;
                 else
-                    return "签到失败，请登录网站签到。";
+                    return htmlResult;
             }
             else
             {
                 return "无法获取Cookie信息，签到失败，请重新登录系统。";
             }
         }
-
     }
 }
-

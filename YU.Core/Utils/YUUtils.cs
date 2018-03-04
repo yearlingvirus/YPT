@@ -126,22 +126,29 @@ namespace YU.Core.Utils
                 {
                     foreach (var cookieKvr in cookies)
                     {
-                        string[] cookie = cookieKvr.Split('=');
-                        if (cookie.Length == 2)
+                        try
                         {
-                            string name = cookie[0];
-                            string value = cookie[1];
-                            Cookie c = new Cookie();
-                            c.Name = name;
-                            c.Value = value;
-                            c.Domain = uri.Host;
-                            if (AddCookies.ContainsKey(name))
-                                continue;
-                            else
+                            string[] cookie = cookieKvr.Split('=');
+                            if (cookie.Length == 2)
                             {
-                                AddCookies.Add(name, value);
-                                cc.Add(c);
+                                string name = cookie[0];
+                                string value = cookie[1];
+                                Cookie c = new Cookie();
+                                c.Name = name;
+                                c.Value = value;
+                                c.Domain = uri.Host;
+                                if (AddCookies.ContainsKey(name))
+                                    continue;
+                                else
+                                {
+                                    AddCookies.Add(name, value);
+                                    cc.Add(c);
+                                }
                             }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error(string.Format("{0} 添加Cookie时出现异常。", uri.Host), ex);
                         }
                     }
                 }

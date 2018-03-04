@@ -38,13 +38,6 @@ namespace YPT.PT
             return htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' torrents ')]/form/tr");
         }
 
-        protected override bool SetTorrentSubTitle(HtmlNode node, PTTorrent torrent)
-        {
-            var subNode = node.SelectSingleNode(".//td[1]/br");
-            if (subNode != null && subNode.NextSibling != null)
-                torrent.Subtitle = HttpUtility.HtmlDecode(subNode.NextSibling.InnerText);
-            return false;
-        }
 
     }
 }

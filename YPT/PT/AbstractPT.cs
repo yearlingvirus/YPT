@@ -312,7 +312,7 @@ namespace YPT.PT
             return "签到尚未实现，革命仍需努力。";
         }
 
-        #region 种子处理
+        #region 种子
 
         public List<PTTorrent> SearchTorrent(string searchKey, YUEnums.PromotionType promotionType = YUEnums.PromotionType.ALL, YUEnums.AliveType aliveType = YUEnums.AliveType.ALL, YUEnums.FavType favType = YUEnums.FavType.ALL)
         {
@@ -451,9 +451,14 @@ namespace YPT.PT
             if (subNode != null)
             {
                 torrent.Subtitle = HttpUtility.HtmlDecode(subNode.InnerText);
-                return true;
             }
-            return false;
+            if (torrent.Subtitle.IsNullOrEmptyOrWhiteSpace())
+            {
+                subNode = node.SelectSingleNode(".//td[1]/br");
+                if (subNode != null && subNode.NextSibling != null)
+                    torrent.Subtitle = HttpUtility.HtmlDecode(subNode.NextSibling.InnerText);
+            }
+            return !torrent.Subtitle.IsNullOrEmptyOrWhiteSpace();
         }
 
         /// <summary>
@@ -598,7 +603,7 @@ namespace YPT.PT
                         //这里用IE9的内核解析
                         httpWebRequest.UserAgent = "Mozilla / 5.0(compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident / 5.0)";
                         httpWebRequest.KeepAlive = true;
-                        httpWebRequest.Timeout = 3000;
+                        httpWebRequest.Timeout = 10000;
                         httpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8";
                         httpWebRequest.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip, deflate, br");
                         httpWebRequest.Headers.Add(HttpRequestHeader.AcceptLanguage, "zh");
@@ -657,14 +662,25 @@ namespace YPT.PT
 
                 HtmlDocument htmlDocument = new HtmlDocument();
                 htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
-                HtmlNodeCollection nodes = htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]/tr/td/table/tr");//跟Xpath一样
+
+                HtmlNodeCollection headNodes =
+                   htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]//td[contains(concat(' ', normalize-space(@align), ' '), ' right ')]");
+
+                if (headNodes == null || headNodes.Count <= 0)
+                    throw new Exception(string.Format("{0} 无法获取用户信息中的RowHeader，请稍后重试。", Site.Name));
+
+                //根据行头获取映射
+                var infoMaps = GetInfoMaps(headNodes);
+
+                HtmlNodeCollection nodes =
+                    htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]//td[contains(concat(' ', normalize-space(@align), ' '), ' left ')]");
                 if (nodes == null || nodes.Count <= 0)
                     throw new Exception(string.Format("{0} 获取用户详细信息失败，请稍后重试。", Site.Name));
                 else
                 {
                     #region Convert
                     //注册日期
-                    var node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.RegisterDate]];
+                    var node = nodes[infoMaps[YUEnums.PersonInfoMap.RegisterDate]];
                     if (node != null)
                     {
                         node = node.SelectSingleNode(".//span");
@@ -675,7 +691,7 @@ namespace YPT.PT
                     }
 
                     //分享率
-                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.ShareRate]];
+                    node = nodes[infoMaps[YUEnums.PersonInfoMap.ShareRate]];
                     if (node != null)
                     {
                         var childNode = node.SelectSingleNode(".//td/font/text()");
@@ -684,10 +700,10 @@ namespace YPT.PT
                     }
 
                     //上传量
-                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.UpSize]];
+                    node = nodes[infoMaps[YUEnums.PersonInfoMap.UpSize]];
                     if (node != null)
                     {
-                        var childNode = node.SelectSingleNode(".//td//tr[2]/td/text()[last()]");
+                        var childNode = node.SelectSingleNode(".//tr[2]/td/text()[last()]");
                         if (childNode != null)
                         {
                             var index = childNode.InnerText.IndexOf(":");
@@ -697,10 +713,10 @@ namespace YPT.PT
                     }
 
                     //下载量
-                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.DownSize]];
+                    node = nodes[infoMaps[YUEnums.PersonInfoMap.DownSize]];
                     if (node != null)
                     {
-                        var childNode = node.SelectSingleNode(".//td//tr[2]/td[2]/text()[2]");
+                        var childNode = node.SelectSingleNode(".//tr[2]/td[2]/text()[2]");
                         if (childNode != null)
                         {
                             var index = childNode.InnerText.IndexOf(":");
@@ -710,7 +726,7 @@ namespace YPT.PT
                     }
 
                     //做种率
-                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.SeedRate]];
+                    node = nodes[infoMaps[YUEnums.PersonInfoMap.SeedRate]];
                     if (node != null)
                     {
                         var childNode = node.SelectSingleNode(".//td/font/text()");
@@ -719,10 +735,10 @@ namespace YPT.PT
                     }
 
                     //做种时间
-                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.SeedTimes]];
+                    node = nodes[infoMaps[YUEnums.PersonInfoMap.SeedTimes]];
                     if (node != null)
                     {
-                        var childNode = node.SelectSingleNode(".//td//tr[2]/td/text()[last()]");
+                        var childNode = node.SelectSingleNode(".//tr[2]/td/text()[last()]");
                         if (childNode != null)
                         {
                             var index = childNode.InnerText.IndexOf(":");
@@ -732,10 +748,10 @@ namespace YPT.PT
                     }
 
                     //下载时间
-                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.DownTimes]];
+                    node = nodes[infoMaps[YUEnums.PersonInfoMap.DownTimes]];
                     if (node != null)
                     {
-                        var childNode = node.SelectSingleNode(".//td//tr[2]/td[2]/text()[last()]");
+                        var childNode = node.SelectSingleNode(".//tr[2]/td[2]/text()[last()]");
                         if (childNode != null)
                         {
                             var index = childNode.InnerText.IndexOf(":");
@@ -745,25 +761,33 @@ namespace YPT.PT
                     }
 
                     //等级
-                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.Rank]];
+                    node = nodes[infoMaps[YUEnums.PersonInfoMap.Rank]];
                     if (node != null)
                     {
-                        var childNode = node.SelectSingleNode("./td/img");
-                        if (childNode != null && childNode.Attributes.Contains("alt"))
+                        var childNode = node.SelectSingleNode("./img");
+                        if (childNode != null && childNode.Attributes.Contains("src"))
                         {
-                            info.Rank = childNode.Attributes["alt"].Value;
+                            string srcImg = childNode.Attributes["src"].Value;
+                            foreach (var item in PTSiteConst.CLASSIMGS)
+                            {
+                                if (srcImg.IndexOf(item.Key, StringComparison.OrdinalIgnoreCase) > 0)
+                                {
+                                    info.Rank = item.Value;
+                                    break;
+                                }
+                            }
+                            if (info.Rank.IsNullOrEmptyOrWhiteSpace() && childNode.Attributes.Contains("alt"))
+                            {
+                                info.Rank = childNode.Attributes["alt"].Value;
+                            }
                         }
                     }
 
                     //积分
-                    node = nodes[Site.PersonInfoMaps[YUEnums.PersonInfoMap.Bonus]];
+                    node = nodes[infoMaps[YUEnums.PersonInfoMap.Bonus]];
                     if (node != null)
                     {
-                        var childNode = node.SelectSingleNode(".//td[2]");
-                        if (childNode != null)
-                        {
-                            info.Bonus = childNode.InnerText.TryPareValue<double>();
-                        }
+                        info.Bonus = node.InnerText.TryPareValue<double>();
                     }
 
                     info.LastSyncDate = DateTime.Now;
@@ -779,5 +803,36 @@ namespace YPT.PT
             }
         }
 
+        /// <summary>
+        /// 根据行头获取用户信息列映射
+        /// </summary>
+        /// <param name="headNodes"></param>
+        /// <returns></returns>
+        protected virtual Dictionary<YUEnums.PersonInfoMap, int> GetInfoMaps(HtmlNodeCollection headNodes)
+        {
+            Dictionary<YUEnums.PersonInfoMap, int> infoMaps = new Dictionary<YUEnums.PersonInfoMap, int>();
+            
+            //这里保证infoMaps包含所有值。
+            foreach (var map in Site.PersonInfoMaps)
+            {
+                infoMaps.Add(map.Key, 0);
+            }
+
+            if (headNodes != null && headNodes.Count > 0)
+            {
+                for (int i = 0; i < headNodes.Count; i++)
+                {
+                    var headNode = headNodes[i];
+                    foreach (var map in Site.PersonInfoMaps)
+                    {
+                        if (map.Value.Contains(headNode.InnerText.Trim()))
+                        {
+                            infoMaps[map.Key] = i;
+                        }
+                    }
+                }
+            }
+            return infoMaps;
+        }
     }
 }

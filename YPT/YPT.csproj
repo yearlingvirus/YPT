@@ -149,6 +149,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PT\BTSCHOOL.cs" />
     <Compile Include="PT\ExtendPT.cs" />
+    <Compile Include="PT\GZTOWN.cs" />
     <Compile Include="PT\IPT.cs" />
     <Compile Include="PT\AbstractPT.cs" />
     <Compile Include="PT\CHDBITS.cs" />

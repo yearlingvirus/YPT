@@ -28,6 +28,7 @@ namespace YPT.PT
                 _mapServer.Add(YUEnums.PTEnum.OURBITS, "YPT.PT.OURBITS,YPT");
                 _mapServer.Add(YUEnums.PTEnum.TTG, "YPT.PT.TTG,YPT");
                 _mapServer.Add(YUEnums.PTEnum.BTSCHOOL, "YPT.PT.BTSCHOOL,YPT");
+                _mapServer.Add(YUEnums.PTEnum.GZTOWN, "YPT.PT.GZTOWN,YPT");
                 notRegistered = false;
             }
 
