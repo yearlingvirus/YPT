@@ -17,9 +17,9 @@ using YU.Core.Utils;
 
 namespace YPT.PT
 {
-    public class KEEPFRDS : AbstractPT
+    public class BTSCHOOL : AbstractPT
     {
-        public KEEPFRDS(PTUser user)
+        public BTSCHOOL(PTUser user)
             : base(user)
         {
 
@@ -29,13 +29,8 @@ namespace YPT.PT
         {
             get
             {
-                return YUEnums.PTEnum.KEEPFRDS;
+                return YUEnums.PTEnum.BTSCHOOL;
             }
-        }
-
-        protected override HtmlNodeCollection GetTorrentNodes(HtmlDocument htmlDocument)
-        {
-            return htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' torrents ')]/form/tr");
         }
 
         protected override bool SetTorrentSubTitle(HtmlNode node, PTTorrent torrent)
@@ -46,5 +41,8 @@ namespace YPT.PT
             return false;
         }
 
+  
+
     }
 }
+

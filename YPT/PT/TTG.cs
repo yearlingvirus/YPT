@@ -33,7 +33,7 @@ namespace YPT.PT
         }
 
 
-        public override Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginPostWithOutCookie(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult, string otpCode)
+        protected override Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginWhenEnableTwo_StepVerification(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult, string otpCode)
         {
             StringBuilder sb = new StringBuilder();
             Dictionary<string, string> postDict = new Dictionary<string, string>();
@@ -46,7 +46,7 @@ namespace YPT.PT
             {
                 postDict["otp"] = otpCode;
             }
-            
+
             //启用了安全提问
             if (Site.IsEableSecurityQuestion)
             {

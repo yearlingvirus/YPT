@@ -105,5 +105,20 @@ namespace YU.Core.Utils
             }
             return HttpUtility.UrlDecode(str, encoding);
         }
+
+        /// <summary>
+        /// 合并URL
+        /// </summary>
+        /// <param name="host"></param>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static string CombileUrl(string host, string url)
+        {
+            if (!host.EndsWith("/"))
+                host = host + "/";
+            if (url.StartsWith("/"))
+                url = url.Substring(1);
+            return host + url;
+        }
     }
 }

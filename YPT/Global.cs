@@ -77,10 +77,11 @@ namespace YPT
                     var extendSites = JsonConvert.DeserializeObject<List<PTSite>>(siteJson);
                     if (extendSites != null && extendSites.Count > 0)
                     {
+                        //如果扩展站点中是预置站点中的内容，则删除预置站点，以扩展站点为准。
+                        _sites.RemoveAll(x => extendSites.Select(g => g.Id).Contains(x.Id));
                         foreach (var extendSite in extendSites)
                         {
-                            if (_sites.Where(x => x.Id == extendSite.Id || x.Name.EqualIgnoreCase(extendSite.Name)).Count() <= 0)
-                                _sites.Add(extendSite);
+                            _sites.Add(extendSite);
                         }
                     }
                 }

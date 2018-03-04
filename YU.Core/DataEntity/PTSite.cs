@@ -118,16 +118,16 @@ namespace YU.Core.DataEntity
                 },
                 _personInfoMaps = new Dictionary<YUEnums.PersonInfoMap, int>()
                 {
-                    { YUEnums.PersonInfoMap.RegisterDate, 1},
-                    { YUEnums.PersonInfoMap.ShareRate, 5},
-                    { YUEnums.PersonInfoMap.UpSize, 5},
-                    { YUEnums.PersonInfoMap.DownSize, 5},
-                    { YUEnums.PersonInfoMap.SeedRate, 7},
-                    { YUEnums.PersonInfoMap.SeedTimes, 7},
-                    { YUEnums.PersonInfoMap.DownTimes, 7},
-                    { YUEnums.PersonInfoMap.SeedNumber, 7},
-                    { YUEnums.PersonInfoMap.Rank, 10},
-                    { YUEnums.PersonInfoMap.Bonus, 13},
+                    { YUEnums.PersonInfoMap.RegisterDate, 2},
+                    { YUEnums.PersonInfoMap.ShareRate, 6},
+                    { YUEnums.PersonInfoMap.UpSize, 6},
+                    { YUEnums.PersonInfoMap.DownSize, 6},
+                    { YUEnums.PersonInfoMap.SeedRate, 8},
+                    { YUEnums.PersonInfoMap.SeedTimes, 8},
+                    { YUEnums.PersonInfoMap.DownTimes, 8},
+                    { YUEnums.PersonInfoMap.SeedNumber, 8},
+                    { YUEnums.PersonInfoMap.Rank, 11},
+                    { YUEnums.PersonInfoMap.Bonus, 14},
                 },
             },
             new PTSite() {
@@ -180,7 +180,42 @@ namespace YU.Core.DataEntity
                 LoginUrl =  "https://pt.keepfrds.com/takelogin.php",
                 InfoUrl = "https://pt.keepfrds.com/userdetails.php?id={0}",
                 SearchUrl = "https://pt.keepfrds.com/torrents.php"
-            }
+            },
+            new PTSite() {
+                Url = "http://pt.btschool.net",
+                Name = "BTSCHOOL",
+                Id = YUEnums.PTEnum.BTSCHOOL,
+                IsEnableVerificationCode = true,
+                LoginUrl =  "http://pt.btschool.net/takelogin.php",
+                InfoUrl = "http://pt.btschool.net/userdetails.php?id={0}",
+                SignUrl = "http://pt.btschool.net/index.php?action=addbonus",
+                SearchUrl = "http://pt.btschool.net/torrents.php",
+                _torrentMaps = new Dictionary<YUEnums.TorrentMap, int>()
+                {
+                    { YUEnums.TorrentMap.ResourceType, 0},
+                    { YUEnums.TorrentMap.Detail, 1},
+                    { YUEnums.TorrentMap.PromotionType, 1},
+                    { YUEnums.TorrentMap.TimeAlive, 3},
+                    { YUEnums.TorrentMap.Size, 4},
+                    { YUEnums.TorrentMap.SeederNumber, 5},
+                    { YUEnums.TorrentMap.LeecherNumber, 6},
+                    { YUEnums.TorrentMap.SnatchedNumber, 7},
+                    { YUEnums.TorrentMap.UpLoader, 8},
+                },
+                _personInfoMaps = new Dictionary<YUEnums.PersonInfoMap, int>()
+                {
+                    { YUEnums.PersonInfoMap.RegisterDate, 2},
+                    { YUEnums.PersonInfoMap.ShareRate, 5},
+                    { YUEnums.PersonInfoMap.UpSize, 5},
+                    { YUEnums.PersonInfoMap.DownSize, 5},
+                    { YUEnums.PersonInfoMap.SeedRate, 6},
+                    { YUEnums.PersonInfoMap.SeedTimes, 6},
+                    { YUEnums.PersonInfoMap.DownTimes, 6},
+                    { YUEnums.PersonInfoMap.SeedNumber, 6},
+                    { YUEnums.PersonInfoMap.Rank, 9},
+                    { YUEnums.PersonInfoMap.Bonus, 12},
+                },
+            },
         };
 
 

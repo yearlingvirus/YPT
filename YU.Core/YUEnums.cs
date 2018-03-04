@@ -18,7 +18,8 @@ namespace YU.Core
             MTEAM = 2,
             CHDBITS = 3,
             OURBITS = 4,
-            KEEPFRDS = 5
+            KEEPFRDS = 5,
+            BTSCHOOL = 6,
         }
 
         public enum FormatterType

@@ -105,6 +105,8 @@ namespace YPT.PT
             _cookie = GetLocalCookie();
         }
 
+        #region 登录
+
         public string Login()
         {
             Tuple<string, HttpWebRequest, HttpWebResponse> result = null;
@@ -118,16 +120,7 @@ namespace YPT.PT
                 }
             }
 
-            //如果前面Cookie登录没有成功，则下面尝试没有Cookie的情况。
-            string otpCode = string.Empty;
-            if (Site.isEnableTwo_StepVerification && User.isEnableTwo_StepVerification)
-            {
-                OnTwoStepVerificationEventArgs e = new OnTwoStepVerificationEventArgs();
-                e.Site = Site;
-                otpCode = OnTwoStepVerification(e);
-            }
-
-            result = DoLoginPostWithOutCookie(result, otpCode);
+            result = DoLoginPostWithOutCookie(result);
             string htmlResult = result.Item1;
             if (IsLoginSuccess(htmlResult))
             {
@@ -154,10 +147,101 @@ namespace YPT.PT
         /// <param name="cookieResult">如果存在Cookie时，请求主页的返回结果，如果不存在Cookie，则为空</param>
         /// <param name="otpCode">二级验证Code</param>
         /// <returns></returns>
-        public virtual Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginPostWithOutCookie(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult, string otpCode)
+        protected virtual Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginPostWithOutCookie(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult)
+        {
+            //如果前面Cookie登录没有成功，则下面尝试没有Cookie的情况。
+            string otpCode = string.Empty;
+            if (Site.isEnableTwo_StepVerification && User.isEnableTwo_StepVerification)
+            {
+                OnTwoStepVerificationEventArgs e = new OnTwoStepVerificationEventArgs();
+                e.Site = Site;
+                otpCode = OnTwoStepVerification(e);
+                return DoLoginWhenEnableTwo_StepVerification(cookieResult, otpCode);
+            }
+            else if (Site.IsEnableVerificationCode)
+            {
+                return DoLoginWhenEnableVerificationCode(cookieResult);
+            }
+            else
+            {
+                string postData = string.Format("username={0}&password={1}", User.UserName, User.PassWord);
+                return HttpUtils.PostData(Site.LoginUrl, postData, _cookie);
+            }
+        }
+
+        /// <summary>
+        /// 二级验证登录（这里以馒头为模板）
+        /// </summary>
+        /// <param name="cookieResult"></param>
+        /// <param name="otpCode"></param>
+        /// <returns></returns>
+        protected virtual Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginWhenEnableTwo_StepVerification(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult, string otpCode)
         {
             string postData = string.Format("username={0}&password={1}", User.UserName, User.PassWord);
-            return HttpUtils.PostData(Site.LoginUrl, postData, _cookie);
+            var result = HttpUtils.PostData(Site.LoginUrl, postData, _cookie);
+
+            //如果返回的页面是二级验证页面，则继续请求
+            if (result.Item3 != null && result.Item3.ResponseUri.OriginalString.Contains("verify"))
+            {
+                if (otpCode.IsNullOrEmptyOrWhiteSpace())
+                {
+                    throw new Exception("无法获取到正确的二级验证码，请重新尝试。");
+                }
+                else
+                {
+                    postData = string.Format("otp={0}", otpCode);
+                    _cookie = result.Item2.CookieContainer;
+                    return result = HttpUtils.PostData(result.Item3.ResponseUri.OriginalString, postData, _cookie);
+                }
+            }
+            else
+                return result;
+        }
+
+        /// <summary>
+        /// 验证码登录（这里以FRDS为模板）
+        /// </summary>
+        /// <param name="cookieResult"></param>
+        /// <param name="otpCode"></param>
+        /// <returns></returns>
+        protected virtual Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginWhenEnableVerificationCode(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult)
+        {
+            string htmlResult = string.Empty;
+            //这里先看有没有前面是不是有过请求了，如果有的话，那么直接在这里获取验证码，如果没有，则自己获取。
+            if (cookieResult != null && !cookieResult.Item1.IsNullOrEmptyOrWhiteSpace())
+                htmlResult = cookieResult.Item1;
+            else
+                htmlResult = HttpUtils.GetData(Site.Url, _cookie).Item1;
+
+            HtmlDocument htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(htmlResult);
+            HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"nav_block\"]/form[2]/table/tr[3]/td[2]/img");
+            string checkCodeKey = string.Empty;
+            string checkCodeHash = string.Empty;
+            if (node != null)
+            {
+                string imgUrl = HttpUtility.HtmlDecode(node.Attributes["src"].Value);
+                if (imgUrl.IsNullOrEmptyOrWhiteSpace())
+                    return new Tuple<string, HttpWebRequest, HttpWebResponse>("无法获取到验证码，登录失败，请稍后重试。", null, null);
+
+                imgUrl = UrlUtils.CombileUrl(Site.Url, imgUrl);
+                OnVerificationCodeEventArgs args = new OnVerificationCodeEventArgs();
+                args.VerificationCodeUrl = imgUrl;
+                args.Site = Site;
+                checkCodeKey = OnVerificationCode(args);
+                checkCodeHash = imgUrl.UrlSearchKey("imagehash");
+                if (checkCodeKey.IsNullOrEmptyOrWhiteSpace() || checkCodeHash.IsNullOrEmptyOrWhiteSpace())
+                    return new Tuple<string, HttpWebRequest, HttpWebResponse>("无法获取到验证码，登录失败，请稍后重试。", null, null);
+
+                string postData = string.Format("username={0}&password={1}&imagestring={2}&imagehash={3}", User.UserName, User.PassWord, checkCodeKey, checkCodeHash);
+                if (new Uri(Site.LoginUrl).Scheme == "https")
+                    postData += string.Format("&ssl=yes&trackerssl=yes");
+                return HttpUtils.PostData(Site.LoginUrl, postData, _cookie);
+            }
+            else
+            {
+                return new Tuple<string, HttpWebRequest, HttpWebResponse>("无法获取到验证码，登录失败，请稍后重试。", null, null);
+            }
         }
 
         protected bool IsLoginSuccess(string htmlResult)
@@ -167,6 +251,36 @@ namespace YPT.PT
             else
                 return false;
         }
+
+        /// <summary>
+        /// 触发验证码事件
+        /// </summary>
+        /// <param name="e"></param>
+        public virtual string OnVerificationCode(OnVerificationCodeEventArgs e)
+        {
+            if (VerificationCode != null)
+            {
+                return VerificationCode.Invoke(this, e);
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// 触发两步验证事件
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public virtual string OnTwoStepVerification(OnTwoStepVerificationEventArgs e)
+        {
+            if (TwoStepVerification != null)
+            {
+                return TwoStepVerification.Invoke(this, e);
+            }
+            return string.Empty;
+        }
+
+        #endregion
+
 
         /// <summary>
         /// 获取用户Id
@@ -196,33 +310,6 @@ namespace YPT.PT
             if (Site.SignUrl.IsNullOrEmptyOrWhiteSpace())
                 return "该站点并没有签到，无能为力啊。";
             return "签到尚未实现，革命仍需努力。";
-        }
-
-        /// <summary>
-        /// 触发验证码事件
-        /// </summary>
-        /// <param name="e"></param>
-        public virtual string OnVerificationCode(OnVerificationCodeEventArgs e)
-        {
-            if (VerificationCode != null)
-            {
-                return VerificationCode.Invoke(this, e);
-            }
-            return string.Empty;
-        }
-
-        /// <summary>
-        /// 触发两步验证事件
-        /// </summary>
-        /// <param name="e"></param>
-        /// <returns></returns>
-        public virtual string OnTwoStepVerification(OnTwoStepVerificationEventArgs e)
-        {
-            if (TwoStepVerification != null)
-            {
-                return TwoStepVerification.Invoke(this, e);
-            }
-            return string.Empty;
         }
 
         #region 种子处理
@@ -257,8 +344,7 @@ namespace YPT.PT
                 {
                     var trNode = trNodes[i];
                     var tdNodes = GetTorrentNodes(trNode);
-                    //这里一般有10列，但是Frds为9列，所以这里以9列来处理
-                    if (tdNodes == null || tdNodes.Count < 9)
+                    if (tdNodes == null || tdNodes.Count < 8)
                         continue;
                     else
                     {

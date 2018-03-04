@@ -877,7 +877,18 @@ namespace YPT
             if (infos != null && infos.Count > 0)
             {
                 List<PTInfoGridEntity> entitys = new List<PTInfoGridEntity>();
-                infos.ToList().ForEach(x => entitys.Add(x.ToGridEntity()));
+                foreach (var info in infos)
+                {
+                    try
+                    {
+                        entitys.Add(info.ToGridEntity());
+                    }
+                    catch (Exception ex)
+                    {
+                        LogMessage(null, string.Format("{0} {1} 请检查用户信息映射。", info.SiteName, ex.GetInnerExceptionMessage()));
+                    }
+                }
+
                 entitys = entitys.OrderByDescending(x => x.UpSize).ToList();
                 this.Invoke(new Action(() =>
                 {
