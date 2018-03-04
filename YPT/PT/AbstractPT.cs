@@ -335,11 +335,14 @@ namespace YPT.PT
 
             var trNodes = GetTorrentNodes(htmlDocument);
             //如果只有一个节点，那么应该是Table的标题，这里忽略，从第二个节点开始算。
-            if (trNodes == null)
+            if (trNodes == null || trNodes.Count <= 1)
                 throw new Exception(string.Format("{0}无法搜索到对应结果，请尝试更换其他关键字。", Site.Name));
             else
             {
                 List<PTTorrent> torrents = new List<PTTorrent>();
+
+                var torrentMaps = GetTorrentMaps(trNodes[0].SelectNodes(".//td[contains(concat(' ', normalize-space(@class), ' '), ' colhead ')]"));
+
                 for (int i = 1; i < trNodes.Count; i++)
                 {
                     var trNode = trNodes[i];
@@ -352,19 +355,22 @@ namespace YPT.PT
                         torrent.SiteId = SiteId;
                         torrent.SiteName = Site.Name;
 
+
+
+
                         //tdNodes[1]为种子信息
                         //种子链接和标题是最重要的，如果这里拿不到，直接跳过了
-                        if (!SetTorrentTitleAndLink(tdNodes[Site.TorrentMaps[YUEnums.TorrentMap.Detail]], torrent))
+                        if (!SetTorrentTitleAndLink(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent))
                             continue;
 
                         //这里的副标题如果没有的话，是否需要跳过?暂时先保留把。
-                        SetTorrentSubTitle(tdNodes[Site.TorrentMaps[YUEnums.TorrentMap.Detail]], torrent);
+                        SetTorrentSubTitle(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
 
-                        SetTorrentPromotionType(tdNodes[Site.TorrentMaps[YUEnums.TorrentMap.Detail]], torrent);
+                        SetTorrentPromotionType(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
 
-                        SetTorrentHR(tdNodes[Site.TorrentMaps[YUEnums.TorrentMap.Detail]], torrent);
+                        SetTorrentHR(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
 
-                        SetTorrentOtherInfo(tdNodes, torrent);
+                        SetTorrentOtherInfo(torrentMaps, tdNodes, torrent);
 
                         torrents.Add(torrent);
                     }
@@ -438,7 +444,6 @@ namespace YPT.PT
             return false;
 
         }
-
 
         /// <summary>
         /// 设置副标题
@@ -517,21 +522,21 @@ namespace YPT.PT
         /// </summary>
         /// <param name="nodes"></param>
         /// <returns></returns>
-        protected virtual void SetTorrentOtherInfo(HtmlNodeCollection nodes, PTTorrent torrent)
+        protected virtual void SetTorrentOtherInfo(Dictionary<YUEnums.TorrentMap, int> torrentMaps, HtmlNodeCollection nodes, PTTorrent torrent)
         {
-            //设置资源类型
-            var imgNode = nodes[Site.TorrentMaps[YUEnums.TorrentMap.ResourceType]].SelectSingleNode(".//img");
+            //设置资源类型 
+            var imgNode = nodes[torrentMaps[YUEnums.TorrentMap.ResourceType]].SelectSingleNode(".//img");
             if (imgNode != null && imgNode.Attributes.Contains("alt"))
             {
                 torrent.ResourceType = imgNode.Attributes["alt"].Value;
             }
 
-            HtmlNode timeNode = nodes[Site.TorrentMaps[YUEnums.TorrentMap.TimeAlive]].SelectSingleNode(".//span");
+            HtmlNode timeNode = nodes[torrentMaps[YUEnums.TorrentMap.TimeAlive]].SelectSingleNode(".//span");
             if (timeNode != null && timeNode.Attributes.Contains("title"))
                 torrent.UpLoadTime = timeNode.Attributes["title"].Value.TryPareValue<DateTime>();
             else
             {
-                string uploadTimeStr = nodes[Site.TorrentMaps[YUEnums.TorrentMap.TimeAlive]].InnerText;
+                string uploadTimeStr = nodes[torrentMaps[YUEnums.TorrentMap.TimeAlive]].InnerText;
                 if (!uploadTimeStr.IsNullOrEmptyOrWhiteSpace() && uploadTimeStr.Length >= 18)
                 {
                     string dateStr = uploadTimeStr.Substring(0, 10);
@@ -539,12 +544,55 @@ namespace YPT.PT
                     torrent.UpLoadTime = string.Format("{0} {1}", dateStr, timeStr).TryPareValue<DateTime>();
                 }
             }
-            torrent.Size = nodes[Site.TorrentMaps[YUEnums.TorrentMap.Size]].InnerText;
-            torrent.SeederNumber = nodes[Site.TorrentMaps[YUEnums.TorrentMap.SeederNumber]].InnerText.TryPareValue<int>();
-            torrent.LeecherNumber = nodes[Site.TorrentMaps[YUEnums.TorrentMap.LeecherNumber]].InnerText.TryPareValue<int>();
-            torrent.SnatchedNumber = nodes[Site.TorrentMaps[YUEnums.TorrentMap.SnatchedNumber]].InnerText.TryPareValue<int>();
-            torrent.UpLoader = nodes[Site.TorrentMaps[YUEnums.TorrentMap.UpLoader]].InnerText;
+            torrent.Size = nodes[torrentMaps[YUEnums.TorrentMap.Size]].InnerText;
+            torrent.SeederNumber = nodes[torrentMaps[YUEnums.TorrentMap.SeederNumber]].InnerText.TryPareValue<int>();
+            torrent.LeecherNumber = nodes[torrentMaps[YUEnums.TorrentMap.LeecherNumber]].InnerText.TryPareValue<int>();
+            torrent.SnatchedNumber = nodes[torrentMaps[YUEnums.TorrentMap.SnatchedNumber]].InnerText.TryPareValue<int>();
+            torrent.UpLoader = nodes[torrentMaps[YUEnums.TorrentMap.UpLoader]].InnerText;
         }
+
+        /// <summary>
+        /// 根据行头获取用户信息列映射
+        /// </summary>
+        /// <param name="headNodes"></param>
+        /// <returns></returns>
+        protected virtual Dictionary<YUEnums.TorrentMap, int> GetTorrentMaps(HtmlNodeCollection headNodes)
+        {
+            try
+            {
+                Dictionary<YUEnums.TorrentMap, int> torrentMaps = new Dictionary<YUEnums.TorrentMap, int>();
+
+                //这里保证torrentMaps包含所有值。
+                foreach (var map in Site.TorrentMaps)
+                {
+                    torrentMaps.Add(map.Key, 0);
+                }
+
+                if (headNodes != null && headNodes.Count > 0)
+                {
+                    for (int i = 0; i < headNodes.Count; i++)
+                    {
+                        var headNode = headNodes[i];
+                        foreach (var map in Site.TorrentMaps)
+                        {
+                            foreach (var item in map.Value)
+                            {
+                                if (headNode.InnerHtml.Contains(item))
+                                    torrentMaps[map.Key] = i;
+                            }
+                        }
+                    }
+                }
+                return torrentMaps;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("获取种子列映射失败，请检查配置文件。", ex);
+                throw new Exception("获取种子列映射失败，请检查配置文件。");
+            }
+        }
+
+
 
         #endregion
 
@@ -803,6 +851,7 @@ namespace YPT.PT
             }
         }
 
+
         /// <summary>
         /// 根据行头获取用户信息列映射
         /// </summary>
@@ -810,29 +859,38 @@ namespace YPT.PT
         /// <returns></returns>
         protected virtual Dictionary<YUEnums.PersonInfoMap, int> GetInfoMaps(HtmlNodeCollection headNodes)
         {
-            Dictionary<YUEnums.PersonInfoMap, int> infoMaps = new Dictionary<YUEnums.PersonInfoMap, int>();
-            
-            //这里保证infoMaps包含所有值。
-            foreach (var map in Site.PersonInfoMaps)
+            try
             {
-                infoMaps.Add(map.Key, 0);
-            }
+                Dictionary<YUEnums.PersonInfoMap, int> infoMaps = new Dictionary<YUEnums.PersonInfoMap, int>();
 
-            if (headNodes != null && headNodes.Count > 0)
-            {
-                for (int i = 0; i < headNodes.Count; i++)
+                //这里保证infoMaps包含所有值。
+                foreach (var map in Site.PersonInfoMaps)
                 {
-                    var headNode = headNodes[i];
-                    foreach (var map in Site.PersonInfoMaps)
+                    infoMaps.Add(map.Key, 0);
+                }
+
+                if (headNodes != null && headNodes.Count > 0)
+                {
+                    for (int i = 0; i < headNodes.Count; i++)
                     {
-                        if (map.Value.Contains(headNode.InnerText.Trim()))
+                        var headNode = headNodes[i];
+                        foreach (var map in Site.PersonInfoMaps)
                         {
-                            infoMaps[map.Key] = i;
+                            if (map.Value.Contains(headNode.InnerText.Trim()))
+                            {
+                                infoMaps[map.Key] = i;
+                            }
                         }
                     }
                 }
+                return infoMaps;
             }
-            return infoMaps;
+            catch (Exception ex)
+            {
+                Logger.Error("获取用户行映射失败，请检查配置文件。", ex);
+                throw new Exception("获取用户行映射失败，请检查配置文件。");
+            }
         }
+
     }
 }

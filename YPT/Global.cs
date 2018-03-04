@@ -71,7 +71,7 @@ namespace YPT
             _sites = ObjectUtils.CreateCopy<List<PTSite>>(PTSite.Sites);
             if (File.Exists(PTSiteConst.RESOURCE_SITES))
             {
-                string siteJson = File.ReadAllText(PTSiteConst.RESOURCE_SITES);
+                string siteJson = File.ReadAllText(PTSiteConst.RESOURCE_SITES);                
                 try
                 {
                     var extendSites = JsonConvert.DeserializeObject<List<PTSite>>(siteJson);
@@ -87,7 +87,7 @@ namespace YPT
                 }
                 catch
                 {
-                    Logger.Info(string.Format("序列化站点失败 ，请检查[{0}]文件。", PTSiteConst.RESOURCE_SITES));
+                    Logger.Info(string.Format("序列化扩展站点失败 ，请检查[{0}]文件。", PTSiteConst.RESOURCE_SITES));
                 }
             }
             else

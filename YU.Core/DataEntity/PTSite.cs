@@ -41,9 +41,9 @@ namespace YU.Core.DataEntity
             }
         }
 
-        private Dictionary<YUEnums.TorrentMap, int> _torrentMaps;
+        private Dictionary<YUEnums.TorrentMap, string[]> _torrentMaps;
 
-        public Dictionary<YUEnums.TorrentMap, int> TorrentMaps
+        public Dictionary<YUEnums.TorrentMap, string[]> TorrentMaps
         {
             get
             {
@@ -70,18 +70,6 @@ namespace YU.Core.DataEntity
                 SignUrl = "https://totheglory.im/signed.php",
                 InfoUrl = "https://totheglory.im/userdetails.php?id={0}",
                 SearchUrl = "https://totheglory.im/browse.php",
-                _torrentMaps = new Dictionary<YUEnums.TorrentMap, int>()
-                {
-                    { YUEnums.TorrentMap.ResourceType, 0},
-                    { YUEnums.TorrentMap.Detail, 1},
-                    { YUEnums.TorrentMap.PromotionType, 1},
-                    { YUEnums.TorrentMap.TimeAlive, 4},
-                    { YUEnums.TorrentMap.Size, 6},
-                    { YUEnums.TorrentMap.SeederNumber, 8},
-                    { YUEnums.TorrentMap.LeecherNumber, 8},
-                    { YUEnums.TorrentMap.SnatchedNumber, 7},
-                    { YUEnums.TorrentMap.UpLoader, 9},
-                },
             },
             new PTSite() {
                 Url = "https://tp.m-team.cc",
@@ -91,18 +79,7 @@ namespace YU.Core.DataEntity
                 LoginUrl =  "https://tp.m-team.cc/takelogin.php",
                 InfoUrl = "https://tp.m-team.cc/userdetails.php?id={0}",
                 SearchUrl = "https://tp.m-team.cc/torrents.php",
-                _torrentMaps = new Dictionary<YUEnums.TorrentMap, int>()
-                {
-                    { YUEnums.TorrentMap.ResourceType, 0},
-                    { YUEnums.TorrentMap.Detail, 1},
-                    { YUEnums.TorrentMap.PromotionType, 1},
-                    { YUEnums.TorrentMap.TimeAlive, 3},
-                    { YUEnums.TorrentMap.Size, 4},
-                    { YUEnums.TorrentMap.SeederNumber, 5},
-                    { YUEnums.TorrentMap.LeecherNumber, 6},
-                    { YUEnums.TorrentMap.SnatchedNumber, 7},
-                    { YUEnums.TorrentMap.UpLoader, 9},
-                },
+
             },
             new PTSite() {
                 Url = "https://chdbits.co",
@@ -120,18 +97,6 @@ namespace YU.Core.DataEntity
                 InfoUrl = "https://ourbits.club/userdetails.php?id={0}",
                 SignUrl = "https://ourbits.club/attendance.php",
                 SearchUrl = "https://ourbits.club/torrents.php",
-                _torrentMaps = new Dictionary<YUEnums.TorrentMap, int>()
-                {
-                    { YUEnums.TorrentMap.ResourceType, 0},
-                    { YUEnums.TorrentMap.Detail, 1},
-                    { YUEnums.TorrentMap.PromotionType, 1},
-                    { YUEnums.TorrentMap.TimeAlive, 3},
-                    { YUEnums.TorrentMap.Size, 4},
-                    { YUEnums.TorrentMap.SeederNumber, 5},
-                    { YUEnums.TorrentMap.LeecherNumber, 6},
-                    { YUEnums.TorrentMap.SnatchedNumber, 7},
-                    { YUEnums.TorrentMap.UpLoader, 9},
-                },
             },
             new PTSite() {
                 Url = "https://pt.keepfrds.com",
@@ -151,18 +116,6 @@ namespace YU.Core.DataEntity
                 InfoUrl = "http://pt.btschool.net/userdetails.php?id={0}",
                 SignUrl = "http://pt.btschool.net/index.php?action=addbonus",
                 SearchUrl = "http://pt.btschool.net/torrents.php",
-                _torrentMaps = new Dictionary<YUEnums.TorrentMap, int>()
-                {
-                    { YUEnums.TorrentMap.ResourceType, 0},
-                    { YUEnums.TorrentMap.Detail, 1},
-                    { YUEnums.TorrentMap.PromotionType, 1},
-                    { YUEnums.TorrentMap.TimeAlive, 3},
-                    { YUEnums.TorrentMap.Size, 4},
-                    { YUEnums.TorrentMap.SeederNumber, 5},
-                    { YUEnums.TorrentMap.LeecherNumber, 6},
-                    { YUEnums.TorrentMap.SnatchedNumber, 7},
-                    { YUEnums.TorrentMap.UpLoader, 8},
-                },
             },
             new PTSite() {
                 Url = "https://pt.gztown.net",
@@ -173,35 +126,23 @@ namespace YU.Core.DataEntity
                 InfoUrl = "https://pt.gztown.net/userdetails.php?id={0}",
                 SignUrl = "https://pt.gztown.net/attendance.php",
                 SearchUrl = "https://pt.gztown.net/torrents.php",
-                _torrentMaps = new Dictionary<YUEnums.TorrentMap, int>()
-                {
-                    { YUEnums.TorrentMap.ResourceType, 0},
-                    { YUEnums.TorrentMap.Detail, 1},
-                    { YUEnums.TorrentMap.PromotionType, 1},
-                    { YUEnums.TorrentMap.TimeAlive, 3},
-                    { YUEnums.TorrentMap.Size, 4},
-                    { YUEnums.TorrentMap.SeederNumber, 5},
-                    { YUEnums.TorrentMap.LeecherNumber, 6},
-                    { YUEnums.TorrentMap.SnatchedNumber, 7},
-                    { YUEnums.TorrentMap.UpLoader, 9},
-                },
             },
         };
 
 
-        private Dictionary<YUEnums.TorrentMap, int> GetDefaultTorrentMaps()
+        private Dictionary<YUEnums.TorrentMap, string[]> GetDefaultTorrentMaps()
         {
-            return new Dictionary<YUEnums.TorrentMap, int>()
+            return new Dictionary<YUEnums.TorrentMap, string[]>()
             {
-                { YUEnums.TorrentMap.ResourceType, 0},
-                { YUEnums.TorrentMap.Detail, 1},
-                { YUEnums.TorrentMap.PromotionType, 1},
-                { YUEnums.TorrentMap.TimeAlive, 3},
-                { YUEnums.TorrentMap.Size, 4},
-                { YUEnums.TorrentMap.SeederNumber, 5},
-                { YUEnums.TorrentMap.LeecherNumber, 6},
-                { YUEnums.TorrentMap.SnatchedNumber, 7},
-                { YUEnums.TorrentMap.UpLoader, 8},
+                { YUEnums.TorrentMap.ResourceType, new string[] { "类型", "类别" , "類型", "Cat.","Type" } },
+                { YUEnums.TorrentMap.Detail, new string[] {"标题", "標題", "Name", "名称"} },
+                { YUEnums.TorrentMap.PromotionType, new string[] {"标题", "標題", "Name", "名称"} },
+                { YUEnums.TorrentMap.TimeAlive,  new string[] { "time", "存活时间", "存活時間", "TTL" } },
+                { YUEnums.TorrentMap.Size,  new string[] { "size", "大小" } },
+                { YUEnums.TorrentMap.SeederNumber,  new string[] { "seeders", "做种", "种子数", "種子數"} },
+                { YUEnums.TorrentMap.LeecherNumber, new string[] { "leechers", "下载", "下載數"} },
+                { YUEnums.TorrentMap.SnatchedNumber,  new string[] { "snatched", "完成", "完成數" } },
+                { YUEnums.TorrentMap.UpLoader,  new string[] { "发布者", "發佈者", "上传者"} },
             };
         }
 

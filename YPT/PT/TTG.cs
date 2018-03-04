@@ -178,16 +178,16 @@ namespace YPT.PT
                 return true;
         }
 
-        protected override void SetTorrentOtherInfo(HtmlNodeCollection nodes, PTTorrent torrent)
+        protected override void SetTorrentOtherInfo(Dictionary<YUEnums.TorrentMap, int> torrentMaps, HtmlNodeCollection nodes, PTTorrent torrent)
         {
             //设置资源类型
-            var imgNode = nodes[Site.TorrentMaps[YUEnums.TorrentMap.ResourceType]].SelectSingleNode(".//img");
+            var imgNode = nodes[torrentMaps[YUEnums.TorrentMap.ResourceType]].SelectSingleNode(".//img");
             if (imgNode != null && imgNode.Attributes.Contains("alt"))
             {
                 torrent.ResourceType = imgNode.Attributes["alt"].Value;
             }
 
-            string uploadTimeStr = nodes[Site.TorrentMaps[YUEnums.TorrentMap.TimeAlive]].InnerText;
+            string uploadTimeStr = nodes[torrentMaps[YUEnums.TorrentMap.TimeAlive]].InnerText;
             if (!uploadTimeStr.IsNullOrEmptyOrWhiteSpace() && uploadTimeStr.Length >= 18)
             {
                 string dateStr = uploadTimeStr.Substring(0, 10);
@@ -195,9 +195,9 @@ namespace YPT.PT
                 torrent.UpLoadTime = string.Format("{0} {1}", dateStr, timeStr).TryPareValue<DateTime>();
             }
 
-            torrent.Size = nodes[Site.TorrentMaps[YUEnums.TorrentMap.Size]].InnerText;
+            torrent.Size = nodes[torrentMaps[YUEnums.TorrentMap.Size]].InnerText;
 
-            var seedNodes = nodes[Site.TorrentMaps[YUEnums.TorrentMap.SeederNumber]].SelectNodes("./b");
+            var seedNodes = nodes[torrentMaps[YUEnums.TorrentMap.SeederNumber]].SelectNodes("./b");
             if (seedNodes != null && seedNodes.Count > 0)
             {
                 torrent.SeederNumber = seedNodes[0].InnerText.TryPareValue<int>();
@@ -205,12 +205,12 @@ namespace YPT.PT
                     torrent.LeecherNumber = seedNodes[1].InnerText.TryPareValue<int>();
             }
 
-            var snatchNode = nodes[Site.TorrentMaps[YUEnums.TorrentMap.SnatchedNumber]].SelectSingleNode("./text()");
+            var snatchNode = nodes[torrentMaps[YUEnums.TorrentMap.SnatchedNumber]].SelectSingleNode("./text()");
             if (snatchNode != null)
                 torrent.SnatchedNumber = snatchNode.InnerText.TryPareValue<int>();
 
 
-            torrent.UpLoader = nodes[Site.TorrentMaps[YUEnums.TorrentMap.UpLoader]].InnerText;
+            torrent.UpLoader = nodes[torrentMaps[YUEnums.TorrentMap.UpLoader]].InnerText;
         }
 
         protected override string BuildSearchUrl(string searchKey, YUEnums.PromotionType promotionType = YUEnums.PromotionType.ALL, YUEnums.AliveType aliveType = YUEnums.AliveType.ALL, YUEnums.FavType favType = YUEnums.FavType.ALL)
@@ -237,6 +237,22 @@ namespace YPT.PT
                 queryString += Uri.EscapeDataString(aliveDict[aliveType]);
 
             return Site.SearchUrl + queryString;
+        }
+
+        protected override Dictionary<YUEnums.TorrentMap, int> GetTorrentMaps(HtmlNodeCollection headNodes)
+        {
+            return new Dictionary<YUEnums.TorrentMap, int>()
+            {
+                { YUEnums.TorrentMap.ResourceType, 0},
+                { YUEnums.TorrentMap.Detail, 1},
+                { YUEnums.TorrentMap.PromotionType, 1},
+                { YUEnums.TorrentMap.TimeAlive, 4},
+                { YUEnums.TorrentMap.Size, 6},
+                { YUEnums.TorrentMap.SeederNumber, 8},
+                { YUEnums.TorrentMap.LeecherNumber, 8},
+                { YUEnums.TorrentMap.SnatchedNumber, 7},
+                { YUEnums.TorrentMap.UpLoader, 9},
+            };
         }
 
 
