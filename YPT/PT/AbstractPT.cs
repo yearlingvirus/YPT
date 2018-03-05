@@ -367,9 +367,6 @@ namespace YPT.PT
                         torrent.SiteId = SiteId;
                         torrent.SiteName = Site.Name;
 
-
-
-
                         //tdNodes[1]为种子信息
                         //种子链接和标题是最重要的，如果这里拿不到，直接跳过了
                         if (!SetTorrentTitleAndLink(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent))
