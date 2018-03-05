@@ -31,9 +31,9 @@ namespace YU.Core.Utils
                 {
                     return new Tuple<string, HttpWebRequest, HttpWebResponse>("Network error:" + new ArgumentNullException("httpWebRequest").Message, req, null);
                 }
-                req.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8";
+                req.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*;q=0.8";
                 req.Method = "POST";
-                req.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36";
+                req.UserAgent = YUConst.HTTP_CHROME_UA;
                 req.KeepAlive = true;
                 if (isFormDataType)
                 {
@@ -92,7 +92,7 @@ namespace YU.Core.Utils
                 }
                 req.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*;q=0.8";
                 req.Method = "POST";
-                req.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36";
+                req.UserAgent = YUConst.HTTP_CHROME_UA;
                 req.KeepAlive = true;
                 if (isFormDataType)
                 {
@@ -152,7 +152,7 @@ namespace YU.Core.Utils
 
                 httpWebRequest.ContentType = "application/x-www-form-urlencoded";
                 httpWebRequest.Method = "GET";
-                httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36";
+                httpWebRequest.UserAgent = YUConst.HTTP_CHROME_UA;
                 //对发送的数据不使用缓存
                 httpWebRequest.AllowWriteStreamBuffering = false;
                 httpWebRequest.Timeout = 10000;
@@ -205,7 +205,7 @@ namespace YU.Core.Utils
 
                 httpWebRequest.ContentType = "application/x-www-form-urlencoded";
                 httpWebRequest.Method = "GET";
-                httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36";
+                httpWebRequest.UserAgent = YUConst.HTTP_CHROME_UA;
                 //对发送的数据不使用缓存
                 httpWebRequest.AllowWriteStreamBuffering = false;
                 httpWebRequest.Timeout = 10000;
@@ -241,77 +241,6 @@ namespace YU.Core.Utils
                 string msg = "网络错误(Network error)：" + ex.GetInnerExceptionMessage();
                 Logger.Error(msg, ex);
                 return new Tuple<string, HttpWebRequest, HttpWebResponse>(msg, null, null);
-            }
-        }
-
-        /// <summary>
-        /// Http下载文件
-        /// </summary>
-        /// <param name="uri">下载地址</param>
-        /// <param name="filefullpath">存放完整路径（含文件名）</param>
-        /// <param name="size">每次多的大小</param>
-        /// <returns>下载操作是否成功</returns>
-        public static bool DownLoadFiles(string url, string filefullpath, int size = 1024, CookieContainer cookie = null, bool isOpen = false)
-        {
-            try
-            {
-                if (File.Exists(filefullpath))
-                {
-                    try
-                    {
-                        File.Delete(filefullpath);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error(string.Format("文件[{0}]下载失败，失败原因：{1}", filefullpath, ex.GetInnerExceptionMessage()), ex);
-                        return false;
-                    }
-                }
-                string fileDirectory = System.IO.Path.GetDirectoryName(filefullpath);
-
-                if (!Directory.Exists(fileDirectory))
-                {
-                    Directory.CreateDirectory(fileDirectory);
-                }
-
-                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-
-                //httpWebRequest.ContentType = "application/x-www-form-urlencoded";
-                httpWebRequest.Method = "GET";
-                httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36";
-                httpWebRequest.KeepAlive = true;
-                httpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*;q=0.8";
-                httpWebRequest.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip, deflate, br");
-                httpWebRequest.Headers.Add(HttpRequestHeader.AcceptLanguage, "zh");
-                httpWebRequest.CookieContainer = cookie;
-                httpWebRequest.Timeout = 10000;
-                HttpWebResponse webRespon = (HttpWebResponse)httpWebRequest.GetResponse();
-                Stream webStream = webRespon.GetResponseStream();
-                if (webStream == null)
-                {
-                    throw new ArgumentNullException("网络错误(Network error)");
-                }
-
-                FileStream fs = new FileStream(filefullpath, FileMode.Create);
-                byte[] buffer = new byte[size];
-                int length = webStream.Read(buffer, 0, buffer.Length);
-                while (length > 0)
-                {
-                    fs.Write(buffer, 0, length);
-                    buffer = new byte[size];
-                    length = webStream.Read(buffer, 0, buffer.Length);
-                }
-                fs.Close();
-                webRespon.Close();
-
-                if (isOpen)
-                    System.Diagnostics.Process.Start(filefullpath);
-                return true;
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(string.Format("文件[{0}]下载失败，失败原因：{1}", filefullpath, ex.GetInnerExceptionMessage(), ex));
             }
         }
 

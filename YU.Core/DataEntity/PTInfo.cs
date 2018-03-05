@@ -126,7 +126,7 @@ namespace YU.Core.DataEntity
             entity.LastSyncDate = this.LastSyncDate;
             entity.Name = this.Name;
 
-            string regEx = "[^a-zA-Z]";
+            string regEx = "/^[A-Za-z\\s]+$/";
             entity.Rank = Regex.Replace(this.Rank, regEx, "");
             //如果过滤之后为空字符串，则直接用站点的。
             if (entity.Rank.IsNullOrEmptyOrWhiteSpace())

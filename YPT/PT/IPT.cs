@@ -33,6 +33,20 @@ namespace YPT.PT
         string OnVerificationCode(OnVerificationCodeEventArgs e);
 
         /// <summary>
+        /// 下载文件事件
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        string OnPrepareDownFile(OnPrepareDownFileEventArgs e);
+
+        /// <summary>
+        /// 两步验证事件
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        string OnTwoStepVerification(OnTwoStepVerificationEventArgs e);
+
+        /// <summary>
         /// 搜索种子
         /// </summary>
         /// <param name="searchKey"></param>
@@ -40,11 +54,11 @@ namespace YPT.PT
         List<PTTorrent> SearchTorrent(string searchKey, YUEnums.PromotionType promotionType, YUEnums.AliveType aliveType, YUEnums.FavType favType);
 
         /// <summary>
-        /// 获取种子下载的文件名
+        /// 下载种子
         /// </summary>
         /// <param name="torrent"></param>
-        /// <returns></returns>
-        string GetTorrentDownFileName(PTTorrent torrent);
+        /// <param name="isOpen"></param>
+        void DownTorrent(PTTorrent torrent, bool isOpen);
 
         /// <summary>
         /// 获取个人信息

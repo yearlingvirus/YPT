@@ -91,6 +91,19 @@ namespace YPT.PT
         /// 两步验证事件
         /// </summary>
         public event OnTwoStepVerificationEventHandler TwoStepVerification;
+
+        /// <summary>
+        /// 准备下载文件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public delegate string OnPrepareDownFileEventHandler(object sender, OnPrepareDownFileEventArgs e);
+
+        /// <summary>
+        /// 准备下载文件事件
+        /// </summary>
+        public event OnPrepareDownFileEventHandler PrepareDownFile;
         #endregion
 
         public AbstractPT()
@@ -215,7 +228,7 @@ namespace YPT.PT
 
             HtmlDocument htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(htmlResult);
-            HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"nav_block\"]/form[2]/table/tr[3]/td[2]/img");
+            HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode(".//table//tr/td/img");
             string checkCodeKey = string.Empty;
             string checkCodeHash = string.Empty;
             if (node != null)
@@ -280,7 +293,6 @@ namespace YPT.PT
         }
 
         #endregion
-
 
         /// <summary>
         /// 获取用户Id
@@ -425,7 +437,7 @@ namespace YPT.PT
                     var linkUrl = HttpUtility.HtmlDecode(titleNode.Attributes["href"].Value);
                     torrent.LinkUrl = string.Join("/", Site.Url, linkUrl);
                     torrent.Id = torrent.LinkUrl.UrlSearchKey("id");
-                    torrent.Title = titleNode.Attributes["title"].Value;
+                    torrent.Title = HttpUtility.HtmlDecode(titleNode.Attributes["title"].Value);
                 }
                 else
                     return false;
@@ -630,63 +642,130 @@ namespace YPT.PT
             return cookiePath;
         }
 
-        /// <summary>
-        /// 获取种子下载名称
-        /// </summary>
-        /// <param name="torrent"></param>
-        /// <returns></returns>
-        public string GetTorrentDownFileName(PTTorrent torrent)
+        #region 下载
+
+        public void DownTorrent(PTTorrent torrent, bool isOpen)
         {
             if (torrent != null)
             {
+                string filefullPath = string.Empty;
                 string fileName = string.Format("[{0}].{1}.{2}", SiteId, torrent.Title.Trim(), "torrent");
-                if (Global.Config.IsEnablePostFileName)
+                try
                 {
-                    try
+                    var url = torrent.DownUrl;
+
+                    HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                    httpWebRequest.Method = "POST";
+                    //这里用IE9的内核解析
+                    httpWebRequest.UserAgent = YUConst.HTTP_IE9_UA;
+                    httpWebRequest.Timeout = 10000;
+                    httpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*;q=0.8";
+                    httpWebRequest.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip, deflate, br");
+                    httpWebRequest.Headers.Add(HttpRequestHeader.AcceptLanguage, "zh");
+                    httpWebRequest.Headers.Add(HttpRequestHeader.Cookie, YUUtils.GetCookieFromContainer(_cookie, new Uri(url)));
+                    httpWebRequest.AllowAutoRedirect = false;
+                    HttpWebResponse webRespon = (HttpWebResponse)httpWebRequest.GetResponse();
+
+                    if (!webRespon.GetResponseHeader("Location").IsNullOrEmptyOrWhiteSpace())
+                        throw new Exception("下载种子失败，也许是二次验证等原因导致，请尝试关闭。");
+
+                    if (webRespon.Headers.AllKeys.Contains("Content-Disposition"))
                     {
-                        var url = torrent.DownUrl;
-
-                        HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                        httpWebRequest.Method = "GET";
-                        //这里用IE9的内核解析
-                        httpWebRequest.UserAgent = "Mozilla / 5.0(compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident / 5.0)";
-                        httpWebRequest.KeepAlive = true;
-                        httpWebRequest.Timeout = 10000;
-                        httpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8";
-                        httpWebRequest.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip, deflate, br");
-                        httpWebRequest.Headers.Add(HttpRequestHeader.AcceptLanguage, "zh");
-                        httpWebRequest.CookieContainer = _cookie;
-
-                        HttpWebResponse webRespon = (HttpWebResponse)httpWebRequest.GetResponse();
-
-                        if (webRespon.Headers.AllKeys.Contains("Content-Disposition"))
+                        string contentDis = webRespon.Headers.Get("Content-Disposition");
+                        if (!contentDis.IsNullOrEmptyOrWhiteSpace())
                         {
-                            string contentDis = webRespon.Headers.Get("Content-Disposition");
-                            if (!contentDis.IsNullOrEmptyOrWhiteSpace())
+                            string[] headers = contentDis.Split(';', '=');
+                            if (headers.Length >= 3 && headers[2].Contains("torrent"))
                             {
-                                string[] headers = contentDis.Split(';', '=');
-                                if (headers.Length >= 3 && headers[2].Contains("torrent"))
-                                {
-                                    fileName = HttpUtility.UrlDecode(headers[2]).Replace("\"", "").Trim();
-                                }
+                                fileName = HttpUtility.UrlDecode(headers[2]).Replace("\"", "").Trim();
                             }
                         }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Logger.Error(string.Format("{0} 获取种子文件名称失败，种子标题：{1}", SiteId, torrent.Title), ex);
+                        Uri uri = new Uri(url);
+                        if (uri.Segments != null && uri.Segments.Length > 0)
+                        {
+                            if (uri.Segments.LastOrDefault().Contains(".torrent"))
+                                fileName = HttpUtility.UrlDecode(uri.Segments.LastOrDefault());
+                        }
                     }
+                    foreach (var car in Path.GetInvalidFileNameChars())
+                    {
+                        if (fileName.Contains(car))
+                            fileName = fileName.Replace(car, '_');
+                    }
+
+                    Stream webStream = webRespon.GetResponseStream();
+                    if (webStream == null)
+                    {
+                        throw new ArgumentNullException("网络错误(Network error)");
+                    }
+
+                    filefullPath = GetDownFileFullPath(fileName);
+                    if (filefullPath.IsNullOrEmptyOrWhiteSpace())
+                        return;
+
+                    if (File.Exists(filefullPath))
+                        File.Delete(filefullPath);
+                    
+                    string fileDirectory = System.IO.Path.GetDirectoryName(filefullPath);
+
+                    if (!Directory.Exists(fileDirectory))
+                        Directory.CreateDirectory(fileDirectory);
+
+                    int size = 1024;
+                    FileStream fs = new FileStream(filefullPath, FileMode.Create);
+                    byte[] buffer = new byte[size];
+                    int length = webStream.Read(buffer, 0, buffer.Length);
+                    while (length > 0)
+                    {
+                        fs.Write(buffer, 0, length);
+                        buffer = new byte[size];
+                        length = webStream.Read(buffer, 0, buffer.Length);
+                    }
+                    fs.Close();
+                    webRespon.Close();
+
+                    if (isOpen)
+                        System.Diagnostics.Process.Start(filefullPath);
                 }
-                foreach (var car in Path.GetInvalidFileNameChars())
+                catch (Exception ex)
                 {
-                    if (fileName.Contains(car))
-                        fileName = fileName.Replace(car, '_');
+                    throw new Exception(string.Format("文件[{0}]下载失败，失败原因：{1}", filefullPath, ex.GetInnerExceptionMessage()), ex);
                 }
-                return fileName;
             }
             else
-                throw new Exception("获取种子文件名称失败，失败原因：无法获取到种子信息。");
+                throw new Exception("下载种子失败，失败原因：无法获取到种子信息。");
         }
+
+        /// <summary>
+        /// 获取用户输入的文件路径
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        private string GetDownFileFullPath(string fileName)
+        {
+            OnPrepareDownFileEventArgs e = new OnPrepareDownFileEventArgs();
+            e.FileName = fileName;
+            return OnPrepareDownFile(e);
+        }
+
+        /// <summary>
+        /// 触发下载文件事件
+        /// </summary>
+        /// <param name="e"></param>
+        /// <returns></returns>
+        public virtual string OnPrepareDownFile(OnPrepareDownFileEventArgs e)
+        {
+            if (PrepareDownFile != null)
+            {
+                return PrepareDownFile.Invoke(this, e);
+            }
+            return string.Empty;
+        }
+
+        #endregion
 
         public virtual PTInfo GetPersonInfo()
         {

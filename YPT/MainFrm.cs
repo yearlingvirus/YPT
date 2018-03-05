@@ -616,24 +616,9 @@ namespace YPT
                     {
                         Task t = Task.Factory.StartNew(() =>
                         {
-                            IPT pt = PTFactory.GetPT((YUEnums.PTEnum)siteId, Global.Users.Where(x => (int)x.Site.Id == siteId).FirstOrDefault());
-                            string fileName = pt.GetTorrentDownFileName(torrent);
-                            string filePath = string.Empty;
-                            this.Invoke(new Action(() =>
-                            {
-                                SaveFileDialog sfd = new SaveFileDialog();
-                                sfd.FileName = fileName;
-                                sfd.Filter = "TORRENT 文件|*.torrent;";
-                                if (sfd.ShowDialog() == DialogResult.OK)
-                                {
-                                    filePath = sfd.FileName;
-                                    var downTask = Task.Factory.StartNew(() =>
-                                    {
-                                        HttpUtils.DownLoadFiles(torrent.DownUrl, filePath, 1024, (pt as AbstractPT).Cookie, isOepn);
-                                    });
-                                    TaskCallBack(downTask, "下载种子过程中出现错误，错误原因：");
-                                }
-                            }));
+                            AbstractPT pt = PTFactory.GetPT((YUEnums.PTEnum)siteId, Global.Users.Where(x => (int)x.Site.Id == siteId).FirstOrDefault()) as AbstractPT;
+                            pt.PrepareDownFile += Pt_PrepareDownFile;
+                            pt.DownTorrent(torrent, isOepn);
                         });
                         TaskCallBack(t, "下载种子过程中出现错误，错误原因：");
                     }
@@ -644,6 +629,20 @@ namespace YPT
                     LogMessage(Global.Sites.Where(x => (int)x.Id == siteId).FirstOrDefault(), string.Format("下载失败，失败原因：获取种子信息失败。"), true);
                 }
             }
+        }
+
+        private string Pt_PrepareDownFile(object sender, OnPrepareDownFileEventArgs e)
+        {
+            string fileName = string.Empty;
+            this.Invoke(new Action(() =>
+            {
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.FileName = e.FileName;
+                sfd.Filter = "TORRENT 文件|*.torrent;";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                    fileName = sfd.FileName;
+            }));
+            return fileName;
         }
 
         private void TaskCallBack(Task t, string errTitle)

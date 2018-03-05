@@ -33,8 +33,11 @@ namespace YPT.PT
         }
 
 
-        protected override Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginWhenEnableTwo_StepVerification(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult, string otpCode)
+        protected override Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginPostWithOutCookie(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult)
         {
+            //如果前面Cookie登录没有成功，则下面尝试没有Cookie的情况。
+            string otpCode = string.Empty;
+
             StringBuilder sb = new StringBuilder();
             Dictionary<string, string> postDict = new Dictionary<string, string>();
             postDict.Add("username", User.UserName);
@@ -44,6 +47,9 @@ namespace YPT.PT
             //启用了二级验证
             if (Site.isEnableTwo_StepVerification && User.isEnableTwo_StepVerification)
             {
+                OnTwoStepVerificationEventArgs e = new OnTwoStepVerificationEventArgs();
+                e.Site = Site;
+                otpCode = OnTwoStepVerification(e);
                 postDict["otp"] = otpCode;
             }
 
@@ -76,6 +82,7 @@ namespace YPT.PT
             string postData = sb.ToString();
             return HttpUtils.PostData(Site.LoginUrl, postData, _cookie, true);
         }
+
 
 
         public override string Sign()
@@ -138,12 +145,12 @@ namespace YPT.PT
 
                 var titleNode = linkUrlNode.SelectSingleNode("./b/text()");
                 if (titleNode != null)
-                    torrent.Title = titleNode.InnerText;
+                    torrent.Title = HttpUtility.HtmlDecode(titleNode.InnerText);
                 else
                 {
                     titleNode = linkUrlNode.SelectSingleNode("./b/font/text()");
                     if (titleNode != null)
-                        torrent.Title = titleNode.InnerText;
+                        torrent.Title = HttpUtility.HtmlDecode(titleNode.InnerText);
                 }
 
                 var subNode = linkUrlNode.SelectSingleNode("./b//span[last()]");
@@ -154,14 +161,14 @@ namespace YPT.PT
                     {
                         subTtile += subNode.NextSibling.InnerText;
                     }
-                    torrent.Subtitle = subTtile;
+                    torrent.Subtitle = HttpUtility.HtmlDecode(subTtile);
                 }
-                
+
             }
 
             var downUrlNode = node.SelectSingleNode("./div[contains(concat(' ', normalize-space(@class), ' '), ' name_right ')]//a");
             if (downUrlNode != null && downUrlNode.Attributes.Contains("href"))
-                torrent.DownUrl = string.Join("/", Site.Url, HttpUtility.HtmlDecode(downUrlNode.GetAttributeValue("href", string.Empty)));
+                torrent.DownUrl  = UrlUtils.CombileUrl(Site.Url, HttpUtility.HtmlDecode(downUrlNode.GetAttributeValue("href", string.Empty)));
 
             if (torrent.Id.IsNullOrEmptyOrWhiteSpace() || torrent.DownUrl.IsNullOrEmptyOrWhiteSpace() || torrent.LinkUrl.IsNullOrEmptyOrWhiteSpace() || torrent.Title.IsNullOrEmptyOrWhiteSpace())
                 return false;
@@ -304,8 +311,8 @@ namespace YPT.PT
 
                 //根据行头获取映射
                 var infoMaps = GetInfoMaps(headNodes);
-                
-                HtmlNodeCollection nodes = 
+
+                HtmlNodeCollection nodes =
                     htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]//td[contains(concat(' ', normalize-space(@class), ' '), ' embedded ')]//td[contains(concat(' ', normalize-space(@align), ' '), ' left ')]");//跟Xpath一样
                 if (nodes == null || nodes.Count <= 0)
                     throw new Exception(string.Format("{0} 获取用户详细信息失败，请稍后重试。", Site.Name));

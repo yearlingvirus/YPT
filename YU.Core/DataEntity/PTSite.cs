@@ -127,6 +127,16 @@ namespace YU.Core.DataEntity
                 SignUrl = "https://pt.gztown.net/attendance.php",
                 SearchUrl = "https://pt.gztown.net/torrents.php",
             },
+              new PTSite() {
+                Url = "https://pt.upxin.net",
+                Name = "HDU",
+                Id = YUEnums.PTEnum.HDU,
+                IsEnableVerificationCode = true,
+                LoginUrl =  "https://pt.upxin.net/takelogin.php",
+                InfoUrl = "https://pt.upxin.net/userdetails.php?id={0}",
+                SignUrl = "https://pt.upxin.net/added.php",
+                SearchUrl = "https://pt.upxin.net/torrents.php",
+            },
         };
 
 

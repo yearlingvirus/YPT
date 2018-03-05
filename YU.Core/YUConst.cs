@@ -59,5 +59,16 @@ namespace YU.Core
         /// </summary>
         public const string PATH_LOCALCOOKIE = "COOKIE";
 
+        /// <summary>
+        /// Chrome
+        /// </summary>
+        public const string HTTP_CHROME_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36";
+
+
+        /// <summary>
+        /// IE9
+        /// </summary>
+        public const string HTTP_IE9_UA = "Mozilla/5.0(compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident / 5.0)";
+
     }
 }

@@ -83,6 +83,7 @@
     <Compile Include="DataEntity\PTInfoGridEntity.cs" />
     <Compile Include="DataEntity\PTTorrent.cs" />
     <Compile Include="DataEntity\PTTorrentGridEntity.cs" />
+    <Compile Include="Event\OnPrepareDownFileEventArgs.cs" />
     <Compile Include="Event\OnTwoStepVerificationEventArgs.cs" />
     <Compile Include="Event\OnUserChangeEventArgs.cs" />
     <Compile Include="PTSiteConst.cs" />
