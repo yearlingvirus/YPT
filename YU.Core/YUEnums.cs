@@ -22,6 +22,7 @@ namespace YU.Core
             BTSCHOOL = 6,
             GZTOWN = 7,
             HDU = 8,
+            NY = 9,
         }
 
         public enum FormatterType

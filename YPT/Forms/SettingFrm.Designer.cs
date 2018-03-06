@@ -38,9 +38,9 @@
             this.lblSignTime = new System.Windows.Forms.Label();
             this.dtpSignTime = new System.Windows.Forms.DateTimePicker();
             this.tabOther = new System.Windows.Forms.TabPage();
+            this.cbIsMiniWhenClose = new System.Windows.Forms.CheckBox();
             this.cbIsSyncTiming = new System.Windows.Forms.CheckBox();
             this.cbIsEnablePostFileName = new System.Windows.Forms.CheckBox();
-            this.cbIsMiniWhenClose = new System.Windows.Forms.CheckBox();
             this.tabControl.SuspendLayout();
             this.tabUser.SuspendLayout();
             this.tabSign.SuspendLayout();
@@ -94,7 +94,7 @@
             this.btnAdd.Size = new System.Drawing.Size(420, 46);
             this.btnAdd.TabIndex = 0;
             this.btnAdd.TabStop = false;
-            this.btnAdd.Text = "+";
+            this.btnAdd.Text = "添加";
             this.btnAdd.UseVisualStyleBackColor = true;
             this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
@@ -156,6 +156,17 @@
             this.tabOther.Text = "其他";
             this.tabOther.UseVisualStyleBackColor = true;
             // 
+            // cbIsMiniWhenClose
+            // 
+            this.cbIsMiniWhenClose.AutoSize = true;
+            this.cbIsMiniWhenClose.Location = new System.Drawing.Point(36, 102);
+            this.cbIsMiniWhenClose.Name = "cbIsMiniWhenClose";
+            this.cbIsMiniWhenClose.Size = new System.Drawing.Size(252, 24);
+            this.cbIsMiniWhenClose.TabIndex = 5;
+            this.cbIsMiniWhenClose.Text = "关闭主面板时是否最小化到系统托盘";
+            this.cbIsMiniWhenClose.UseVisualStyleBackColor = true;
+            this.cbIsMiniWhenClose.CheckedChanged += new System.EventHandler(this.cbIsMiniWhenClose_CheckedChanged);
+            // 
             // cbIsSyncTiming
             // 
             this.cbIsSyncTiming.AutoSize = true;
@@ -177,17 +188,6 @@
             this.cbIsEnablePostFileName.Text = "启用请求服务器下载文件名";
             this.cbIsEnablePostFileName.UseVisualStyleBackColor = true;
             this.cbIsEnablePostFileName.CheckedChanged += new System.EventHandler(this.cbIsEnablePostFileName_CheckedChanged);
-            // 
-            // cbIsMiniWhenClose
-            // 
-            this.cbIsMiniWhenClose.AutoSize = true;
-            this.cbIsMiniWhenClose.Location = new System.Drawing.Point(36, 102);
-            this.cbIsMiniWhenClose.Name = "cbIsMiniWhenClose";
-            this.cbIsMiniWhenClose.Size = new System.Drawing.Size(252, 24);
-            this.cbIsMiniWhenClose.TabIndex = 5;
-            this.cbIsMiniWhenClose.Text = "关闭主面板时是否最小化到系统托盘";
-            this.cbIsMiniWhenClose.UseVisualStyleBackColor = true;
-            this.cbIsMiniWhenClose.CheckedChanged += new System.EventHandler(this.cbIsMiniWhenClose_CheckedChanged);
             // 
             // SettingFrm
             // 

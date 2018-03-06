@@ -46,6 +46,11 @@ namespace YPT
         public MainFrm()
         {
             InitializeComponent();
+
+            Assembly asm = Assembly.GetExecutingAssembly();
+            var asmVersion = asm.GetName().Version;
+            this.Text = string.Format("YPT {0}.{1}.{2}", asmVersion.Major, asmVersion.Minor, asmVersion.Build);
+
             FormUtils.InitDataGridView(dgvTorrent);
             FormUtils.CreateDataGridColumns(dgvTorrent, typeof(PTTorrentGridEntity));
             FormUtils.InitDataGridView(dgvPersonInfo);
@@ -379,7 +384,7 @@ namespace YPT
                 }
 
                 JObject o = new JObject();
-                string selectSiteJson =  Global.GetConfig<string>(YUConst.CONFIG_SEARCHSITEHISTORY);
+                string selectSiteJson = Global.GetConfig<string>(YUConst.CONFIG_SEARCHSITEHISTORY);
                 if (!selectSiteJson.IsNullOrEmptyOrWhiteSpace())
                 {
                     o = JsonConvert.DeserializeObject<JObject>(selectSiteJson);
@@ -413,7 +418,7 @@ namespace YPT
                 (sender as CheckBox).Text = "全选";
         }
 
-      
+
         private void Cb_CheckedChanged(object sender, EventArgs e)
         {
             Task t = Task.Factory.StartNew(() =>
@@ -851,7 +856,7 @@ namespace YPT
                     });
                 }, cts.Token);
                 if (!isBack)
-                    progressPanel.BeginLoading();
+                    progressPanel.BeginLoading(20000);
                 LogMessage(null, "正在同步个人信息。");
                 System.Timers.Timer canelTimer = new System.Timers.Timer(20000);
                 canelTimer.Elapsed += new System.Timers.ElapsedEventHandler((s, e) => OnTimedEvent(s, e, cts));

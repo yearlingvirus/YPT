@@ -308,7 +308,7 @@ namespace YPT.PT
                    htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]//td[contains(concat(' ', normalize-space(@class), ' '), ' rowhead ')]");
 
                 if (headNodes == null || headNodes.Count <= 0)
-                    throw new Exception(string.Format("{0} 无法获取用户信息中的RowHeader，请稍后重试。", Site.Name));
+                    throw new Exception(string.Format("{0} 获取用户详细信息失败，请稍后重试。", Site.Name));
 
                 //根据行头获取映射
                 var infoMaps = GetInfoMaps(headNodes);

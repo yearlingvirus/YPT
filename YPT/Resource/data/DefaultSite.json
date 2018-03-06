@@ -10,16 +10,16 @@
     "IsEnableVerificationCode": false,
     "isEnableTwo_StepVerification": true,
     "PersonInfoMaps": {
-      "Bonus": [ "Karma Points", "魔力值", "积分", "Bonus", "포인트" ],
+      "Bonus": [ "魔力值", "魔力豆", "积分", "Karma Points", "Bonus", "포인트" ],
       "RegisterDate": [ "Join date", "加入日期", "注册日期", "가입 날짜" ],
       "ShareRate": [ "Transfers", "传输", "傳送", "分享率", "Ratio" ],
       "DownSize": [ "Transfers", "传输", "傳送", "下载量", "Downloaded", "다운로드" ],
       "UpSize": [ "Transfers", "传输", "傳送", "上传量", "Uploaded", "업로드" ],
       "SeedRate": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedTimes": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "DownTimes": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedNumber": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "Rank": [ "Class\t", "等级", "等級", "등급" ]
+      "SeedTimes": [ "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
+      "DownTimes": [ "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
+      "SeedNumber": [ "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
+      "Rank": [ "Class", "等级", "等級", "등급" ]
     },
     "TorrentMaps": {
       "ResourceType": [ "类型", "类别", "類型", "Cat.", "Type" ],
@@ -44,29 +44,6 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": false,
     "isEnableTwo_StepVerification": true,
-    "PersonInfoMaps": {
-      "Bonus": [ "Karma Points", "魔力值", "积分", "Bonus", "포인트" ],
-      "RegisterDate": [ "Join date", "加入日期", "注册日期", "가입 날짜" ],
-      "ShareRate": [ "Transfers", "传输", "傳送", "分享率", "Ratio" ],
-      "DownSize": [ "Transfers", "传输", "傳送", "下载量", "Downloaded", "다운로드" ],
-      "UpSize": [ "Transfers", "传输", "傳送", "上传量", "Uploaded", "업로드" ],
-      "SeedRate": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedTimes": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "DownTimes": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedNumber": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "Rank": [ "Class\t", "等级", "等級", "등급" ]
-    },
-    "TorrentMaps": {
-      "ResourceType": [ "类型", "类别", "類型", "Cat.", "Type" ],
-      "Detail": [ "标题", "標題", "Name", "名称" ],
-      "PromotionType": [ "标题", "標題", "Name", "名称" ],
-      "TimeAlive": [ "time", "存活时间", "存活時間", "TTL" ],
-      "Size": [ "size", "大小" ],
-      "SeederNumber": [ "seeders", "做种", "种子数", "種子數" ],
-      "LeecherNumber": [ "leechers", "下载", "下載數" ],
-      "SnatchedNumber": [ "snatched", "完成", "完成數" ],
-      "UpLoader": [ "发布者", "發佈者", "上传者" ]
-    },
     "Id": 2
   },
   {
@@ -79,29 +56,6 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": false,
     "isEnableTwo_StepVerification": false,
-    "PersonInfoMaps": {
-      "Bonus": [ "Karma Points", "魔力值", "积分", "Bonus", "포인트" ],
-      "RegisterDate": [ "Join date", "加入日期", "注册日期", "가입 날짜" ],
-      "ShareRate": [ "Transfers", "传输", "傳送", "分享率", "Ratio" ],
-      "DownSize": [ "Transfers", "传输", "傳送", "下载量", "Downloaded", "다운로드" ],
-      "UpSize": [ "Transfers", "传输", "傳送", "上传量", "Uploaded", "업로드" ],
-      "SeedRate": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedTimes": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "DownTimes": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedNumber": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "Rank": [ "Class\t", "等级", "等級", "등급" ]
-    },
-    "TorrentMaps": {
-      "ResourceType": [ "类型", "类别", "類型", "Cat.", "Type" ],
-      "Detail": [ "标题", "標題", "Name", "名称" ],
-      "PromotionType": [ "标题", "標題", "Name", "名称" ],
-      "TimeAlive": [ "time", "存活时间", "存活時間", "TTL" ],
-      "Size": [ "size", "大小" ],
-      "SeederNumber": [ "seeders", "做种", "种子数", "種子數" ],
-      "LeecherNumber": [ "leechers", "下载", "下載數" ],
-      "SnatchedNumber": [ "snatched", "完成", "完成數" ],
-      "UpLoader": [ "发布者", "發佈者", "上传者" ]
-    },
     "Id": 3
   },
   {
@@ -114,29 +68,6 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": false,
     "isEnableTwo_StepVerification": false,
-    "PersonInfoMaps": {
-      "Bonus": [ "Karma Points", "魔力值", "积分", "Bonus", "포인트" ],
-      "RegisterDate": [ "Join date", "加入日期", "注册日期", "가입 날짜" ],
-      "ShareRate": [ "Transfers", "传输", "傳送", "分享率", "Ratio" ],
-      "DownSize": [ "Transfers", "传输", "傳送", "下载量", "Downloaded", "다운로드" ],
-      "UpSize": [ "Transfers", "传输", "傳送", "上传量", "Uploaded", "업로드" ],
-      "SeedRate": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedTimes": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "DownTimes": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedNumber": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "Rank": [ "Class\t", "等级", "等級", "등급" ]
-    },
-    "TorrentMaps": {
-      "ResourceType": [ "类型", "类别", "類型", "Cat.", "Type" ],
-      "Detail": [ "标题", "標題", "Name", "名称" ],
-      "PromotionType": [ "标题", "標題", "Name", "名称" ],
-      "TimeAlive": [ "time", "存活时间", "存活時間", "TTL" ],
-      "Size": [ "size", "大小" ],
-      "SeederNumber": [ "seeders", "做种", "种子数", "種子數" ],
-      "LeecherNumber": [ "leechers", "下载", "下載數" ],
-      "SnatchedNumber": [ "snatched", "完成", "完成數" ],
-      "UpLoader": [ "发布者", "發佈者", "上传者" ]
-    },
     "Id": 4
   },
   {
@@ -149,29 +80,6 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
-    "PersonInfoMaps": {
-      "Bonus": [ "Karma Points", "魔力值", "积分", "Bonus", "포인트" ],
-      "RegisterDate": [ "Join date", "加入日期", "注册日期", "가입 날짜" ],
-      "ShareRate": [ "Transfers", "传输", "傳送", "分享率", "Ratio" ],
-      "DownSize": [ "Transfers", "传输", "傳送", "下载量", "Downloaded", "다운로드" ],
-      "UpSize": [ "Transfers", "传输", "傳送", "上传量", "Uploaded", "업로드" ],
-      "SeedRate": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedTimes": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "DownTimes": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedNumber": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "Rank": [ "Class\t", "等级", "等級", "등급" ]
-    },
-    "TorrentMaps": {
-      "ResourceType": [ "类型", "类别", "類型", "Cat.", "Type" ],
-      "Detail": [ "标题", "標題", "Name", "名称" ],
-      "PromotionType": [ "标题", "標題", "Name", "名称" ],
-      "TimeAlive": [ "time", "存活时间", "存活時間", "TTL" ],
-      "Size": [ "size", "大小" ],
-      "SeederNumber": [ "seeders", "做种", "种子数", "種子數" ],
-      "LeecherNumber": [ "leechers", "下载", "下載數" ],
-      "SnatchedNumber": [ "snatched", "完成", "完成數" ],
-      "UpLoader": [ "发布者", "發佈者", "上传者" ]
-    },
     "Id": 5
   },
   {
@@ -184,29 +92,6 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
-    "PersonInfoMaps": {
-      "Bonus": [ "Karma Points", "魔力值", "积分", "Bonus", "포인트" ],
-      "RegisterDate": [ "Join date", "加入日期", "注册日期", "가입 날짜" ],
-      "ShareRate": [ "Transfers", "传输", "傳送", "分享率", "Ratio" ],
-      "DownSize": [ "Transfers", "传输", "傳送", "下载量", "Downloaded", "다운로드" ],
-      "UpSize": [ "Transfers", "传输", "傳送", "上传量", "Uploaded", "업로드" ],
-      "SeedRate": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedTimes": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "DownTimes": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedNumber": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "Rank": [ "Class\t", "等级", "等級", "등급" ]
-    },
-    "TorrentMaps": {
-      "ResourceType": [ "类型", "类别", "類型", "Cat.", "Type" ],
-      "Detail": [ "标题", "標題", "Name", "名称" ],
-      "PromotionType": [ "标题", "標題", "Name", "名称" ],
-      "TimeAlive": [ "time", "存活时间", "存活時間", "TTL" ],
-      "Size": [ "size", "大小" ],
-      "SeederNumber": [ "seeders", "做种", "种子数", "種子數" ],
-      "LeecherNumber": [ "leechers", "下载", "下載數" ],
-      "SnatchedNumber": [ "snatched", "完成", "完成數" ],
-      "UpLoader": [ "发布者", "發佈者", "上传者" ]
-    },
     "Id": 6
   },
   {
@@ -219,29 +104,6 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
-    "PersonInfoMaps": {
-      "Bonus": [ "Karma Points", "魔力值", "积分", "Bonus", "포인트" ],
-      "RegisterDate": [ "Join date", "加入日期", "注册日期", "가입 날짜" ],
-      "ShareRate": [ "Transfers", "传输", "傳送", "分享率", "Ratio" ],
-      "DownSize": [ "Transfers", "传输", "傳送", "下载量", "Downloaded", "다운로드" ],
-      "UpSize": [ "Transfers", "传输", "傳送", "上传量", "Uploaded", "업로드" ],
-      "SeedRate": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedTimes": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "DownTimes": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedNumber": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "Rank": [ "Class\t", "等级", "等級", "등급" ]
-    },
-    "TorrentMaps": {
-      "ResourceType": [ "类型", "类别", "類型", "Cat.", "Type" ],
-      "Detail": [ "标题", "標題", "Name", "名称" ],
-      "PromotionType": [ "标题", "標題", "Name", "名称" ],
-      "TimeAlive": [ "time", "存活时间", "存活時間", "TTL" ],
-      "Size": [ "size", "大小" ],
-      "SeederNumber": [ "seeders", "做种", "种子数", "種子數" ],
-      "LeecherNumber": [ "leechers", "下载", "下載數" ],
-      "SnatchedNumber": [ "snatched", "完成", "完成數" ],
-      "UpLoader": [ "发布者", "發佈者", "上传者" ]
-    },
     "Id": 7
   },
   {
@@ -254,29 +116,18 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
-    "PersonInfoMaps": {
-      "Bonus": [ "Karma Points", "魔力值", "积分", "Bonus", "포인트" ],
-      "RegisterDate": [ "Join date", "加入日期", "注册日期", "가입 날짜" ],
-      "ShareRate": [ "Transfers", "传输", "傳送", "分享率", "Ratio" ],
-      "DownSize": [ "Transfers", "传输", "傳送", "下载量", "Downloaded", "다운로드" ],
-      "UpSize": [ "Transfers", "传输", "傳送", "上传量", "Uploaded", "업로드" ],
-      "SeedRate": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedTimes": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "DownTimes": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedNumber": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "Rank": [ "Class\t", "等级", "等級", "등급" ]
-    },
-    "TorrentMaps": {
-      "ResourceType": [ "类型", "类别", "類型", "Cat.", "Type" ],
-      "Detail": [ "标题", "標題", "Name", "名称" ],
-      "PromotionType": [ "标题", "標題", "Name", "名称" ],
-      "TimeAlive": [ "time", "存活时间", "存活時間", "TTL" ],
-      "Size": [ "size", "大小" ],
-      "SeederNumber": [ "seeders", "做种", "种子数", "種子數" ],
-      "LeecherNumber": [ "leechers", "下载", "下載數" ],
-      "SnatchedNumber": [ "snatched", "完成", "完成數" ],
-      "UpLoader": [ "发布者", "發佈者", "上传者" ]
-    },
     "Id": 8
+  },
+  {
+    "Url": "https://nanyangpt.com/",
+    "Name": "NY",
+    "LoginUrl": "https://nanyangpt.com//takelogin.php",
+    "SignUrl": "",
+    "SearchUrl": "https://nanyangpt.com//torrents.php",
+    "InfoUrl": "https://nanyangpt.com//userdetails.php?id={0}",
+    "IsEableSecurityQuestion": false,
+    "IsEnableVerificationCode": true,
+    "isEnableTwo_StepVerification": false,
+    "Id": 9
   }
 ]

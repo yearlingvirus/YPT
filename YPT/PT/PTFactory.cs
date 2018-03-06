@@ -30,6 +30,7 @@ namespace YPT.PT
                 _mapServer.Add(YUEnums.PTEnum.BTSCHOOL, "YPT.PT.BTSCHOOL,YPT");
                 _mapServer.Add(YUEnums.PTEnum.GZTOWN, "YPT.PT.GZTOWN,YPT");
                 _mapServer.Add(YUEnums.PTEnum.HDU, "YPT.PT.HDU,YPT");
+                _mapServer.Add(YUEnums.PTEnum.NY, "YPT.PT.NY,YPT");
                 notRegistered = false;
             }
 

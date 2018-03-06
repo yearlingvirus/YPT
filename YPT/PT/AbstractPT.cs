@@ -249,6 +249,16 @@ namespace YPT.PT
                 string postData = string.Format("username={0}&password={1}&imagestring={2}&imagehash={3}", User.UserName, User.PassWord, checkCodeKey, checkCodeHash);
                 if (new Uri(Site.LoginUrl).Scheme == "https")
                     postData += string.Format("&ssl=yes&trackerssl=yes");
+
+                //这里兼容某些站会有XSS的情况。
+                var xssNode = htmlDocument.DocumentNode.SelectSingleNode("//form/input[contains(concat(' ', normalize-space(@name), ' '), ' xss ')]");
+                if (xssNode != null && xssNode.Attributes.Contains("value"))
+                {
+                    string xssValue = xssNode.Attributes["value"].Value;
+                    if (!xssValue.IsNullOrEmptyOrWhiteSpace())
+                        postData = string.Format("xss={0}&", xssValue) + postData;
+                }
+
                 return HttpUtils.PostData(Site.LoginUrl, postData, _cookie);
             }
             else
@@ -303,6 +313,7 @@ namespace YPT.PT
         {
             int id = 0;
             HtmlDocument htmlDocument = new HtmlDocument();
+            htmlDocument.OptionOutputAsXml = false;
             htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
             HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"info_block\"]/tr/td/table/tr/td//a");//跟Xpath一样
             if (node != null)
@@ -403,7 +414,7 @@ namespace YPT.PT
         /// <returns></returns>
         protected virtual HtmlNodeCollection GetTorrentNodes(HtmlDocument htmlDocument)
         {
-            return htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' torrents ')]/tr");
+            return htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' torrents ')]//tr");
         }
 
         /// <summary>
@@ -495,7 +506,6 @@ namespace YPT.PT
                 return;
             }
         }
-
 
         /// <summary>
         /// 设置促销信息
@@ -600,8 +610,6 @@ namespace YPT.PT
                 throw new Exception("获取种子列映射失败，请检查配置文件。");
             }
         }
-
-
 
         #endregion
 
@@ -796,10 +804,14 @@ namespace YPT.PT
                 string htmlResult = HttpUtils.GetDataGetHtml(url, _cookie);
 
                 HtmlDocument htmlDocument = new HtmlDocument();
+                //某些站点的HTML可能不规范，导致获取信息失败，这里OptionAutoCloseOnEnd设为True
+                htmlDocument.OptionAutoCloseOnEnd = true;
                 htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
 
                 HtmlNodeCollection headNodes =
                    htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]//td[contains(concat(' ', normalize-space(@align), ' '), ' right ')]");
+
+
 
                 if (headNodes == null || headNodes.Count <= 0)
                     throw new Exception(string.Format("{0} 获取用户详细信息失败，请稍后重试。", Site.Name));
@@ -937,7 +949,6 @@ namespace YPT.PT
                 return info;
             }
         }
-
 
         /// <summary>
         /// 根据行头获取用户信息列映射

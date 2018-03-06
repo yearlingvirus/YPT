@@ -127,7 +127,7 @@ namespace YU.Core.DataEntity
                 SignUrl = "https://pt.gztown.net/attendance.php",
                 SearchUrl = "https://pt.gztown.net/torrents.php",
             },
-              new PTSite() {
+            new PTSite() {
                 Url = "https://pt.upxin.net",
                 Name = "HDU",
                 Id = YUEnums.PTEnum.HDU,
@@ -136,6 +136,16 @@ namespace YU.Core.DataEntity
                 InfoUrl = "https://pt.upxin.net/userdetails.php?id={0}",
                 SignUrl = "https://pt.upxin.net/added.php",
                 SearchUrl = "https://pt.upxin.net/torrents.php",
+            },
+            new PTSite() {
+                Url = "https://nanyangpt.com/",
+                Name = "NY",
+                Id = YUEnums.PTEnum.NY,
+                IsEnableVerificationCode = true,
+                LoginUrl =  "https://nanyangpt.com//takelogin.php",
+                InfoUrl = "https://nanyangpt.com//userdetails.php?id={0}",
+                SignUrl = "",
+                SearchUrl = "https://nanyangpt.com//torrents.php",
             },
         };
 
@@ -160,16 +170,16 @@ namespace YU.Core.DataEntity
         {
             return new Dictionary<YUEnums.PersonInfoMap, string[]>()
             {
-                { YUEnums.PersonInfoMap.Bonus, new string[] { "Karma Points", "魔力值", "积分", "Bonus", "포인트" }},
+                { YUEnums.PersonInfoMap.Bonus, new string[] {"魔力值", "魔力豆", "积分", "Karma Points", "Bonus", "포인트" }},
                 { YUEnums.PersonInfoMap.RegisterDate, new string[] { "Join date", "加入日期", "注册日期", "가입 날짜" } },
                 { YUEnums.PersonInfoMap.ShareRate, new string[] { "Transfers", "传输", "傳送", "分享率", "Ratio" }},
                 { YUEnums.PersonInfoMap.DownSize, new string[] { "Transfers", "传输", "傳送", "下载量", "Downloaded", "다운로드" }},
                 { YUEnums.PersonInfoMap.UpSize, new string[] { "Transfers", "传输", "傳送", "上传量", "Uploaded", "업로드" }},
                 { YUEnums.PersonInfoMap.SeedRate, new string[] { "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
-                { YUEnums.PersonInfoMap.SeedTimes, new string[] { "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
-                { YUEnums.PersonInfoMap.DownTimes, new string[] { "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
-                { YUEnums.PersonInfoMap.SeedNumber, new string[] { "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
-                { YUEnums.PersonInfoMap.Rank, new string[] { "Class	", "等级", "等級", "등급" }}
+                { YUEnums.PersonInfoMap.SeedTimes, new string[] { "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
+                { YUEnums.PersonInfoMap.DownTimes, new string[] { "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
+                { YUEnums.PersonInfoMap.SeedNumber, new string[] { "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
+                { YUEnums.PersonInfoMap.Rank, new string[] { "Class", "等级", "等級", "등급" }}
             };
         }
 
