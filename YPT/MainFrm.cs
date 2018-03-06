@@ -593,12 +593,12 @@ namespace YPT
                         dgvTorrent.CurrentCell = dgvTorrent.Rows[e.RowIndex].Cells[e.ColumnIndex];
                     }
                     //弹出操作菜单
-                    dgvContextMenu.Show(MousePosition.X, MousePosition.Y);
+                    dgvTorrentContextMenu.Show(MousePosition.X, MousePosition.Y);
                 }
             }
         }
 
-        private void toolStripMenuOpen_Click(object sender, EventArgs e)
+        private void toolStripMenuOpenTorrent_Click(object sender, EventArgs e)
         {
             if (dgvTorrent.SelectedRows != null && dgvTorrent.SelectedRows.Count > 0)
             {
@@ -915,8 +915,40 @@ namespace YPT
             }
         }
 
-        #endregion
 
+        private void dgvPersonInfo_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                if (e.RowIndex >= 0)
+                {
+                    //若行已是选中状态就不再进行设置
+                    if (dgvPersonInfo.Rows[e.RowIndex].Selected == false)
+                    {
+                        dgvPersonInfo.ClearSelection();
+                        dgvPersonInfo.Rows[e.RowIndex].Selected = true;
+                    }
+                    //只选中一行时设置活动单元格
+                    if (dgvPersonInfo.SelectedRows.Count == 1)
+                    {
+                        dgvPersonInfo.CurrentCell = dgvPersonInfo.Rows[e.RowIndex].Cells[e.ColumnIndex];
+                    }
+                    //弹出操作菜单
+                    dgvInfoContextMenu.Show(MousePosition.X, MousePosition.Y);
+                }
+            }
+        }
+
+        private void toolStripMenuOpenInfo_Click(object sender, EventArgs e)
+        {
+            if (dgvPersonInfo.SelectedRows != null && dgvPersonInfo.SelectedRows.Count > 0)
+            {
+                string url = dgvPersonInfo.SelectedRows[0].Cells["Url"].Value.TryPareValue<string>();
+                System.Diagnostics.Process.Start(url);
+            }
+        }
+
+        #endregion
 
     }
 }

@@ -654,7 +654,7 @@ namespace YPT.PT
                     HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                     httpWebRequest.Method = "POST";
                     //这里用IE9的内核解析
-                    httpWebRequest.UserAgent = YUConst.HTTP_IE9_UA;
+                    httpWebRequest.UserAgent = IsUseIEDownload() ? YUConst.HTTP_IE9_UA : YUConst.HTTP_CHROME_UA;
                     httpWebRequest.Timeout = 10000;
                     httpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*;q=0.8";
                     httpWebRequest.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip, deflate, br");
@@ -666,6 +666,7 @@ namespace YPT.PT
                     if (!webRespon.GetResponseHeader("Location").IsNullOrEmptyOrWhiteSpace())
                         throw new Exception("下载种子失败，也许是二次验证等原因导致，请尝试关闭。");
 
+                    
                     if (webRespon.Headers.AllKeys.Contains("Content-Disposition"))
                     {
                         string contentDis = webRespon.Headers.Get("Content-Disposition");
@@ -736,6 +737,11 @@ namespace YPT.PT
                 throw new Exception("下载种子失败，失败原因：无法获取到种子信息。");
         }
 
+        protected virtual bool IsUseIEDownload()
+        {
+            return true;
+        }
+
         /// <summary>
         /// 获取用户输入的文件路径
         /// </summary>
@@ -782,6 +788,7 @@ namespace YPT.PT
             else
             {
                 string url = string.Format(Site.InfoUrl, User.Id);
+                info.Url = url;
                 string htmlResult = HttpUtils.GetDataGetHtml(url, _cookie);
 
                 HtmlDocument htmlDocument = new HtmlDocument();

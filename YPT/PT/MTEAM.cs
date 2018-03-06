@@ -31,6 +31,11 @@ namespace YPT.PT
             }
         }
 
+        protected override bool IsUseIEDownload()
+        {
+            return false;
+        }
+
 
 
         protected override bool SetTorrentSubTitle(HtmlNode node, PTTorrent torrent)

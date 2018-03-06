@@ -61,11 +61,13 @@ namespace YPT
             this.nfyMain = new System.Windows.Forms.NotifyIcon(this.components);
             this.nfyContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuQuit = new System.Windows.Forms.ToolStripMenuItem();
-            this.dgvContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.toolStripMenuOpen = new System.Windows.Forms.ToolStripMenuItem();
+            this.dgvTorrentContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuOpenTorrent = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuDown = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuIDownAndOpen = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemCopy = new System.Windows.Forms.ToolStripMenuItem();
+            this.dgvInfoContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuOpenInfo = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenuStrip.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tabSearch.SuspendLayout();
@@ -78,7 +80,8 @@ namespace YPT
             this.tabLog.SuspendLayout();
             this.logPanel.SuspendLayout();
             this.nfyContextMenu.SuspendLayout();
-            this.dgvContextMenu.SuspendLayout();
+            this.dgvTorrentContextMenu.SuspendLayout();
+            this.dgvInfoContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // mainMenuStrip
@@ -315,6 +318,7 @@ namespace YPT
             this.dgvPersonInfo.RowTemplate.Height = 23;
             this.dgvPersonInfo.Size = new System.Drawing.Size(1078, 592);
             this.dgvPersonInfo.TabIndex = 1;
+            this.dgvPersonInfo.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvPersonInfo_CellMouseDown);
             this.dgvPersonInfo.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgv_ColumnHeaderMouseClick);
             this.dgvPersonInfo.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.dgv_DataBindingComplete);
             // 
@@ -395,41 +399,55 @@ namespace YPT
             // 
             // dgvContextMenu
             // 
-            this.dgvContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuOpen,
+            this.dgvTorrentContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuOpenTorrent,
             this.toolStripMenuDown,
             this.toolStripMenuIDownAndOpen,
             this.toolStripMenuItemCopy});
-            this.dgvContextMenu.Name = "dgvContextMenu";
-            this.dgvContextMenu.Size = new System.Drawing.Size(137, 92);
+            this.dgvTorrentContextMenu.Name = "dgvContextMenu";
+            this.dgvTorrentContextMenu.Size = new System.Drawing.Size(153, 114);
             // 
-            // toolStripMenuOpen
+            // toolStripMenuOpenTorrent
             // 
-            this.toolStripMenuOpen.Name = "toolStripMenuOpen";
-            this.toolStripMenuOpen.Size = new System.Drawing.Size(136, 22);
-            this.toolStripMenuOpen.Text = "打开链接";
-            this.toolStripMenuOpen.Click += new System.EventHandler(this.toolStripMenuOpen_Click);
+            this.toolStripMenuOpenTorrent.Name = "toolStripMenuOpenTorrent";
+            this.toolStripMenuOpenTorrent.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuOpenTorrent.Text = "打开链接";
+            this.toolStripMenuOpenTorrent.Click += new System.EventHandler(this.toolStripMenuOpenTorrent_Click);
             // 
             // toolStripMenuDown
             // 
             this.toolStripMenuDown.Name = "toolStripMenuDown";
-            this.toolStripMenuDown.Size = new System.Drawing.Size(136, 22);
+            this.toolStripMenuDown.Size = new System.Drawing.Size(152, 22);
             this.toolStripMenuDown.Text = "下载种子";
             this.toolStripMenuDown.Click += new System.EventHandler(this.toolStripMenuDown_Click);
             // 
             // toolStripMenuIDownAndOpen
             // 
             this.toolStripMenuIDownAndOpen.Name = "toolStripMenuIDownAndOpen";
-            this.toolStripMenuIDownAndOpen.Size = new System.Drawing.Size(136, 22);
+            this.toolStripMenuIDownAndOpen.Size = new System.Drawing.Size(152, 22);
             this.toolStripMenuIDownAndOpen.Text = "下载并打开";
             this.toolStripMenuIDownAndOpen.Click += new System.EventHandler(this.toolStripMenuIDownAndOpen_Click);
             // 
             // toolStripMenuItemCopy
             // 
             this.toolStripMenuItemCopy.Name = "toolStripMenuItemCopy";
-            this.toolStripMenuItemCopy.Size = new System.Drawing.Size(136, 22);
+            this.toolStripMenuItemCopy.Size = new System.Drawing.Size(152, 22);
             this.toolStripMenuItemCopy.Text = "复制链接";
             this.toolStripMenuItemCopy.Click += new System.EventHandler(this.toolStripMenuItemCopy_Click);
+            // 
+            // dgvInfoContextMenu
+            // 
+            this.dgvInfoContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuOpenInfo});
+            this.dgvInfoContextMenu.Name = "dgvInfoContextMenu";
+            this.dgvInfoContextMenu.Size = new System.Drawing.Size(125, 26);
+            // 
+            // toolStripMenuOpenInfo
+            // 
+            this.toolStripMenuOpenInfo.Name = "toolStripMenuOpenInfo";
+            this.toolStripMenuOpenInfo.Size = new System.Drawing.Size(124, 22);
+            this.toolStripMenuOpenInfo.Text = "打开链接";
+            this.toolStripMenuOpenInfo.Click += new System.EventHandler(this.toolStripMenuOpenInfo_Click);
             // 
             // MainFrm
             // 
@@ -463,7 +481,8 @@ namespace YPT
             this.tabLog.ResumeLayout(false);
             this.logPanel.ResumeLayout(false);
             this.nfyContextMenu.ResumeLayout(false);
-            this.dgvContextMenu.ResumeLayout(false);
+            this.dgvTorrentContextMenu.ResumeLayout(false);
+            this.dgvInfoContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -491,8 +510,8 @@ namespace YPT
         private System.Windows.Forms.Panel panelSite;
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.TextBox txtSearch;
-        private System.Windows.Forms.ContextMenuStrip dgvContextMenu;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuOpen;
+        private System.Windows.Forms.ContextMenuStrip dgvTorrentContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuOpenTorrent;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuDown;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuIDownAndOpen;
         private System.Windows.Forms.TabPage tabPersonInfo;
@@ -505,6 +524,8 @@ namespace YPT
         private YUComboBox cmbPromotion;
         private System.Windows.Forms.Label lblFav;
         private YUComboBox cmbFav;
+        private System.Windows.Forms.ContextMenuStrip dgvInfoContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuOpenInfo;
     }
 }
 

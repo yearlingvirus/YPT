@@ -29,6 +29,11 @@ namespace YU.Core.DataEntity
         public int Id { get; set; }
 
         /// <summary>
+        /// URL
+        /// </summary>
+        public string Url { get; set; }
+
+        /// <summary>
         /// 用户名
         /// </summary>
         [DefaultValue("")]
@@ -119,6 +124,7 @@ namespace YU.Core.DataEntity
         {
             PTInfoGridEntity entity = new PTInfoGridEntity();
             entity.Id = this.Id;
+            entity.Url = this.Url;
             entity.Bonus = this.Bonus;
             entity.DownSize = this.DownSize.IsNullOrEmptyOrWhiteSpace() ? "--" : this.DownSize;
             entity.DownTimes = this.DownTimes.IsNullOrEmptyOrWhiteSpace() ? "--" : this.DownTimes;

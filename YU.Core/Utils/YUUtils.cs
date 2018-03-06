@@ -28,9 +28,9 @@ namespace YU.Core.Utils
             string[] units = new string[] { "KB", "MB", "GB", "TB", "PB" };
             for (int i = 0; i < units.Length; i++)
             {
-                if (sizeString.Contains(units[i]))
+                if (sizeString.IndexOf(units[i], StringComparison.OrdinalIgnoreCase) > 0)
                 {
-                    var index = sizeString.LastIndexOf(units[i]);
+                    var index = sizeString.LastIndexOf(units[i], StringComparison.OrdinalIgnoreCase);
                     var size = sizeString.Substring(0, index).Trim().TryPareValue<double>();
                     if (size == 0)
                         return 0;

@@ -29,6 +29,12 @@ namespace YU.Core.DataEntity
         public int Id { get; set; }
 
         /// <summary>
+        /// Url
+        /// </summary>
+        [GridView("Url", false, 100)]
+        public string Url { get; set; }
+
+        /// <summary>
         /// 用户名
         /// </summary>
         [GridView("用户名", true, 100)]
