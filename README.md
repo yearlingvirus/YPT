@@ -16,6 +16,18 @@ Download the [latest release].
 
 Microsoft [.NET Framework 4] or higher.
 
+#### Support
+
+MTEAM  
+TTG  
+CHDBITS  
+KEEPFRDS  
+OURBITS  
+GZTOWN  
+BTSCHOOL  
+HDU  
+NYPT  
+
 #### Basic
 
 1. Find YPT icon in application directory
