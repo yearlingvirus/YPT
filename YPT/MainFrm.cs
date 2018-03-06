@@ -416,13 +416,16 @@ namespace YPT
       
         private void Cb_CheckedChanged(object sender, EventArgs e)
         {
-            CheckBox cb = (sender as CheckBox);
-            JObject o = new JObject();
-            string selectSiteJson = Global.GetConfig<string>(YUConst.CONFIG_SEARCHSITEHISTORY);
-            if (!selectSiteJson.IsNullOrEmptyOrWhiteSpace())
-                o = JsonConvert.DeserializeObject<JObject>(selectSiteJson);
-            o[cb.Name] = cb.Checked;
-            Global.SetConfig(YUConst.CONFIG_SEARCHSITEHISTORY, JsonConvert.SerializeObject(o));
+            Task t = Task.Factory.StartNew(() =>
+            {
+                CheckBox cb = (sender as CheckBox);
+                JObject o = new JObject();
+                string selectSiteJson = Global.GetConfig<string>(YUConst.CONFIG_SEARCHSITEHISTORY);
+                if (!selectSiteJson.IsNullOrEmptyOrWhiteSpace())
+                    o = JsonConvert.DeserializeObject<JObject>(selectSiteJson);
+                o[cb.Name] = cb.Checked;
+                Global.SetConfig(YUConst.CONFIG_SEARCHSITEHISTORY, JsonConvert.SerializeObject(o));
+            });
         }
 
         private void panelSite_Paint(object sender, PaintEventArgs e)
@@ -636,7 +639,7 @@ namespace YPT
                         {
                             AbstractPT pt = PTFactory.GetPT((YUEnums.PTEnum)siteId, Global.Users.Where(x => (int)x.Site.Id == siteId).FirstOrDefault()) as AbstractPT;
                             pt.PrepareDownFile += Pt_PrepareDownFile;
-                            pt.DownTorrent(torrent, isOepn);
+                            pt.DownTorrent(torrent, isOepn, Global.Config.IsEnablePostFileName);
                         });
                         TaskCallBack(t, "下载种子过程中出现错误，错误原因：");
                     }

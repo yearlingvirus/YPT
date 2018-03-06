@@ -58,7 +58,8 @@ namespace YPT.PT
         /// </summary>
         /// <param name="torrent"></param>
         /// <param name="isOpen"></param>
-        void DownTorrent(PTTorrent torrent, bool isOpen);
+        /// <param name="isPostFileName"></param>
+        void DownTorrent(PTTorrent torrent, bool isOpen , bool isPostFileName);
 
         /// <summary>
         /// 获取个人信息

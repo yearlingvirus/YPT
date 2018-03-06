@@ -641,7 +641,7 @@ namespace YPT.PT
 
         #region 下载
 
-        public void DownTorrent(PTTorrent torrent, bool isOpen)
+        public void DownTorrent(PTTorrent torrent, bool isOpen, bool isPostFileName)
         {
             if (torrent != null)
             {
@@ -653,7 +653,7 @@ namespace YPT.PT
 
                     HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                     httpWebRequest.Method = "POST";
-                    //这里用IE9的内核解析
+                    //使用用IE9下载（解决中文乱码问题）
                     httpWebRequest.UserAgent = IsUseIEDownload() ? YUConst.HTTP_IE9_UA : YUConst.HTTP_CHROME_UA;
                     httpWebRequest.Timeout = 10000;
                     httpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*;q=0.8";
@@ -666,28 +666,32 @@ namespace YPT.PT
                     if (!webRespon.GetResponseHeader("Location").IsNullOrEmptyOrWhiteSpace())
                         throw new Exception("下载种子失败，也许是二次验证等原因导致，请尝试关闭。");
 
-                    
-                    if (webRespon.Headers.AllKeys.Contains("Content-Disposition"))
+                    //如果需要请求服务器文件名的话
+                    if (isPostFileName)
                     {
-                        string contentDis = webRespon.Headers.Get("Content-Disposition");
-                        if (!contentDis.IsNullOrEmptyOrWhiteSpace())
+                        if (webRespon.Headers.AllKeys.Contains("Content-Disposition"))
                         {
-                            string[] headers = contentDis.Split(';', '=');
-                            if (headers.Length >= 3 && headers[2].Contains("torrent"))
+                            string contentDis = webRespon.Headers.Get("Content-Disposition");
+                            if (!contentDis.IsNullOrEmptyOrWhiteSpace())
                             {
-                                fileName = HttpUtility.UrlDecode(headers[2]).Replace("\"", "").Trim();
+                                string[] headers = contentDis.Split(';', '=');
+                                if (headers.Length >= 3 && headers[2].Contains("torrent"))
+                                {
+                                    fileName = HttpUtility.UrlDecode(headers[2]).Replace("\"", "").Trim();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Uri uri = new Uri(url);
+                            if (uri.Segments != null && uri.Segments.Length > 0)
+                            {
+                                if (uri.Segments.LastOrDefault().Contains(".torrent"))
+                                    fileName = HttpUtility.UrlDecode(uri.Segments.LastOrDefault());
                             }
                         }
                     }
-                    else
-                    {
-                        Uri uri = new Uri(url);
-                        if (uri.Segments != null && uri.Segments.Length > 0)
-                        {
-                            if (uri.Segments.LastOrDefault().Contains(".torrent"))
-                                fileName = HttpUtility.UrlDecode(uri.Segments.LastOrDefault());
-                        }
-                    }
+
                     foreach (var car in Path.GetInvalidFileNameChars())
                     {
                         if (fileName.Contains(car))
@@ -798,7 +802,7 @@ namespace YPT.PT
                    htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]//td[contains(concat(' ', normalize-space(@align), ' '), ' right ')]");
 
                 if (headNodes == null || headNodes.Count <= 0)
-                    throw new Exception(string.Format("{0} 无法获取用户信息中的RowHeader，请稍后重试。", Site.Name));
+                    throw new Exception(string.Format("{0} 获取用户详细信息失败，请稍后重试。", Site.Name));
 
                 //根据行头获取映射
                 var infoMaps = GetInfoMaps(headNodes);

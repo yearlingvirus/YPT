@@ -297,6 +297,7 @@ namespace YPT.PT
             else
             {
                 string url = string.Format(Site.InfoUrl, User.Id);
+                info.Url = url;
                 string htmlResult = HttpUtils.GetDataGetHtml(url, _cookie);
 
                 HtmlDocument htmlDocument = new HtmlDocument();
