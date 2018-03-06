@@ -21,7 +21,7 @@ namespace YU.Core.DataEntity
         public bool IsAutoSign { get; set; }
 
         /// <summary>
-        /// 签到时自动同步个人信息
+        /// 准点同步信息
         /// </summary>
         public bool IsSyncTiming { get; set; }
 
@@ -29,5 +29,15 @@ namespace YU.Core.DataEntity
         /// 请求服务器下载文件名
         /// </summary>
         public bool IsEnablePostFileName { get; set; }
+
+        /// <summary>
+        /// 关闭主面板时是否最小化到系统托盘
+        /// </summary>
+        public bool IsMiniWhenClose { get; set; }
+
+        /// <summary>
+        /// 首次使用程序
+        /// </summary>
+        public bool IsFirstOpen { get; set; }
     }
 }

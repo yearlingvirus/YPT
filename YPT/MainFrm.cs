@@ -283,11 +283,28 @@ namespace YPT
             // 注意判断关闭事件reason来源于窗体按钮，否则用菜单退出时无法退出!
             if (e.CloseReason == CloseReason.UserClosing)
             {
-                e.Cancel = true;    //取消"关闭窗口"事件
-                this.WindowState = FormWindowState.Minimized;    //使关闭时窗口向右下角缩小的效果
-                this.nfyMain.Visible = true;
-                this.Hide();
-                return;
+                if (Global.Config.IsFirstOpen)
+                {
+                    Global.Config.IsFirstOpen = false;
+                    if (MessageBox.Show("是否最小化到系统托盘?", "温馨提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        Global.Config.IsMiniWhenClose = true;
+                    }
+                    else
+                    {
+                        Global.Config.IsMiniWhenClose = false;
+                    }
+                    Global.SetConfig(YUConst.CONFIG_ISFIRSTOPEN, Global.Config.IsFirstOpen);
+                    Global.SetConfig(YUConst.CONFIG_ISMINIWHENCLOSE, Global.Config.IsMiniWhenClose);
+                }
+                if (Global.Config.IsMiniWhenClose)
+                {
+                    e.Cancel = true;    //取消"关闭窗口"事件
+                    this.WindowState = FormWindowState.Minimized;    //使关闭时窗口向右下角缩小的效果
+                    this.nfyMain.Visible = true;
+                    this.Hide();
+                    return;
+                }
             }
         }
 
@@ -362,7 +379,7 @@ namespace YPT
                 }
 
                 JObject o = new JObject();
-                string selectSiteJson = ConfigUtil.GetConfigValue(YUConst.CONFIG_SEARCHSITEHISTORY);
+                string selectSiteJson =  Global.GetConfig<string>(YUConst.CONFIG_SEARCHSITEHISTORY);
                 if (!selectSiteJson.IsNullOrEmptyOrWhiteSpace())
                 {
                     o = JsonConvert.DeserializeObject<JObject>(selectSiteJson);
@@ -396,15 +413,16 @@ namespace YPT
                 (sender as CheckBox).Text = "全选";
         }
 
+      
         private void Cb_CheckedChanged(object sender, EventArgs e)
         {
             CheckBox cb = (sender as CheckBox);
             JObject o = new JObject();
-            string selectSiteJson = ConfigUtil.GetConfigValue(YUConst.CONFIG_SEARCHSITEHISTORY);
+            string selectSiteJson = Global.GetConfig<string>(YUConst.CONFIG_SEARCHSITEHISTORY);
             if (!selectSiteJson.IsNullOrEmptyOrWhiteSpace())
                 o = JsonConvert.DeserializeObject<JObject>(selectSiteJson);
             o[cb.Name] = cb.Checked;
-            ConfigUtil.SetConfigValue(YUConst.CONFIG_SEARCHSITEHISTORY, JsonConvert.SerializeObject(o));
+            Global.SetConfig(YUConst.CONFIG_SEARCHSITEHISTORY, JsonConvert.SerializeObject(o));
         }
 
         private void panelSite_Paint(object sender, PaintEventArgs e)
@@ -898,6 +916,7 @@ namespace YPT
         }
 
         #endregion
+
 
     }
 }

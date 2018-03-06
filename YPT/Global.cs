@@ -54,6 +54,8 @@ namespace YPT
                     Users = new List<PTUser>();
                     Config.IsEnablePostFileName = true;
                     Config.IsSyncTiming = true;
+                    Config.IsFirstOpen = true;
+                    Config.IsMiniWhenClose = false;
                 }
                 else
                 {
@@ -61,6 +63,8 @@ namespace YPT
                     Config.IsAutoSign = GetConfig(YUConst.CONFIG_SIGN_AUTO, true);
                     Config.IsEnablePostFileName = GetConfig(YUConst.CONFIG_ENABLEPOSTFILENAME, true);
                     Config.IsSyncTiming = GetConfig(YUConst.CONFIG_SYNC_AUTO, true);
+                    Config.IsFirstOpen = GetConfig(YUConst.CONFIG_ISFIRSTOPEN, true);
+                    Config.IsMiniWhenClose = GetConfig(YUConst.CONFIG_ISMINIWHENCLOSE, false);
                     InitUser();
                 }
             }

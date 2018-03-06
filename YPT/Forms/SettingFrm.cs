@@ -44,6 +44,7 @@ namespace YPT.Forms
             cbAutoSign.Checked = Global.Config.IsAutoSign;
             cbIsSyncTiming.Checked = Global.Config.IsSyncTiming;
             cbIsEnablePostFileName.Checked = Global.Config.IsEnablePostFileName;
+            cbIsMiniWhenClose.Checked = Global.Config.IsMiniWhenClose;
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -170,7 +171,6 @@ namespace YPT.Forms
             }
         }
 
-
         private void dtpSignTime_ValueChanged(object sender, EventArgs e)
         {
             Global.SetConfig(YUConst.CONFIG_SIGN_TIME, dtpSignTime.Value);
@@ -219,6 +219,12 @@ namespace YPT.Forms
         {
             if (SyncChanged != null)
                 SyncChanged.Invoke(this, e);
+        }
+
+        private void cbIsMiniWhenClose_CheckedChanged(object sender, EventArgs e)
+        {
+            Global.SetConfig(YUConst.CONFIG_ISMINIWHENCLOSE, cbIsMiniWhenClose.Checked);
+            Global.Config.IsMiniWhenClose = cbIsMiniWhenClose.Checked;
         }
     }
 }

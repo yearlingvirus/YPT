@@ -40,6 +40,7 @@
             this.tabOther = new System.Windows.Forms.TabPage();
             this.cbIsSyncTiming = new System.Windows.Forms.CheckBox();
             this.cbIsEnablePostFileName = new System.Windows.Forms.CheckBox();
+            this.cbIsMiniWhenClose = new System.Windows.Forms.CheckBox();
             this.tabControl.SuspendLayout();
             this.tabUser.SuspendLayout();
             this.tabSign.SuspendLayout();
@@ -144,6 +145,7 @@
             // 
             // tabOther
             // 
+            this.tabOther.Controls.Add(this.cbIsMiniWhenClose);
             this.tabOther.Controls.Add(this.cbIsSyncTiming);
             this.tabOther.Controls.Add(this.cbIsEnablePostFileName);
             this.tabOther.Location = new System.Drawing.Point(4, 29);
@@ -175,6 +177,17 @@
             this.cbIsEnablePostFileName.Text = "启用请求服务器下载文件名";
             this.cbIsEnablePostFileName.UseVisualStyleBackColor = true;
             this.cbIsEnablePostFileName.CheckedChanged += new System.EventHandler(this.cbIsEnablePostFileName_CheckedChanged);
+            // 
+            // cbIsMiniWhenClose
+            // 
+            this.cbIsMiniWhenClose.AutoSize = true;
+            this.cbIsMiniWhenClose.Location = new System.Drawing.Point(36, 102);
+            this.cbIsMiniWhenClose.Name = "cbIsMiniWhenClose";
+            this.cbIsMiniWhenClose.Size = new System.Drawing.Size(252, 24);
+            this.cbIsMiniWhenClose.TabIndex = 5;
+            this.cbIsMiniWhenClose.Text = "关闭主面板时是否最小化到系统托盘";
+            this.cbIsMiniWhenClose.UseVisualStyleBackColor = true;
+            this.cbIsMiniWhenClose.CheckedChanged += new System.EventHandler(this.cbIsMiniWhenClose_CheckedChanged);
             // 
             // SettingFrm
             // 
@@ -214,5 +227,6 @@
         private System.Windows.Forms.TabPage tabOther;
         private System.Windows.Forms.CheckBox cbIsEnablePostFileName;
         private System.Windows.Forms.CheckBox cbIsSyncTiming;
+        private System.Windows.Forms.CheckBox cbIsMiniWhenClose;
     }
 }

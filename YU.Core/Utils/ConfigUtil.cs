@@ -82,41 +82,5 @@ namespace YU.Core.Utils
                 return config.AppSettings.Settings[key].Value;
         }
 
-        ///// <summary>
-        ///// 初始化Config
-        ///// </summary>
-        //public static Config InitConfig()
-        //{
-        //    Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-        //    Config locConfig = new Config();
-        //    if (config.AppSettings.Settings.Count > 0)
-        //    {
-        //        var properInfos = locConfig.GetType().GetProperties();
-        //        if (properInfos != null && properInfos.Count() > 0)
-        //        {
-        //            foreach (KeyValueConfigurationElement setting in config.AppSettings.Settings)
-        //            {
-        //                //这里通过反射来初始化
-        //                foreach (var properInfo in properInfos)
-        //                {
-        //                    if (setting.Key.EqualIgnoreCase(properInfo.Name))
-        //                    {
-        //                        try
-        //                        {
-        //                            properInfo.SetValue(locConfig, Convert.ChangeType(setting.Value, properInfo.PropertyType), null);
-        //                        }
-        //                        catch
-        //                        {
-        //                            //如果出现了异常，表明配置文件中配置项异常，这里将配置项重置为默认
-        //                            //有时间可以做日志处理
-        //                            SetConfigValue(setting.Key, properInfo.GetValue(locConfig, null).TryPareValue<string>());
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return locConfig;
-        //}
     }
 }

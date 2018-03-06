@@ -49,6 +49,17 @@ namespace YU.Core
         /// </summary>
         public const string CONFIG_ENABLEPOSTFILENAME = "77D20A93-0794-41EC-ADD4-5B56EDF30259";
 
+
+        /// <summary>
+        /// 关闭主面板时是否最小化到系统托盘
+        /// </summary>
+        public const string CONFIG_ISMINIWHENCLOSE = "000D4880-9A06-4D1F-9536-A0C11D2C9B1F";
+
+        /// <summary>
+        /// 首次使用程序
+        /// </summary>
+        public const string CONFIG_ISFIRSTOPEN = "C23135A8-A5E7-45C8-A61A-BEDBB0444C94";
+
         /// <summary>
         /// POST_BOUNDARY
         /// </summary>
