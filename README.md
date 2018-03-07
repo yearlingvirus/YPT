@@ -52,6 +52,10 @@ NYPT
 2. If allowed, it is recommended to use the system's built-in login, unless the custom site, the program does not do for the custom site logon Cookie Login, some sites may also need to select the mailbox and other information.
 3. You can see more information in the Wiki.
 
+# Contact Us
+
+ ![701885973](https://raw.githubusercontent.com/wiki/yearlingvirus/ypt/images/QQGroup.png)
+
 #### Disclaimer
 
 The program is only used as an auxiliary, please contact the site management group is within the scope of the rules, such as the account IP is BAN, the program is not responsible for any.
