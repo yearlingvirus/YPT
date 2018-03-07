@@ -59,9 +59,22 @@ namespace YU.Core
         };
 
         /// <summary>
-        /// 站点配置
+        /// 扩展站点
         /// </summary>
-        public const string RESOURCE_SITES = "Resource/data/PTSite.json";
+        public const string EXTEND_SITES = "Extend/extendSite.json";
 
+        /// <summary>
+        /// Demo
+        /// </summary>
+        public const string EXTEND_SITES_SAMPLE = "Extend/sampleSite.json";
+
+        /// <summary>
+        /// 扩展站点注释
+        /// </summary>
+        public const string EXTEND_SITES_COMMENT = @"//此处可以配置扩展站点或者覆盖预置站点的信息。
+//注意：扩展添加的站点Id请大于10000，以免与预置站点冲突
+//添加为JSON格式，具体可以参考sampleSite.json
+//如果种子和用户信息如果没有正常显示，请在PersonInfoMaps和TorrentMaps添加对应的行头或者列头名称。
+//如果正常显示，则不需要添加，这样程序升级后可以兼容更多的站点";
     }
 }

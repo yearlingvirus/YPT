@@ -25,7 +25,7 @@ namespace YPT.PT
         {
             get
             {
-                return YUEnums.PTEnum.GZTOWN;
+                return YUEnums.PTEnum.GZTown;
             }
         }
 

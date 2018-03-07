@@ -22,15 +22,17 @@ namespace YPT.PT
 
             if (notRegistered)
             {
-                _mapServer.Add(YUEnums.PTEnum.CHDBITS, "YPT.PT.CHDBITS,YPT");
-                _mapServer.Add(YUEnums.PTEnum.KEEPFRDS, "YPT.PT.KEEPFRDS,YPT");
-                _mapServer.Add(YUEnums.PTEnum.MTEAM, "YPT.PT.MTEAM,YPT");
-                _mapServer.Add(YUEnums.PTEnum.OURBITS, "YPT.PT.OURBITS,YPT");
+                _mapServer.Add(YUEnums.PTEnum.CHDBits, "YPT.PT.CHDBITS,YPT");
+                _mapServer.Add(YUEnums.PTEnum.KeepFrds, "YPT.PT.KEEPFRDS,YPT");
+                _mapServer.Add(YUEnums.PTEnum.MTeam, "YPT.PT.MTEAM,YPT");
+                _mapServer.Add(YUEnums.PTEnum.OurBits, "YPT.PT.OURBITS,YPT");
                 _mapServer.Add(YUEnums.PTEnum.TTG, "YPT.PT.TTG,YPT");
-                _mapServer.Add(YUEnums.PTEnum.BTSCHOOL, "YPT.PT.BTSCHOOL,YPT");
-                _mapServer.Add(YUEnums.PTEnum.GZTOWN, "YPT.PT.GZTOWN,YPT");
+                _mapServer.Add(YUEnums.PTEnum.BTSchool, "YPT.PT.BTSCHOOL,YPT");
+                _mapServer.Add(YUEnums.PTEnum.GZTown, "YPT.PT.GZTOWN,YPT");
                 _mapServer.Add(YUEnums.PTEnum.HDU, "YPT.PT.HDU,YPT");
-                _mapServer.Add(YUEnums.PTEnum.NY, "YPT.PT.NY,YPT");
+                _mapServer.Add(YUEnums.PTEnum.NYPT, "YPT.PT.NY,YPT");
+                _mapServer.Add(YUEnums.PTEnum.HDHome, "YPT.PT.HDHOME,YPT");
+                _mapServer.Add(YUEnums.PTEnum.HDSky, "YPT.PT.HDSKY,YPT");
                 notRegistered = false;
             }
 

@@ -287,7 +287,7 @@ namespace YPT.PT
                 string htmlResult = HttpUtils.GetDataGetHtml(Site.Url, _cookie);
                 int id = GetUserId(htmlResult);
                 if (id == 0)
-                    throw new Exception(string.Format("{0} 无法获取用户Id，请尝试重新登录。", Site.Name));
+                    throw new Exception(string.Format("{0} 无法获取用户ID，请尝试重新登录。", Site.Name));
                 else
                 {
                     User.Id = id;

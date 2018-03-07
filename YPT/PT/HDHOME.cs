@@ -1,53 +1,27 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using YU.Core;
 using YU.Core.DataEntity;
 using YU.Core.Utils;
-using HtmlDocument = HtmlAgilityPack.HtmlDocument;
-using HtmlAgilityPack;
-using System.Web;
 
 namespace YPT.PT
 {
-    public class OURBITS : AbstractPT
+    public class HDHOME : AbstractPT
     {
-        public OURBITS(PTUser user)
-            : base(user)
+        public HDHOME(PTUser user) : base(user)
         {
-
         }
 
         protected override YUEnums.PTEnum SiteId
         {
             get
             {
-                return YUEnums.PTEnum.OurBits;
+                return YUEnums.PTEnum.HDHome;
             }
         }
-
-
-        protected override bool SetTorrentSubTitle(HtmlNode node, PTTorrent torrent)
-        {
-            //判断有没有官方的注解如[国语][中字]等
-            var subNode = node.SelectSingleNode(".//td[1]/div[not(contains(concat(' ', normalize-space(@class), ' '), ' progressBar '))]");
-            if (subNode == null)
-            {
-                subNode = node.SelectSingleNode(".//td[1]/br");
-                if (subNode != null && subNode.NextSibling != null)
-                    torrent.Subtitle = HttpUtility.HtmlDecode(subNode.NextSibling.InnerText);
-            }
-            else if (subNode.NextSibling != null)
-            {
-                torrent.Subtitle = string.Format("{0} {1}", subNode.InnerText, HttpUtility.HtmlDecode(subNode.NextSibling.InnerText));
-                return true;
-            }
-            return false;
-        }
-
 
         public override string Sign()
         {

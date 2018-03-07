@@ -29,7 +29,7 @@ namespace YPT.PT
         {
             get
             {
-                return YUEnums.PTEnum.KEEPFRDS;
+                return YUEnums.PTEnum.KeepFrds;
             }
         }
 

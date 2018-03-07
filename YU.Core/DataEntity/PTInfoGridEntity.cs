@@ -25,7 +25,7 @@ namespace YU.Core.DataEntity
         /// <summary>
         /// Id
         /// </summary>
-        [GridView("Id", true, 100)]
+        [GridView("ID", true, 100)]
         public int Id { get; set; }
 
         /// <summary>

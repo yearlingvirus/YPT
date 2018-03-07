@@ -23,7 +23,7 @@ namespace YPT.PT
         {
             get
             {
-                return YUEnums.PTEnum.CHDBITS;
+                return YUEnums.PTEnum.CHDBits;
             }
         }
 

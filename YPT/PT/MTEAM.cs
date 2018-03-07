@@ -27,7 +27,7 @@ namespace YPT.PT
         {
             get
             {
-                return YUEnums.PTEnum.MTEAM;
+                return YUEnums.PTEnum.MTeam;
             }
         }
 

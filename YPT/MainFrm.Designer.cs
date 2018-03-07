@@ -68,6 +68,7 @@ namespace YPT
             this.toolStripMenuItemCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.dgvInfoContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuOpenInfo = new System.Windows.Forms.ToolStripMenuItem();
+            this.关于ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenuStrip.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tabSearch.SuspendLayout();
@@ -90,7 +91,8 @@ namespace YPT
             this.设置ToolStripMenuItem,
             this.同步StripMenuItem,
             this.登录ToolStripMenuItem,
-            this.签到ToolStripMenuItem});
+            this.签到ToolStripMenuItem,
+            this.关于ToolStripMenuItem});
             this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.mainMenuStrip.Name = "mainMenuStrip";
             this.mainMenuStrip.Padding = new System.Windows.Forms.Padding(7, 3, 0, 3);
@@ -397,7 +399,7 @@ namespace YPT
             this.toolStripMenuQuit.Text = "退出程序";
             this.toolStripMenuQuit.Click += new System.EventHandler(this.toolStripMenuQuit_Click);
             // 
-            // dgvContextMenu
+            // dgvTorrentContextMenu
             // 
             this.dgvTorrentContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuOpenTorrent,
@@ -405,33 +407,33 @@ namespace YPT
             this.toolStripMenuIDownAndOpen,
             this.toolStripMenuItemCopy});
             this.dgvTorrentContextMenu.Name = "dgvContextMenu";
-            this.dgvTorrentContextMenu.Size = new System.Drawing.Size(153, 114);
+            this.dgvTorrentContextMenu.Size = new System.Drawing.Size(137, 92);
             // 
             // toolStripMenuOpenTorrent
             // 
             this.toolStripMenuOpenTorrent.Name = "toolStripMenuOpenTorrent";
-            this.toolStripMenuOpenTorrent.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuOpenTorrent.Size = new System.Drawing.Size(136, 22);
             this.toolStripMenuOpenTorrent.Text = "打开链接";
             this.toolStripMenuOpenTorrent.Click += new System.EventHandler(this.toolStripMenuOpenTorrent_Click);
             // 
             // toolStripMenuDown
             // 
             this.toolStripMenuDown.Name = "toolStripMenuDown";
-            this.toolStripMenuDown.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuDown.Size = new System.Drawing.Size(136, 22);
             this.toolStripMenuDown.Text = "下载种子";
             this.toolStripMenuDown.Click += new System.EventHandler(this.toolStripMenuDown_Click);
             // 
             // toolStripMenuIDownAndOpen
             // 
             this.toolStripMenuIDownAndOpen.Name = "toolStripMenuIDownAndOpen";
-            this.toolStripMenuIDownAndOpen.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuIDownAndOpen.Size = new System.Drawing.Size(136, 22);
             this.toolStripMenuIDownAndOpen.Text = "下载并打开";
             this.toolStripMenuIDownAndOpen.Click += new System.EventHandler(this.toolStripMenuIDownAndOpen_Click);
             // 
             // toolStripMenuItemCopy
             // 
             this.toolStripMenuItemCopy.Name = "toolStripMenuItemCopy";
-            this.toolStripMenuItemCopy.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItemCopy.Size = new System.Drawing.Size(136, 22);
             this.toolStripMenuItemCopy.Text = "复制链接";
             this.toolStripMenuItemCopy.Click += new System.EventHandler(this.toolStripMenuItemCopy_Click);
             // 
@@ -448,6 +450,13 @@ namespace YPT
             this.toolStripMenuOpenInfo.Size = new System.Drawing.Size(124, 22);
             this.toolStripMenuOpenInfo.Text = "打开链接";
             this.toolStripMenuOpenInfo.Click += new System.EventHandler(this.toolStripMenuOpenInfo_Click);
+            // 
+            // 关于ToolStripMenuItem
+            // 
+            this.关于ToolStripMenuItem.Name = "关于ToolStripMenuItem";
+            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.关于ToolStripMenuItem.Text = "关于";
+            this.关于ToolStripMenuItem.Click += new System.EventHandler(this.关于ToolStripMenuItem_Click);
             // 
             // MainFrm
             // 
@@ -526,6 +535,7 @@ namespace YPT
         private YUComboBox cmbFav;
         private System.Windows.Forms.ContextMenuStrip dgvInfoContextMenu;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuOpenInfo;
+        private System.Windows.Forms.ToolStripMenuItem 关于ToolStripMenuItem;
     }
 }
 

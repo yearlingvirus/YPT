@@ -20,7 +20,7 @@ namespace YPT.PT
         {
             get
             {
-                return YUEnums.PTEnum.NY;
+                return YUEnums.PTEnum.NYPT;
             }
         }
 

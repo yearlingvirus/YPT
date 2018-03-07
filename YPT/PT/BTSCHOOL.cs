@@ -29,7 +29,7 @@ namespace YPT.PT
         {
             get
             {
-                return YUEnums.PTEnum.BTSCHOOL;
+                return YUEnums.PTEnum.BTSchool;
             }
         }
 

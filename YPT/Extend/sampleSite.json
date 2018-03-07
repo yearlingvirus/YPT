@@ -9,13 +9,14 @@
     "IsEableSecurityQuestion": true,
     "IsEnableVerificationCode": false,
     "isEnableTwo_StepVerification": true,
+    "Order": 1,
     "PersonInfoMaps": {
       "Bonus": [ "魔力值", "魔力豆", "积分", "Karma Points", "Bonus", "포인트" ],
       "RegisterDate": [ "Join date", "加入日期", "注册日期", "가입 날짜" ],
       "ShareRate": [ "Transfers", "传输", "傳送", "分享率", "Ratio" ],
       "DownSize": [ "Transfers", "传输", "傳送", "下载量", "Downloaded", "다운로드" ],
       "UpSize": [ "Transfers", "传输", "傳送", "上传量", "Uploaded", "업로드" ],
-      "SeedRate": [ "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
+      "SeedRate": [ "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
       "SeedTimes": [ "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
       "DownTimes": [ "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
       "SeedNumber": [ "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
@@ -36,7 +37,7 @@
   },
   {
     "Url": "https://tp.m-team.cc",
-    "Name": "MTEAM",
+    "Name": "MTeam",
     "LoginUrl": "https://tp.m-team.cc/takelogin.php",
     "SignUrl": null,
     "SearchUrl": "https://tp.m-team.cc/torrents.php",
@@ -44,11 +45,12 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": false,
     "isEnableTwo_StepVerification": true,
-    "Id": 2
+    "Order": 3,
+    "Id": 3
   },
   {
     "Url": "https://chdbits.co",
-    "Name": "CHDBITS",
+    "Name": "CHDBits",
     "LoginUrl": "https://chdbits.co/takelogin.php",
     "SignUrl": null,
     "SearchUrl": "https://chdbits.co/torrents.php",
@@ -56,11 +58,12 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": false,
     "isEnableTwo_StepVerification": false,
-    "Id": 3
+    "Order": 7,
+    "Id": 7
   },
   {
     "Url": "https://ourbits.club",
-    "Name": "OURBITS",
+    "Name": "OurBits",
     "LoginUrl": "https://ourbits.club/takelogin.php",
     "SignUrl": "https://ourbits.club/attendance.php",
     "SearchUrl": "https://ourbits.club/torrents.php",
@@ -68,11 +71,12 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": false,
     "isEnableTwo_StepVerification": false,
-    "Id": 4
+    "Order": 9,
+    "Id": 9
   },
   {
     "Url": "https://pt.keepfrds.com",
-    "Name": "KEEPFRDS",
+    "Name": "KeepFrds",
     "LoginUrl": "https://pt.keepfrds.com/takelogin.php",
     "SignUrl": null,
     "SearchUrl": "https://pt.keepfrds.com/torrents.php",
@@ -80,23 +84,25 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
-    "Id": 5
+    "Order": 10,
+    "Id": 10
   },
   {
-    "Url": "http://pt.btschool.net",
-    "Name": "BTSCHOOL",
-    "LoginUrl": "http://pt.btschool.net/takelogin.php",
-    "SignUrl": "http://pt.btschool.net/index.php?action=addbonus",
-    "SearchUrl": "http://pt.btschool.net/torrents.php",
-    "InfoUrl": "http://pt.btschool.net/userdetails.php?id={0}",
+    "Url": "https://hdhome.org/",
+    "Name": "HDHome",
+    "LoginUrl": "https://hdhome.org/takelogin.php",
+    "SignUrl": "https://hdhome.org/attendance.php",
+    "SearchUrl": "https://hdhome.org/torrents.php",
+    "InfoUrl": "https://hdhome.org/userdetails.php?id={0}",
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
-    "Id": 6
+    "Order": 12,
+    "Id": 12
   },
   {
     "Url": "https://pt.gztown.net",
-    "Name": "GZTOWN",
+    "Name": "GZTown",
     "LoginUrl": "https://pt.gztown.net/takelogin.php",
     "SignUrl": "https://pt.gztown.net/attendance.php",
     "SearchUrl": "https://pt.gztown.net/torrents.php",
@@ -104,7 +110,21 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
-    "Id": 7
+    "Order": 14,
+    "Id": 14
+  },
+  {
+    "Url": "http://pt.btschool.net",
+    "Name": "BTSchool",
+    "LoginUrl": "http://pt.btschool.net/takelogin.php",
+    "SignUrl": "http://pt.btschool.net/index.php?action=addbonus",
+    "SearchUrl": "http://pt.btschool.net/torrents.php",
+    "InfoUrl": "http://pt.btschool.net/userdetails.php?id={0}",
+    "IsEableSecurityQuestion": false,
+    "IsEnableVerificationCode": true,
+    "isEnableTwo_StepVerification": false,
+    "Order": 15,
+    "Id": 15
   },
   {
     "Url": "https://pt.upxin.net",
@@ -116,18 +136,19 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
-    "Id": 8
+    "Order": 16,
+    "Id": 16
   },
   {
     "Url": "https://nanyangpt.com/",
-    "Name": "NY",
-    "LoginUrl": "https://nanyangpt.com//takelogin.php",
+    "Name": "NYPT",
+    "LoginUrl": "https://nanyangpt.com/takelogin.php",
     "SignUrl": "",
-    "SearchUrl": "https://nanyangpt.com//torrents.php",
-    "InfoUrl": "https://nanyangpt.com//userdetails.php?id={0}",
+    "SearchUrl": "https://nanyangpt.com/torrents.php",
+    "InfoUrl": "https://nanyangpt.com/userdetails.php?id={0}",
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
-    "Id": 9
+    "Order": 17
   }
 ]

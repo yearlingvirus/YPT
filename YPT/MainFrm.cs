@@ -46,10 +46,7 @@ namespace YPT
         public MainFrm()
         {
             InitializeComponent();
-
-            Assembly asm = Assembly.GetExecutingAssembly();
-            var asmVersion = asm.GetName().Version;
-            this.Text = string.Format("YPT {0}.{1}.{2}", asmVersion.Major, asmVersion.Minor, asmVersion.Build);
+            this.Text = string.Format("YPT {0}", YUUtils.GetVersion());
 
             FormUtils.InitDataGridView(dgvTorrent);
             FormUtils.CreateDataGridColumns(dgvTorrent, typeof(PTTorrentGridEntity));
@@ -587,7 +584,7 @@ namespace YPT
         {
             if (e.Button == MouseButtons.Right)
             {
-                if (e.RowIndex >= 0)
+                if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
                 {
                     //若行已是选中状态就不再进行设置
                     if (dgvTorrent.Rows[e.RowIndex].Selected == false)
@@ -928,7 +925,7 @@ namespace YPT
         {
             if (e.Button == MouseButtons.Right)
             {
-                if (e.RowIndex >= 0)
+                if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
                 {
                     //若行已是选中状态就不再进行设置
                     if (dgvPersonInfo.Rows[e.RowIndex].Selected == false)
@@ -958,5 +955,10 @@ namespace YPT
 
         #endregion
 
+        private void 关于ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AboutFrm frm = new AboutFrm();
+            frm.ShowDialog();
+        }
     }
 }

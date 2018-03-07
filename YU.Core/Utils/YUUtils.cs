@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
@@ -156,6 +157,49 @@ namespace YU.Core.Utils
             return cc;
         }
 
+        /// <summary>
+        /// 获取网站时间
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static DateTime GetWebSiteDateTime(string url)
+        {
+            WebRequest request = null;
+            WebResponse response = null;
+            WebHeaderCollection headerCollection = null;
+            DateTime datetime = DateTime.Now;
+            try
+            {
+                request = WebRequest.Create(url);
+                request.Timeout = 3000;
+                request.Credentials = CredentialCache.DefaultCredentials;
+                response = request.GetResponse();
+                headerCollection = response.Headers;
+                foreach (var h in headerCollection.AllKeys)
+                {
+                    if (h == "Date")
+                    {
+                        datetime = headerCollection[h].TryPareValue<DateTime>();
+                    }
+                }
+                return datetime;
+            }
+            catch (Exception)
+            {
+                return datetime;
+            }
+        }
+
+        /// <summary>
+        /// 获取版本
+        /// </summary>
+        /// <returns></returns>
+        public static string GetVersion()
+        {
+            Assembly asm = Assembly.GetExecutingAssembly();
+            var asmVersion = asm.GetName().Version;
+            return string.Format("{0}.{1}.{2}", asmVersion.Major, asmVersion.Minor, asmVersion.Build);
+        }
 
         public static void WriteCookiesContainerToDisk(string file, CookieContainer cc)
         {

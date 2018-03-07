@@ -34,7 +34,6 @@ namespace YPT
 
         public static List<PTUser> Users { get; set; }
 
-
         public static void Init()
         {
             InitSites();
@@ -72,10 +71,10 @@ namespace YPT
 
         public static void InitSites()
         {
-            _sites = ObjectUtils.CreateCopy<List<PTSite>>(PTSite.Sites);
-            if (File.Exists(PTSiteConst.RESOURCE_SITES))
+            _sites = ObjectUtils.CreateCopy<List<PTSite>>(PTSite.Sites.ToList());
+            if (File.Exists(PTSiteConst.EXTEND_SITES))
             {
-                string siteJson = File.ReadAllText(PTSiteConst.RESOURCE_SITES);                
+                string siteJson = File.ReadAllText(PTSiteConst.EXTEND_SITES);
                 try
                 {
                     var extendSites = JsonConvert.DeserializeObject<List<PTSite>>(siteJson);
@@ -91,15 +90,17 @@ namespace YPT
                 }
                 catch
                 {
-                    Logger.Info(string.Format("序列化扩展站点失败 ，请检查[{0}]文件。", PTSiteConst.RESOURCE_SITES));
+                    Logger.Info(string.Format("序列化扩展站点失败 ，请检查[{0}]文件。", PTSiteConst.EXTEND_SITES));
                 }
             }
             else
             {
-                Logger.Info(string.Format("站点配置文件不存在，请检查[{0}]文件。", PTSiteConst.RESOURCE_SITES));
+                if (!Directory.Exists(Path.GetDirectoryName(PTSiteConst.EXTEND_SITES)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(PTSiteConst.EXTEND_SITES));
+                File.WriteAllText(PTSiteConst.EXTEND_SITES, PTSiteConst.EXTEND_SITES_COMMENT, Encoding.UTF8);
             }
+            _sites = _sites.OrderBy(x => x.Order).ToList();
         }
-
 
         /// <summary>
         /// 初始化用户数据
@@ -125,8 +126,8 @@ namespace YPT
                     continue;
                 Users.Add(user);
             }
+            Users = Users.OrderBy(x => x.Site.Order).ToList();
         }
-
 
         /// <summary>
         /// 初始化数据库
