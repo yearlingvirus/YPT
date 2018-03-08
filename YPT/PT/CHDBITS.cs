@@ -32,6 +32,16 @@ namespace YPT.PT
             return "暂未支持该站点，请登录网页端签到。";
         }
 
+        protected override void SetTorrentFreeTime(HtmlNode node, PTTorrent torrent)
+        {
+            var freeNode = node.SelectSingleNode(".//td[contains(concat(' ', normalize-space(@class), ' '), ' embedded ')]/span[last()]");
+
+            if (freeNode != null && !freeNode.InnerText.IsNullOrEmptyOrWhiteSpace())
+            {
+                torrent.FreeTime = "剩余：" + freeNode.InnerText;
+            }
+        }
+
         protected override void SetTorrentPromotionType(HtmlNode node, PTTorrent torrent)
         {
             string html = string.Empty;

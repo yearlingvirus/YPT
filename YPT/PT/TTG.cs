@@ -220,6 +220,16 @@ namespace YPT.PT
             torrent.UpLoader = nodes[torrentMaps[YUEnums.TorrentMap.UpLoader]].InnerText;
         }
 
+        protected override void SetTorrentFreeTime(HtmlNode node, PTTorrent torrent)
+        {
+            var freeNode = node.SelectSingleNode("./div[contains(concat(' ', normalize-space(@class), ' '), ' name_left ')]/span");
+
+            if (freeNode != null && !freeNode.InnerText.IsNullOrEmptyOrWhiteSpace())
+            {
+                torrent.FreeTime = HttpUtility.HtmlDecode(freeNode.InnerText);
+            }
+        }
+
         protected override string BuildSearchUrl(string searchKey, YUEnums.PromotionType promotionType = YUEnums.PromotionType.ALL, YUEnums.AliveType aliveType = YUEnums.AliveType.ALL, YUEnums.FavType favType = YUEnums.FavType.ALL)
         {
             //https://totheglory.im/browse.php?search_field=北京 +halfdown +30down +freeleech +incdead +onlydead +excl +hr&c=M

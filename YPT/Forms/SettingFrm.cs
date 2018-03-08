@@ -109,35 +109,49 @@ namespace YPT.Forms
                     Panel panel = new Panel();
                     panel.BackColor = Color.LightGray;
                     panel.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left)));
-                    panel.Size = new Size(mainPanel.Size.Width, 100);
+                    panel.Size = new Size(mainPanel.Size.Width, 50);
                     panel.Left = 0;
-                    panel.Top = i * (panel.Size.Height + 10);
+                    panel.Top = i * (panel.Size.Height + 5);
                     panel.Name = "panel" + user.Site.Name;
                     panel.TabIndex = 0;
 
                     Label lblSite = new Label();
                     lblSite.AutoSize = true;
-                    lblSite.Font = new Font("微软雅黑", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-                    lblSite.Location = new Point(30, 11);
+                    lblSite.Font = new Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+                    lblSite.Location = new Point(30, 5);
                     lblSite.Name = "lblSite" + user.Site.Name;
                     lblSite.TabIndex = 0;
                     lblSite.Text = user.Site.Name;
-                    lblSite.Size = new Size(126, 38);
+                    lblSite.Size = new Size(126, 19);
 
                     Label lblUser = new Label();
                     lblUser.AutoSize = true;
-                    lblUser.Font = new Font("微软雅黑", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-                    lblUser.Location = new Point(30, 48);
+                    lblUser.Font = new Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+                    lblUser.Location = new Point(30, 24);
                     lblUser.Name = "lblUser" + user.Site.Name;
                     lblUser.Text = user.UserName;
                     lblUser.TabIndex = 1;
-                    lblUser.Size = new Size(126, 38);
+                    lblUser.Size = new Size(126, 19);
+
+                    Button btnDel = new Button();
+                    btnDel.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right)));
+                    btnDel.Name = "btnDel" + user.Site.Name;
+                    btnDel.Size = new Size(60, 40);
+                    btnDel.Font = new Font("微软雅黑", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+                    btnDel.Location = new Point(panel.Width - btnDel.Width - 30, 5);
+                    btnDel.TabIndex = 3;
+                    btnDel.Text = "删除";
+                    btnDel.UseVisualStyleBackColor = true;
+                    btnDel.TabStop = false;
+                    btnDel.Tag = user;
+                    btnDel.Click += BtnDel_Click;
 
                     Button btnEdit = new Button();
                     btnEdit.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right)));
                     btnEdit.Name = "btnEdit" + user.Site.Name;
-                    btnEdit.Size = new Size(116, 39);
-                    btnEdit.Location = new Point(panel.Width - btnEdit.Width - 30, 10);
+                    btnEdit.Size = new Size(60, 40);
+                    btnEdit.Font = new Font("微软雅黑", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+                    btnEdit.Location = new Point(panel.Width - btnEdit.Width - btnDel.Width - 40, 5);
                     btnEdit.TabIndex = 2;
                     btnEdit.Text = "编辑";
                     btnEdit.UseVisualStyleBackColor = true;
@@ -145,17 +159,7 @@ namespace YPT.Forms
                     btnEdit.Tag = user;
                     btnEdit.Click += BtnEdit_Click;
 
-                    Button btnDel = new Button();
-                    btnDel.Anchor = ((AnchorStyles)((AnchorStyles.Top | AnchorStyles.Right)));
-                    btnDel.Name = "btnDel" + user.Site.Name;
-                    btnDel.Size = new Size(116, 39);
-                    btnDel.Location = new Point(panel.Width - btnDel.Width - 30, 55);
-                    btnDel.TabIndex = 3;
-                    btnDel.Text = "删除";
-                    btnDel.UseVisualStyleBackColor = true;
-                    btnDel.TabStop = false;
-                    btnDel.Tag = user;
-                    btnDel.Click += BtnDel_Click;
+                 
 
                     panel.Controls.Add(lblSite);
                     panel.Controls.Add(lblUser);

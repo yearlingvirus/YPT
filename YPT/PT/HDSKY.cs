@@ -26,6 +26,15 @@ namespace YPT.PT
             }
         }
 
+        protected override bool SetTorrentSubTitle(HtmlNode node, PTTorrent torrent)
+        {
+            bool result = base.SetTorrentSubTitle(node, torrent);
+            if (!torrent.Subtitle.IsNullOrEmptyOrWhiteSpace())
+                torrent.Subtitle = torrent.Subtitle.Replace("[优惠剩余时间：", "");
+            return result;
+        }
+
+
         protected override Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginPostWithOutCookie(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult)
         {
             //如果前面Cookie登录没有成功，则下面尝试没有Cookie的情况。

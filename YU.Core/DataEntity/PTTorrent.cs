@@ -49,6 +49,11 @@ namespace YU.Core.DataEntity
         public string Title { get; set; }
 
         /// <summary>
+        /// 免费剩余时间
+        /// </summary>
+        public string FreeTime { get; set; }
+
+        /// <summary>
         /// 副标题
         /// </summary>
         public string Subtitle { get; set; }
@@ -125,7 +130,13 @@ namespace YU.Core.DataEntity
 
             StringBuilder sb = new StringBuilder();
             if (!this.Title.IsNullOrEmptyOrWhiteSpace())
-                sb.AppendLine(this.Title);
+            {
+                if (!this.FreeTime.IsNullOrEmptyOrWhiteSpace())
+                    sb.AppendLine(string.Format("{0} [{1}]", this.Title, this.FreeTime));
+                else
+                    sb.AppendLine(this.Title);
+            }
+
             if (!this.Title.IsNullOrEmptyOrWhiteSpace())
                 sb.AppendLine(this.Subtitle);
 

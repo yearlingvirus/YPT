@@ -388,6 +388,9 @@ namespace YPT.PT
 
                         SetTorrentPromotionType(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
 
+                        if (torrent.PromotionType == YUEnums.PromotionType.FREE || torrent.PromotionType == YUEnums.PromotionType.FREE2UP)
+                            SetTorrentFreeTime(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
+
                         SetTorrentHR(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
 
                         SetTorrentOtherInfo(torrentMaps, tdNodes, torrent);
@@ -500,7 +503,7 @@ namespace YPT.PT
                 html = node.InnerHtml.Replace(torrent.Subtitle, "");
             torrent.IsHR = false;
 
-            if (html.Contains("hit_run"))
+            if (html.Contains("hit_run") || html.Contains("hitandrun"))
             {
                 torrent.IsHR = true;
                 return;
@@ -530,6 +533,34 @@ namespace YPT.PT
                     {
                         torrent.PromotionType = item.Key;
                         return;
+                    }
+                }
+            }
+        }
+
+        protected virtual void SetTorrentFreeTime(HtmlNode node, PTTorrent torrent)
+        {
+            var freeNode = node.SelectSingleNode(".//td[contains(concat(' ', normalize-space(@class), ' '), ' embedded ')]//span[not(@class)][last()]");
+
+            if (freeNode != null && !freeNode.InnerText.IsNullOrEmptyOrWhiteSpace())
+            {
+                torrent.FreeTime = "剩余：" + freeNode.InnerText;
+            }
+            else
+            {
+                freeNode = node.SelectSingleNode(".//td[contains(concat(' ', normalize-space(@class), ' '), ' embedded ')]//*[contains(normalize-space(@class), 'free')]  ");
+                if (freeNode != null && !freeNode.OuterHtml.IsNullOrEmptyOrWhiteSpace())
+                {
+                    string html = HttpUtility.HtmlDecode(freeNode.OuterHtml);
+                    var index = html.LastIndexOf("<span");
+                    var lastIndex = html.LastIndexOf("</span>");
+                    if (index > 0 && lastIndex > 0)
+                    {
+                        string span = html.Substring(index, lastIndex - index);
+                        HtmlDocument htmlDocument = new HtmlDocument();
+                        htmlDocument.LoadHtml(span);
+                        if (htmlDocument.DocumentNode != null && htmlDocument.DocumentNode.FirstChild != null)
+                            torrent.FreeTime = "剩余：" + htmlDocument.DocumentNode.FirstChild.InnerText;
                     }
                 }
             }
@@ -569,6 +600,7 @@ namespace YPT.PT
             torrent.SnatchedNumber = nodes[torrentMaps[YUEnums.TorrentMap.SnatchedNumber]].InnerText.TryPareValue<int>();
             torrent.UpLoader = nodes[torrentMaps[YUEnums.TorrentMap.UpLoader]].InnerText;
         }
+
 
         /// <summary>
         /// 根据行头获取用户信息列映射
@@ -718,7 +750,7 @@ namespace YPT.PT
 
                     if (File.Exists(filefullPath))
                         File.Delete(filefullPath);
-                    
+
                     string fileDirectory = System.IO.Path.GetDirectoryName(filefullPath);
 
                     if (!Directory.Exists(fileDirectory))
