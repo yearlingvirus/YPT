@@ -81,6 +81,7 @@
     <Compile Include="Attributes\GridViewAttribute.cs" />
     <Compile Include="DataEntity\PTInfo.cs" />
     <Compile Include="DataEntity\PTInfoGridEntity.cs" />
+    <Compile Include="DataEntity\PTSearchArgs.cs" />
     <Compile Include="DataEntity\PTTorrent.cs" />
     <Compile Include="DataEntity\PTTorrentGridEntity.cs" />
     <Compile Include="Event\OnPrepareDownFileEventArgs.cs" />

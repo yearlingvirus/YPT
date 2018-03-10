@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using YPT.PT;
 using YU.Core;
 using YU.Core.DataEntity;
@@ -48,24 +49,20 @@ namespace YPT
                 if (!File.Exists(ConfigUtil.GetConfigValue(YUConst.SETTING_SQLLITEDB)))
                 {
                     InitDB(dbName);
-                    Config.SignTime = new DateTime(1970, 1, 1, 0, 0, 0);
-                    Config.IsAutoSign = true;
                     Users = new List<PTUser>();
-                    Config.IsEnablePostFileName = true;
-                    Config.IsSyncTiming = true;
-                    Config.IsFirstOpen = true;
-                    Config.IsMiniWhenClose = false;
                 }
                 else
-                {
-                    Config.SignTime = GetConfig(YUConst.CONFIG_SIGN_TIME, new DateTime(1970, 1, 1, 0, 0, 0));
-                    Config.IsAutoSign = GetConfig(YUConst.CONFIG_SIGN_AUTO, true);
-                    Config.IsEnablePostFileName = GetConfig(YUConst.CONFIG_ENABLEPOSTFILENAME, true);
-                    Config.IsSyncTiming = GetConfig(YUConst.CONFIG_SYNC_AUTO, true);
-                    Config.IsFirstOpen = GetConfig(YUConst.CONFIG_ISFIRSTOPEN, true);
-                    Config.IsMiniWhenClose = GetConfig(YUConst.CONFIG_ISMINIWHENCLOSE, false);
                     InitUser();
-                }
+                Config.SignTime = GetConfig(YUConst.CONFIG_SIGN_TIME, new DateTime(1970, 1, 1, 0, 0, 0));
+                Config.IsAutoSign = GetConfig(YUConst.CONFIG_SIGN_AUTO, true);
+                Config.IsEnablePostFileName = GetConfig(YUConst.CONFIG_ENABLEPOSTFILENAME, true);
+                Config.IsSyncTiming = GetConfig(YUConst.CONFIG_SYNC_AUTO, true);
+                Config.IsFirstOpen = GetConfig(YUConst.CONFIG_ISFIRSTOPEN, true);
+                Config.IsMiniWhenClose = GetConfig(YUConst.CONFIG_ISMINIWHENCLOSE, false);
+                Config.IsPostSiteOrder = GetConfig(YUConst.CONFIG_SEARCH_POSTSITEORDER, false);
+                Config.IsIngoreTop = GetConfig(YUConst.CONFIG_SEARCH_INGORETOP, false);
+                Config.IsLastSort = GetConfig(YUConst.CONFIG_SEARCH_ISLASTSORT, false);
+                Config.SearchTimeSpan = GetConfig(YUConst.CONFIG_SEARCH_TIMESPAN, 300);
             }
         }
 

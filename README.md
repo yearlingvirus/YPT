@@ -18,15 +18,17 @@ Microsoft [.NET Framework 4] or higher.
 
 #### Support
 
-MTEAM  
+MTeam  
+HDSky  
 TTG  
-CHDBITS  
-KEEPFRDS  
-OURBITS  
-GZTOWN  
-BTSCHOOL  
+CHDBits  
+KeepFrds   
+OurBits  
+HDHome  
+GZTown   
+BTSchool      
 HDU  
-NYPT  
+NYPT 
 
 #### Basic
 

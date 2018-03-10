@@ -45,6 +45,7 @@ namespace YPT.Forms
             cbIsSyncTiming.Checked = Global.Config.IsSyncTiming;
             cbIsEnablePostFileName.Checked = Global.Config.IsEnablePostFileName;
             cbIsMiniWhenClose.Checked = Global.Config.IsMiniWhenClose;
+            nudSearchTimeSpan.Value = Global.Config.SearchTimeSpan;
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -159,7 +160,7 @@ namespace YPT.Forms
                     btnEdit.Tag = user;
                     btnEdit.Click += BtnEdit_Click;
 
-                 
+
 
                     panel.Controls.Add(lblSite);
                     panel.Controls.Add(lblUser);
@@ -229,6 +230,12 @@ namespace YPT.Forms
         {
             Global.SetConfig(YUConst.CONFIG_ISMINIWHENCLOSE, cbIsMiniWhenClose.Checked);
             Global.Config.IsMiniWhenClose = cbIsMiniWhenClose.Checked;
+        }
+
+        private void nudSearchTimeSpan_ValueChanged(object sender, EventArgs e)
+        {
+            Global.Config.SearchTimeSpan = (int)nudSearchTimeSpan.Value;
+            Global.SetConfig(YUConst.CONFIG_SEARCH_TIMESPAN, Global.Config.SearchTimeSpan);
         }
     }
 }

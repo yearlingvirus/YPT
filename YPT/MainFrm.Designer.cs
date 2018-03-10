@@ -37,18 +37,29 @@ namespace YPT
             this.同步StripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.登录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.签到ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.关于ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tabSearch = new System.Windows.Forms.TabPage();
             this.panelMain = new System.Windows.Forms.Panel();
             this.panelTorrent = new System.Windows.Forms.Panel();
             this.dgvTorrent = new System.Windows.Forms.DataGridView();
             this.panelSearch = new System.Windows.Forms.Panel();
+            this.toolSearchPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.innerPanel1 = new System.Windows.Forms.Panel();
+            this.lblPromotion = new System.Windows.Forms.Label();
+            this.cmbPromotion = new YU.Core.YUComponent.YUComboBox(this.components);
+            this.innerPanel2 = new System.Windows.Forms.Panel();
+            this.lblAlive = new System.Windows.Forms.Label();
+            this.cmbAlive = new YU.Core.YUComponent.YUComboBox(this.components);
+            this.innerPanel3 = new System.Windows.Forms.Panel();
             this.lblFav = new System.Windows.Forms.Label();
             this.cmbFav = new YU.Core.YUComponent.YUComboBox(this.components);
-            this.lblAlive = new System.Windows.Forms.Label();
-            this.lblPromotion = new System.Windows.Forms.Label();
-            this.cmbAlive = new YU.Core.YUComponent.YUComboBox(this.components);
-            this.cmbPromotion = new YU.Core.YUComponent.YUComboBox(this.components);
+            this.innerPanel4 = new System.Windows.Forms.Panel();
+            this.cbIsSearchTiming = new System.Windows.Forms.CheckBox();
+            this.cbIsPostSiteOrder = new System.Windows.Forms.CheckBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.cbIsIngoreTop = new System.Windows.Forms.CheckBox();
+            this.innerPanel5 = new System.Windows.Forms.Panel();
             this.btnSearch = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.panelSite = new System.Windows.Forms.Panel();
@@ -68,7 +79,7 @@ namespace YPT
             this.toolStripMenuItemCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.dgvInfoContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuOpenInfo = new System.Windows.Forms.ToolStripMenuItem();
-            this.关于ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cbIsLastSort = new System.Windows.Forms.CheckBox();
             this.mainMenuStrip.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tabSearch.SuspendLayout();
@@ -76,6 +87,13 @@ namespace YPT
             this.panelTorrent.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTorrent)).BeginInit();
             this.panelSearch.SuspendLayout();
+            this.toolSearchPanel.SuspendLayout();
+            this.innerPanel1.SuspendLayout();
+            this.innerPanel2.SuspendLayout();
+            this.innerPanel3.SuspendLayout();
+            this.innerPanel4.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.innerPanel5.SuspendLayout();
             this.tabPersonInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPersonInfo)).BeginInit();
             this.tabLog.SuspendLayout();
@@ -96,7 +114,7 @@ namespace YPT
             this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.mainMenuStrip.Name = "mainMenuStrip";
             this.mainMenuStrip.Padding = new System.Windows.Forms.Padding(7, 3, 0, 3);
-            this.mainMenuStrip.Size = new System.Drawing.Size(1092, 27);
+            this.mainMenuStrip.Size = new System.Drawing.Size(1114, 27);
             this.mainMenuStrip.TabIndex = 0;
             this.mainMenuStrip.Text = "menuStrip1";
             // 
@@ -128,6 +146,13 @@ namespace YPT
             this.签到ToolStripMenuItem.Text = "签到";
             this.签到ToolStripMenuItem.Click += new System.EventHandler(this.签到ToolStripMenuItem_Click);
             // 
+            // 关于ToolStripMenuItem
+            // 
+            this.关于ToolStripMenuItem.Name = "关于ToolStripMenuItem";
+            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.关于ToolStripMenuItem.Text = "关于";
+            this.关于ToolStripMenuItem.Click += new System.EventHandler(this.关于ToolStripMenuItem_Click);
+            // 
             // tabMain
             // 
             this.tabMain.Controls.Add(this.tabSearch);
@@ -139,10 +164,11 @@ namespace YPT
             this.tabMain.Margin = new System.Windows.Forms.Padding(4);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
-            this.tabMain.Size = new System.Drawing.Size(1092, 631);
+            this.tabMain.Size = new System.Drawing.Size(1114, 595);
             this.tabMain.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabMain.TabIndex = 1;
             this.tabMain.TabStop = false;
+            this.tabMain.SelectedIndexChanged += new System.EventHandler(this.tabMain_SelectedIndexChanged);
             // 
             // tabSearch
             // 
@@ -151,7 +177,7 @@ namespace YPT
             this.tabSearch.Location = new System.Drawing.Point(4, 29);
             this.tabSearch.Name = "tabSearch";
             this.tabSearch.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSearch.Size = new System.Drawing.Size(1084, 598);
+            this.tabSearch.Size = new System.Drawing.Size(1106, 562);
             this.tabSearch.TabIndex = 1;
             this.tabSearch.Text = "种子搜索";
             this.tabSearch.UseVisualStyleBackColor = true;
@@ -163,16 +189,16 @@ namespace YPT
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMain.Location = new System.Drawing.Point(139, 3);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(942, 592);
+            this.panelMain.Size = new System.Drawing.Size(964, 556);
             this.panelMain.TabIndex = 1;
             // 
             // panelTorrent
             // 
             this.panelTorrent.Controls.Add(this.dgvTorrent);
             this.panelTorrent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelTorrent.Location = new System.Drawing.Point(0, 92);
+            this.panelTorrent.Location = new System.Drawing.Point(0, 117);
             this.panelTorrent.Name = "panelTorrent";
-            this.panelTorrent.Size = new System.Drawing.Size(942, 500);
+            this.panelTorrent.Size = new System.Drawing.Size(964, 439);
             this.panelTorrent.TabIndex = 1;
             // 
             // dgvTorrent
@@ -186,7 +212,7 @@ namespace YPT
             this.dgvTorrent.Name = "dgvTorrent";
             this.dgvTorrent.RowTemplate.Height = 23;
             this.dgvTorrent.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTorrent.Size = new System.Drawing.Size(942, 500);
+            this.dgvTorrent.Size = new System.Drawing.Size(964, 439);
             this.dgvTorrent.TabIndex = 0;
             this.dgvTorrent.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTorrent_CellMouseDown);
             this.dgvTorrent.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgv_ColumnHeaderMouseClick);
@@ -194,25 +220,99 @@ namespace YPT
             // 
             // panelSearch
             // 
-            this.panelSearch.Controls.Add(this.lblFav);
-            this.panelSearch.Controls.Add(this.cmbFav);
-            this.panelSearch.Controls.Add(this.lblAlive);
-            this.panelSearch.Controls.Add(this.lblPromotion);
-            this.panelSearch.Controls.Add(this.cmbAlive);
-            this.panelSearch.Controls.Add(this.cmbPromotion);
-            this.panelSearch.Controls.Add(this.btnSearch);
+            this.panelSearch.AutoSize = true;
+            this.panelSearch.Controls.Add(this.toolSearchPanel);
             this.panelSearch.Controls.Add(this.txtSearch);
             this.panelSearch.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelSearch.Location = new System.Drawing.Point(0, 0);
             this.panelSearch.Name = "panelSearch";
-            this.panelSearch.Size = new System.Drawing.Size(942, 92);
+            this.panelSearch.Size = new System.Drawing.Size(964, 117);
             this.panelSearch.TabIndex = 0;
             this.panelSearch.Paint += new System.Windows.Forms.PaintEventHandler(this.panelSearch_Paint);
+            // 
+            // toolSearchPanel
+            // 
+            this.toolSearchPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.toolSearchPanel.AutoSize = true;
+            this.toolSearchPanel.Controls.Add(this.innerPanel1);
+            this.toolSearchPanel.Controls.Add(this.innerPanel2);
+            this.toolSearchPanel.Controls.Add(this.innerPanel3);
+            this.toolSearchPanel.Controls.Add(this.innerPanel4);
+            this.toolSearchPanel.Controls.Add(this.panel1);
+            this.toolSearchPanel.Controls.Add(this.innerPanel5);
+            this.toolSearchPanel.Location = new System.Drawing.Point(31, 43);
+            this.toolSearchPanel.Name = "toolSearchPanel";
+            this.toolSearchPanel.Size = new System.Drawing.Size(857, 71);
+            this.toolSearchPanel.TabIndex = 8;
+            // 
+            // innerPanel1
+            // 
+            this.innerPanel1.Controls.Add(this.lblPromotion);
+            this.innerPanel1.Controls.Add(this.cmbPromotion);
+            this.innerPanel1.Location = new System.Drawing.Point(3, 3);
+            this.innerPanel1.Name = "innerPanel1";
+            this.innerPanel1.Size = new System.Drawing.Size(142, 65);
+            this.innerPanel1.TabIndex = 8;
+            // 
+            // lblPromotion
+            // 
+            this.lblPromotion.AutoSize = true;
+            this.lblPromotion.Location = new System.Drawing.Point(5, 5);
+            this.lblPromotion.Name = "lblPromotion";
+            this.lblPromotion.Size = new System.Drawing.Size(65, 20);
+            this.lblPromotion.TabIndex = 4;
+            this.lblPromotion.Text = "促销类型";
+            // 
+            // cmbPromotion
+            // 
+            this.cmbPromotion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbPromotion.FormattingEnabled = true;
+            this.cmbPromotion.Location = new System.Drawing.Point(9, 31);
+            this.cmbPromotion.Name = "cmbPromotion";
+            this.cmbPromotion.Size = new System.Drawing.Size(121, 28);
+            this.cmbPromotion.TabIndex = 2;
+            // 
+            // innerPanel2
+            // 
+            this.innerPanel2.Controls.Add(this.lblAlive);
+            this.innerPanel2.Controls.Add(this.cmbAlive);
+            this.innerPanel2.Location = new System.Drawing.Point(151, 3);
+            this.innerPanel2.Name = "innerPanel2";
+            this.innerPanel2.Size = new System.Drawing.Size(142, 65);
+            this.innerPanel2.TabIndex = 9;
+            // 
+            // lblAlive
+            // 
+            this.lblAlive.AutoSize = true;
+            this.lblAlive.Location = new System.Drawing.Point(5, 5);
+            this.lblAlive.Name = "lblAlive";
+            this.lblAlive.Size = new System.Drawing.Size(71, 20);
+            this.lblAlive.TabIndex = 5;
+            this.lblAlive.Text = "断种/活种";
+            // 
+            // cmbAlive
+            // 
+            this.cmbAlive.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbAlive.FormattingEnabled = true;
+            this.cmbAlive.Location = new System.Drawing.Point(9, 31);
+            this.cmbAlive.Name = "cmbAlive";
+            this.cmbAlive.Size = new System.Drawing.Size(121, 28);
+            this.cmbAlive.TabIndex = 3;
+            // 
+            // innerPanel3
+            // 
+            this.innerPanel3.Controls.Add(this.lblFav);
+            this.innerPanel3.Controls.Add(this.cmbFav);
+            this.innerPanel3.Location = new System.Drawing.Point(299, 3);
+            this.innerPanel3.Name = "innerPanel3";
+            this.innerPanel3.Size = new System.Drawing.Size(142, 65);
+            this.innerPanel3.TabIndex = 10;
             // 
             // lblFav
             // 
             this.lblFav.AutoSize = true;
-            this.lblFav.Location = new System.Drawing.Point(557, 55);
+            this.lblFav.Location = new System.Drawing.Point(6, 5);
             this.lblFav.Name = "lblFav";
             this.lblFav.Size = new System.Drawing.Size(65, 20);
             this.lblFav.TabIndex = 7;
@@ -222,53 +322,76 @@ namespace YPT
             // 
             this.cmbFav.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFav.FormattingEnabled = true;
-            this.cmbFav.Location = new System.Drawing.Point(639, 51);
+            this.cmbFav.Location = new System.Drawing.Point(10, 31);
             this.cmbFav.Name = "cmbFav";
             this.cmbFav.Size = new System.Drawing.Size(121, 28);
             this.cmbFav.TabIndex = 6;
             // 
-            // lblAlive
+            // innerPanel4
             // 
-            this.lblAlive.AutoSize = true;
-            this.lblAlive.Location = new System.Drawing.Point(300, 55);
-            this.lblAlive.Name = "lblAlive";
-            this.lblAlive.Size = new System.Drawing.Size(71, 20);
-            this.lblAlive.TabIndex = 5;
-            this.lblAlive.Text = "断种/活种";
+            this.innerPanel4.Controls.Add(this.cbIsLastSort);
+            this.innerPanel4.Controls.Add(this.cbIsPostSiteOrder);
+            this.innerPanel4.Location = new System.Drawing.Point(447, 3);
+            this.innerPanel4.Name = "innerPanel4";
+            this.innerPanel4.Size = new System.Drawing.Size(130, 65);
+            this.innerPanel4.TabIndex = 9;
             // 
-            // lblPromotion
+            // cbIsSearchTiming
             // 
-            this.lblPromotion.AutoSize = true;
-            this.lblPromotion.Location = new System.Drawing.Point(46, 55);
-            this.lblPromotion.Name = "lblPromotion";
-            this.lblPromotion.Size = new System.Drawing.Size(65, 20);
-            this.lblPromotion.TabIndex = 4;
-            this.lblPromotion.Text = "促销类型";
+            this.cbIsSearchTiming.AutoSize = true;
+            this.cbIsSearchTiming.Location = new System.Drawing.Point(3, 33);
+            this.cbIsSearchTiming.Name = "cbIsSearchTiming";
+            this.cbIsSearchTiming.Size = new System.Drawing.Size(84, 24);
+            this.cbIsSearchTiming.TabIndex = 1;
+            this.cbIsSearchTiming.Text = "定时搜索";
+            this.cbIsSearchTiming.UseVisualStyleBackColor = true;
+            this.cbIsSearchTiming.CheckedChanged += new System.EventHandler(this.cbIsSearchTiming_CheckedChanged);
             // 
-            // cmbAlive
+            // cbIsPostSiteOrder
             // 
-            this.cmbAlive.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbAlive.FormattingEnabled = true;
-            this.cmbAlive.Location = new System.Drawing.Point(385, 51);
-            this.cmbAlive.Name = "cmbAlive";
-            this.cmbAlive.Size = new System.Drawing.Size(121, 28);
-            this.cmbAlive.TabIndex = 3;
+            this.cbIsPostSiteOrder.AutoSize = true;
+            this.cbIsPostSiteOrder.Location = new System.Drawing.Point(5, 3);
+            this.cbIsPostSiteOrder.Name = "cbIsPostSiteOrder";
+            this.cbIsPostSiteOrder.Size = new System.Drawing.Size(112, 24);
+            this.cbIsPostSiteOrder.TabIndex = 0;
+            this.cbIsPostSiteOrder.Text = "请求站点排序";
+            this.cbIsPostSiteOrder.UseVisualStyleBackColor = true;
+            this.cbIsPostSiteOrder.CheckedChanged += new System.EventHandler(this.cbIsPostSiteOrder_CheckedChanged);
             // 
-            // cmbPromotion
+            // panel1
             // 
-            this.cmbPromotion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbPromotion.FormattingEnabled = true;
-            this.cmbPromotion.Location = new System.Drawing.Point(128, 51);
-            this.cmbPromotion.Name = "cmbPromotion";
-            this.cmbPromotion.Size = new System.Drawing.Size(121, 28);
-            this.cmbPromotion.TabIndex = 2;
+            this.panel1.Controls.Add(this.cbIsSearchTiming);
+            this.panel1.Controls.Add(this.cbIsIngoreTop);
+            this.panel1.Location = new System.Drawing.Point(583, 3);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(130, 65);
+            this.panel1.TabIndex = 10;
+            // 
+            // cbIsIngoreTop
+            // 
+            this.cbIsIngoreTop.AutoSize = true;
+            this.cbIsIngoreTop.Location = new System.Drawing.Point(3, 3);
+            this.cbIsIngoreTop.Name = "cbIsIngoreTop";
+            this.cbIsIngoreTop.Size = new System.Drawing.Size(84, 24);
+            this.cbIsIngoreTop.TabIndex = 0;
+            this.cbIsIngoreTop.Text = "忽略置顶";
+            this.cbIsIngoreTop.UseVisualStyleBackColor = true;
+            this.cbIsIngoreTop.CheckedChanged += new System.EventHandler(this.cbIsIngoreTop_CheckedChanged);
+            // 
+            // innerPanel5
+            // 
+            this.innerPanel5.Controls.Add(this.btnSearch);
+            this.innerPanel5.Location = new System.Drawing.Point(719, 3);
+            this.innerPanel5.Name = "innerPanel5";
+            this.innerPanel5.Size = new System.Drawing.Size(130, 65);
+            this.innerPanel5.TabIndex = 11;
             // 
             // btnSearch
             // 
             this.btnSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSearch.FlatAppearance.BorderSize = 0;
             this.btnSearch.ForeColor = System.Drawing.Color.Black;
-            this.btnSearch.Location = new System.Drawing.Point(795, 23);
+            this.btnSearch.Location = new System.Drawing.Point(19, 8);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(108, 49);
             this.btnSearch.TabIndex = 1;
@@ -284,16 +407,15 @@ namespace YPT
             this.txtSearch.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.txtSearch.Location = new System.Drawing.Point(43, 15);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(718, 26);
+            this.txtSearch.Size = new System.Drawing.Size(837, 26);
             this.txtSearch.TabIndex = 0;
-            this.txtSearch.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSearch_KeyPress);
             // 
             // panelSite
             // 
             this.panelSite.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelSite.Location = new System.Drawing.Point(3, 3);
             this.panelSite.Name = "panelSite";
-            this.panelSite.Size = new System.Drawing.Size(136, 592);
+            this.panelSite.Size = new System.Drawing.Size(136, 556);
             this.panelSite.TabIndex = 0;
             this.panelSite.Paint += new System.Windows.Forms.PaintEventHandler(this.panelSite_Paint);
             // 
@@ -303,7 +425,7 @@ namespace YPT
             this.tabPersonInfo.Location = new System.Drawing.Point(4, 29);
             this.tabPersonInfo.Name = "tabPersonInfo";
             this.tabPersonInfo.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPersonInfo.Size = new System.Drawing.Size(1084, 598);
+            this.tabPersonInfo.Size = new System.Drawing.Size(1106, 562);
             this.tabPersonInfo.TabIndex = 2;
             this.tabPersonInfo.Text = "个人信息";
             this.tabPersonInfo.UseVisualStyleBackColor = true;
@@ -318,7 +440,7 @@ namespace YPT
             this.dgvPersonInfo.Location = new System.Drawing.Point(3, 3);
             this.dgvPersonInfo.Name = "dgvPersonInfo";
             this.dgvPersonInfo.RowTemplate.Height = 23;
-            this.dgvPersonInfo.Size = new System.Drawing.Size(1078, 592);
+            this.dgvPersonInfo.Size = new System.Drawing.Size(1100, 556);
             this.dgvPersonInfo.TabIndex = 1;
             this.dgvPersonInfo.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvPersonInfo_CellMouseDown);
             this.dgvPersonInfo.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgv_ColumnHeaderMouseClick);
@@ -331,7 +453,7 @@ namespace YPT
             this.tabLog.Margin = new System.Windows.Forms.Padding(4);
             this.tabLog.Name = "tabLog";
             this.tabLog.Padding = new System.Windows.Forms.Padding(4);
-            this.tabLog.Size = new System.Drawing.Size(1084, 598);
+            this.tabLog.Size = new System.Drawing.Size(1106, 562);
             this.tabLog.TabIndex = 0;
             this.tabLog.Text = "日志";
             this.tabLog.UseVisualStyleBackColor = true;
@@ -343,7 +465,7 @@ namespace YPT
             this.logPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.logPanel.Location = new System.Drawing.Point(4, 4);
             this.logPanel.Name = "logPanel";
-            this.logPanel.Size = new System.Drawing.Size(1076, 590);
+            this.logPanel.Size = new System.Drawing.Size(1098, 554);
             this.logPanel.TabIndex = 2;
             // 
             // rtbLog
@@ -356,7 +478,7 @@ namespace YPT
             this.rtbLog.Margin = new System.Windows.Forms.Padding(4);
             this.rtbLog.Name = "rtbLog";
             this.rtbLog.ReadOnly = true;
-            this.rtbLog.Size = new System.Drawing.Size(1076, 544);
+            this.rtbLog.Size = new System.Drawing.Size(1098, 508);
             this.rtbLog.TabIndex = 0;
             this.rtbLog.TabStop = false;
             this.rtbLog.Text = "";
@@ -367,9 +489,9 @@ namespace YPT
             this.btnClearLog.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnClearLog.FlatAppearance.BorderSize = 0;
             this.btnClearLog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnClearLog.Location = new System.Drawing.Point(0, 544);
+            this.btnClearLog.Location = new System.Drawing.Point(0, 508);
             this.btnClearLog.Name = "btnClearLog";
-            this.btnClearLog.Size = new System.Drawing.Size(1076, 46);
+            this.btnClearLog.Size = new System.Drawing.Size(1098, 46);
             this.btnClearLog.TabIndex = 1;
             this.btnClearLog.TabStop = false;
             this.btnClearLog.Text = "清空";
@@ -451,18 +573,23 @@ namespace YPT
             this.toolStripMenuOpenInfo.Text = "打开链接";
             this.toolStripMenuOpenInfo.Click += new System.EventHandler(this.toolStripMenuOpenInfo_Click);
             // 
-            // 关于ToolStripMenuItem
+            // cbIsLastSort
             // 
-            this.关于ToolStripMenuItem.Name = "关于ToolStripMenuItem";
-            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
-            this.关于ToolStripMenuItem.Text = "关于";
-            this.关于ToolStripMenuItem.Click += new System.EventHandler(this.关于ToolStripMenuItem_Click);
+            this.cbIsLastSort.AutoSize = true;
+            this.cbIsLastSort.Location = new System.Drawing.Point(5, 33);
+            this.cbIsLastSort.Name = "cbIsLastSort";
+            this.cbIsLastSort.Size = new System.Drawing.Size(112, 24);
+            this.cbIsLastSort.TabIndex = 1;
+            this.cbIsLastSort.Text = "记住上次排序";
+            this.cbIsLastSort.UseVisualStyleBackColor = true;
+            this.cbIsLastSort.CheckedChanged += new System.EventHandler(this.cbIsLastSort_CheckedChanged);
             // 
             // MainFrm
             // 
+            this.AcceptButton = this.btnSearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1092, 658);
+            this.ClientSize = new System.Drawing.Size(1114, 622);
             this.Controls.Add(this.tabMain);
             this.Controls.Add(this.mainMenuStrip);
             this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -481,10 +608,23 @@ namespace YPT
             this.tabMain.ResumeLayout(false);
             this.tabSearch.ResumeLayout(false);
             this.panelMain.ResumeLayout(false);
+            this.panelMain.PerformLayout();
             this.panelTorrent.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTorrent)).EndInit();
             this.panelSearch.ResumeLayout(false);
             this.panelSearch.PerformLayout();
+            this.toolSearchPanel.ResumeLayout(false);
+            this.innerPanel1.ResumeLayout(false);
+            this.innerPanel1.PerformLayout();
+            this.innerPanel2.ResumeLayout(false);
+            this.innerPanel2.PerformLayout();
+            this.innerPanel3.ResumeLayout(false);
+            this.innerPanel3.PerformLayout();
+            this.innerPanel4.ResumeLayout(false);
+            this.innerPanel4.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.innerPanel5.ResumeLayout(false);
             this.tabPersonInfo.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvPersonInfo)).EndInit();
             this.tabLog.ResumeLayout(false);
@@ -536,6 +676,17 @@ namespace YPT
         private System.Windows.Forms.ContextMenuStrip dgvInfoContextMenu;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuOpenInfo;
         private System.Windows.Forms.ToolStripMenuItem 关于ToolStripMenuItem;
+        private System.Windows.Forms.FlowLayoutPanel toolSearchPanel;
+        private System.Windows.Forms.Panel innerPanel1;
+        private System.Windows.Forms.Panel innerPanel2;
+        private System.Windows.Forms.Panel innerPanel3;
+        private System.Windows.Forms.Panel innerPanel4;
+        private System.Windows.Forms.CheckBox cbIsSearchTiming;
+        private System.Windows.Forms.CheckBox cbIsPostSiteOrder;
+        private System.Windows.Forms.Panel innerPanel5;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.CheckBox cbIsIngoreTop;
+        private System.Windows.Forms.CheckBox cbIsLastSort;
     }
 }
 

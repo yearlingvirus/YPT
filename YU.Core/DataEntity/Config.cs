@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace YU.Core.DataEntity
 {
@@ -39,5 +40,33 @@ namespace YU.Core.DataEntity
         /// 首次使用程序
         /// </summary>
         public bool IsFirstOpen { get; set; }
+
+        /// <summary>
+        /// 请求站点排序
+        /// </summary>
+        public bool IsPostSiteOrder { get; set; }
+
+        /// <summary>
+        /// 忽略置顶
+        /// </summary>
+        public bool IsIngoreTop { get; set; }
+
+        /// <summary>
+        /// 记住上次排序
+        /// </summary>
+        public bool IsLastSort { get; set; }
+
+        /// <summary>
+        /// 定时搜索
+        /// </summary>
+        public bool IsSearchTiming { get; set; }
+
+        /// <summary>
+        /// 定时搜索间隔
+        /// </summary>
+        public int SearchTimeSpan { get; set; }
+
+     
+
     }
 }

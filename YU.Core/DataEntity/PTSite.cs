@@ -55,8 +55,67 @@ namespace YU.Core.DataEntity
             }
         }
 
+        private Dictionary<string, string> _searchOrderMaps;
+
+        public Dictionary<string, string> SearchOrderMaps
+        {
+            get
+            {
+                if (_searchOrderMaps == null)
+                    _searchOrderMaps = GetDefaultSearchOrderMaps();
+                return _searchOrderMaps;
+            }
+        }
+
         public YUEnums.PTEnum Id { get; set; }
 
+
+        private Dictionary<YUEnums.TorrentMap, string[]> GetDefaultTorrentMaps()
+        {
+            return new Dictionary<YUEnums.TorrentMap, string[]>()
+            {
+                { YUEnums.TorrentMap.ResourceType, new string[] { "类型", "类别" , "類型", "Cat.","Type" } },
+                { YUEnums.TorrentMap.Detail, new string[] {"标题", "標題", "Name", "名称"} },
+                { YUEnums.TorrentMap.PromotionType, new string[] {"标题", "標題", "Name", "名称"} },
+                { YUEnums.TorrentMap.TimeAlive,  new string[] { "time", "存活时间", "存活時間", "TTL" } },
+                { YUEnums.TorrentMap.Size,  new string[] { "size", "大小" } },
+                { YUEnums.TorrentMap.SeederNumber,  new string[] { "seeders", "做种", "种子数", "種子數"} },
+                { YUEnums.TorrentMap.LeecherNumber, new string[] { "leechers", "下载", "下載數"} },
+                { YUEnums.TorrentMap.SnatchedNumber,  new string[] { "snatched", "完成", "完成數" } },
+                { YUEnums.TorrentMap.UpLoader,  new string[] { "发布者", "發佈者", "上传者"} },
+            };
+        }
+
+        private Dictionary<YUEnums.PersonInfoMap, string[]> GetDefaultPersonInfoMaps()
+        {
+            return new Dictionary<YUEnums.PersonInfoMap, string[]>()
+            {
+                { YUEnums.PersonInfoMap.Bonus, new string[] {"魔力值", "魔力豆", "积分", "Karma Points", "Bonus", "포인트" }},
+                { YUEnums.PersonInfoMap.RegisterDate, new string[] { "Join date", "加入日期", "注册日期", "가입 날짜" } },
+                { YUEnums.PersonInfoMap.ShareRate, new string[] { "Transfers", "传输", "傳送", "分享率", "Ratio" }},
+                { YUEnums.PersonInfoMap.DownSize, new string[] { "Transfers", "传输", "傳送", "下载量", "Downloaded", "다운로드" }},
+                { YUEnums.PersonInfoMap.UpSize, new string[] { "Transfers", "传输", "傳送", "上传量", "Uploaded", "업로드" }},
+                { YUEnums.PersonInfoMap.SeedRate, new string[] { "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
+                { YUEnums.PersonInfoMap.SeedTimes, new string[] { "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
+                { YUEnums.PersonInfoMap.DownTimes, new string[] { "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
+                { YUEnums.PersonInfoMap.SeedNumber, new string[] { "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
+                { YUEnums.PersonInfoMap.Rank, new string[] { "Class", "等级", "等級", "등급" }}
+            };
+        }
+
+        private Dictionary<string, string> GetDefaultSearchOrderMaps()
+        {
+            return new Dictionary<string, string>()
+            {
+                { "Title","1" },
+                { "Size","5" },
+                { "UpLoadTime","4" },
+                { "SeederNumber","7" },
+                { "LeecherNumber","8" },
+                { "SnatchedNumber","6" },
+                { "UpLoader","9" },
+            };
+        }
 
         #region 系统预置站点
 
@@ -182,39 +241,6 @@ namespace YU.Core.DataEntity
 
         };
 
-
-        private Dictionary<YUEnums.TorrentMap, string[]> GetDefaultTorrentMaps()
-        {
-            return new Dictionary<YUEnums.TorrentMap, string[]>()
-            {
-                { YUEnums.TorrentMap.ResourceType, new string[] { "类型", "类别" , "類型", "Cat.","Type" } },
-                { YUEnums.TorrentMap.Detail, new string[] {"标题", "標題", "Name", "名称"} },
-                { YUEnums.TorrentMap.PromotionType, new string[] {"标题", "標題", "Name", "名称"} },
-                { YUEnums.TorrentMap.TimeAlive,  new string[] { "time", "存活时间", "存活時間", "TTL" } },
-                { YUEnums.TorrentMap.Size,  new string[] { "size", "大小" } },
-                { YUEnums.TorrentMap.SeederNumber,  new string[] { "seeders", "做种", "种子数", "種子數"} },
-                { YUEnums.TorrentMap.LeecherNumber, new string[] { "leechers", "下载", "下載數"} },
-                { YUEnums.TorrentMap.SnatchedNumber,  new string[] { "snatched", "完成", "完成數" } },
-                { YUEnums.TorrentMap.UpLoader,  new string[] { "发布者", "發佈者", "上传者"} },
-            };
-        }
-
-        private Dictionary<YUEnums.PersonInfoMap, string[]> GetDefaultPersonInfoMaps()
-        {
-            return new Dictionary<YUEnums.PersonInfoMap, string[]>()
-            {
-                { YUEnums.PersonInfoMap.Bonus, new string[] {"魔力值", "魔力豆", "积分", "Karma Points", "Bonus", "포인트" }},
-                { YUEnums.PersonInfoMap.RegisterDate, new string[] { "Join date", "加入日期", "注册日期", "가입 날짜" } },
-                { YUEnums.PersonInfoMap.ShareRate, new string[] { "Transfers", "传输", "傳送", "分享率", "Ratio" }},
-                { YUEnums.PersonInfoMap.DownSize, new string[] { "Transfers", "传输", "傳送", "下载量", "Downloaded", "다운로드" }},
-                { YUEnums.PersonInfoMap.UpSize, new string[] { "Transfers", "传输", "傳送", "上传量", "Uploaded", "업로드" }},
-                { YUEnums.PersonInfoMap.SeedRate, new string[] { "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
-                { YUEnums.PersonInfoMap.SeedTimes, new string[] { "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
-                { YUEnums.PersonInfoMap.DownTimes, new string[] { "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
-                { YUEnums.PersonInfoMap.SeedNumber, new string[] { "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
-                { YUEnums.PersonInfoMap.Rank, new string[] { "Class", "等级", "等級", "등급" }}
-            };
-        }
 
         #endregion
     }

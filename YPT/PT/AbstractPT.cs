@@ -337,20 +337,21 @@ namespace YPT.PT
 
         #region 种子
 
-        public List<PTTorrent> SearchTorrent(string searchKey, YUEnums.PromotionType promotionType = YUEnums.PromotionType.ALL, YUEnums.AliveType aliveType = YUEnums.AliveType.ALL, YUEnums.FavType favType = YUEnums.FavType.ALL)
+        public List<PTTorrent> SearchTorrent(PTSearchArgs args)
         {
             if (Site.SearchUrl.IsNullOrEmptyOrWhiteSpace())
             {
                 //站点还没有支持搜索
-                throw new Exception(string.Format("搜索种子错误，错误站点：{0}，关键字：{1}，错误原因：该站点尚未支持搜索。", Site.Name, searchKey));
+                throw new Exception(string.Format("搜索种子错误，错误站点：{0}，关键字：{1}，错误原因：该站点尚未支持搜索。", Site.Name, args.SearchKey));
             }
 
             if (_cookie == null || _cookie.Count <= 0)
             {
-                throw new Exception(string.Format("搜索种子错误，错误站点：{0}，关键字：{1}，错误原因：未登录，请先登录。", Site.Name, searchKey));
+                throw new Exception(string.Format("搜索种子错误，错误站点：{0}，关键字：{1}，错误原因：未登录，请先登录。", Site.Name, args.SearchKey));
             }
 
-            string searchUrl = BuildSearchUrl(searchKey, promotionType, aliveType, favType);
+
+            string searchUrl = BuildSearchUrl(args);
             string htmlResult = HttpUtils.GetDataGetHtml(searchUrl, _cookie);
 
             HtmlDocument htmlDocument = new HtmlDocument();
@@ -369,6 +370,10 @@ namespace YPT.PT
                 for (int i = 1; i < trNodes.Count; i++)
                 {
                     var trNode = trNodes[i];
+
+                    if (args.IsIngoreTop && IsTopTorrentNode(trNode))
+                        continue;
+
                     var tdNodes = GetTorrentNodes(trNode);
                     if (tdNodes == null || tdNodes.Count < 8)
                         continue;
@@ -402,11 +407,13 @@ namespace YPT.PT
             }
         }
 
-        protected virtual string BuildSearchUrl(string searchKey, YUEnums.PromotionType promotionType = YUEnums.PromotionType.ALL, YUEnums.AliveType aliveType = YUEnums.AliveType.ALL, YUEnums.FavType favType = YUEnums.FavType.ALL)
+        protected virtual string BuildSearchUrl(PTSearchArgs args)
         {
             //https://ourbits.club/torrents.php?incldead=2&spstate=2&inclbookmarked=1&search=&search_area=0&search_mode=0
             //incldead->活种/断种 | spstate->促销 | inclbookmarked->收藏 | search->关键字 | search_area->范围 | search_mode->匹配模式
-            string queryString = string.Format("?incldead={0}&spstate={1}&inclbookmarked={2}&search={3}&search_area={4}&search_mode={5}", (int)aliveType, (int)promotionType, (int)favType, Uri.EscapeDataString(searchKey), 0, 0);
+            string queryString = string.Format("?incldead={0}&spstate={1}&inclbookmarked={2}&search={3}&search_area={4}&search_mode={5}", (int)args.AliveType, (int)args.PromotionType, (int)args.FavType, Uri.EscapeDataString(args.SearchKey), 0, 0);
+            if (args.IsPostSiteOrder && !args.SortKvr.Key.IsNullOrEmptyOrWhiteSpace() && Site.SearchOrderMaps.ContainsKey(args.SortKvr.Key))
+                queryString += string.Format("&sort={0}&type={1}", Site.SearchOrderMaps[args.SortKvr.Key], Convert.ToString(args.SortKvr.Value).ToLowerInvariant());
             return Site.SearchUrl + queryString;
         }
 
@@ -428,6 +435,14 @@ namespace YPT.PT
         protected virtual HtmlNodeCollection GetTorrentNodes(HtmlNode trNode)
         {
             return trNode.SelectNodes("./td");
+        }
+
+        protected virtual bool IsTopTorrentNode(HtmlNode trNode)
+        {
+            var topNodes = trNode.SelectNodes(".//img[contains(@alt,'Sticky')]");
+            if (topNodes != null && topNodes.Count > 0)
+                return true;
+            return false;
         }
 
 

@@ -41,10 +41,13 @@
             this.cbIsMiniWhenClose = new System.Windows.Forms.CheckBox();
             this.cbIsSyncTiming = new System.Windows.Forms.CheckBox();
             this.cbIsEnablePostFileName = new System.Windows.Forms.CheckBox();
+            this.nudSearchTimeSpan = new System.Windows.Forms.NumericUpDown();
+            this.lblSearchTimespan = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabUser.SuspendLayout();
             this.tabSign.SuspendLayout();
             this.tabOther.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSearchTimeSpan)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl
@@ -140,11 +143,13 @@
             this.dtpSignTime.ShowUpDown = true;
             this.dtpSignTime.Size = new System.Drawing.Size(161, 26);
             this.dtpSignTime.TabIndex = 0;
-            this.dtpSignTime.Value = new System.DateTime(2018, 2, 20, 0, 0, 0, 0);
+            this.dtpSignTime.Value = new System.DateTime(2018, 3, 10, 0, 5, 0, 0);
             this.dtpSignTime.ValueChanged += new System.EventHandler(this.dtpSignTime_ValueChanged);
             // 
             // tabOther
             // 
+            this.tabOther.Controls.Add(this.lblSearchTimespan);
+            this.tabOther.Controls.Add(this.nudSearchTimeSpan);
             this.tabOther.Controls.Add(this.cbIsMiniWhenClose);
             this.tabOther.Controls.Add(this.cbIsSyncTiming);
             this.tabOther.Controls.Add(this.cbIsEnablePostFileName);
@@ -189,6 +194,39 @@
             this.cbIsEnablePostFileName.UseVisualStyleBackColor = true;
             this.cbIsEnablePostFileName.CheckedChanged += new System.EventHandler(this.cbIsEnablePostFileName_CheckedChanged);
             // 
+            // nudSearchTimeSpan
+            // 
+            this.nudSearchTimeSpan.Location = new System.Drawing.Point(159, 142);
+            this.nudSearchTimeSpan.Maximum = new decimal(new int[] {
+            86400,
+            0,
+            0,
+            0});
+            this.nudSearchTimeSpan.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudSearchTimeSpan.Name = "nudSearchTimeSpan";
+            this.nudSearchTimeSpan.Size = new System.Drawing.Size(120, 26);
+            this.nudSearchTimeSpan.TabIndex = 6;
+            this.nudSearchTimeSpan.ThousandsSeparator = true;
+            this.nudSearchTimeSpan.Value = new decimal(new int[] {
+            300,
+            0,
+            0,
+            0});
+            this.nudSearchTimeSpan.ValueChanged += new System.EventHandler(this.nudSearchTimeSpan_ValueChanged);
+            // 
+            // lblSearchTimespan
+            // 
+            this.lblSearchTimespan.AutoSize = true;
+            this.lblSearchTimespan.Location = new System.Drawing.Point(36, 145);
+            this.lblSearchTimespan.Name = "lblSearchTimespan";
+            this.lblSearchTimespan.Size = new System.Drawing.Size(117, 20);
+            this.lblSearchTimespan.TabIndex = 7;
+            this.lblSearchTimespan.Text = "定时搜索间隔(秒)";
+            // 
             // SettingFrm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
@@ -210,6 +248,7 @@
             this.tabSign.PerformLayout();
             this.tabOther.ResumeLayout(false);
             this.tabOther.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudSearchTimeSpan)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -228,5 +267,7 @@
         private System.Windows.Forms.CheckBox cbIsEnablePostFileName;
         private System.Windows.Forms.CheckBox cbIsSyncTiming;
         private System.Windows.Forms.CheckBox cbIsMiniWhenClose;
+        private System.Windows.Forms.Label lblSearchTimespan;
+        private System.Windows.Forms.NumericUpDown nudSearchTimeSpan;
     }
 }

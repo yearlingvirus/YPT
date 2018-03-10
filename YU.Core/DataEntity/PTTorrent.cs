@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.ComponentModel.DataAnnotations;
 using YU.Core.Utils;
+using System.Drawing;
 
 namespace YU.Core.DataEntity
 {
@@ -103,6 +104,9 @@ namespace YU.Core.DataEntity
         /// </summary>
         public bool IsHR { get; set; }
 
+
+        private static Dictionary<YUEnums.PromotionType, Image> PromotionImages = new Dictionary<YUEnums.PromotionType, Image>();
+
         /// <summary>
         /// ->Grid实体
         /// </summary>
@@ -126,7 +130,16 @@ namespace YU.Core.DataEntity
             entity.UpLoadTime = this.UpLoadTime;
             entity.IsHR = this.IsHR;
             if (PTSiteConst.RESOURCE_PROMOTIONIMG.ContainsKey(entity.PromotionType) && !PTSiteConst.RESOURCE_PROMOTIONIMG[entity.PromotionType].IsNullOrEmptyOrWhiteSpace())
-                entity.image = FormUtils.GetImage(PTSiteConst.RESOURCE_PROMOTIONIMG[entity.PromotionType]);
+            {
+                //缓存处理
+                if (!PromotionImages.ContainsKey(entity.PromotionType))
+                {
+                    var image = FormUtils.GetImage(PTSiteConst.RESOURCE_PROMOTIONIMG[entity.PromotionType]);
+                    PromotionImages[entity.PromotionType] = image;
+                }
+                entity.image = PromotionImages[entity.PromotionType];
+            }
+
 
             StringBuilder sb = new StringBuilder();
             if (!this.Title.IsNullOrEmptyOrWhiteSpace())

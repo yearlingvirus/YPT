@@ -49,9 +49,9 @@ namespace YPT.PT
         /// <summary>
         /// 搜索种子
         /// </summary>
-        /// <param name="searchKey"></param>
+        /// <param name="args"></param>
         /// <returns></returns>
-        List<PTTorrent> SearchTorrent(string searchKey, YUEnums.PromotionType promotionType, YUEnums.AliveType aliveType, YUEnums.FavType favType);
+        List<PTTorrent> SearchTorrent(PTSearchArgs args);
 
         /// <summary>
         /// 下载种子
@@ -59,7 +59,7 @@ namespace YPT.PT
         /// <param name="torrent"></param>
         /// <param name="isOpen"></param>
         /// <param name="isPostFileName"></param>
-        void DownTorrent(PTTorrent torrent, bool isOpen , bool isPostFileName);
+        void DownTorrent(PTTorrent torrent, bool isOpen, bool isPostFileName);
 
         /// <summary>
         /// 获取个人信息

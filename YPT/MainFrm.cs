@@ -35,11 +35,29 @@ namespace YPT
 
         private System.Timers.Timer SyncTimer { get; set; }
 
+        private System.Timers.Timer WriteDBTimer { get; set; }
+
+        private System.Timers.Timer SearchTimer { get; set; }
+
+        /// <summary>
+        /// 进度条控件
+        /// </summary>
         YUTransparentPanel progressPanel;
 
-        private readonly static object syncSearchObject = new object();
+        /// <summary>
+        /// 上一次排序的列
+        /// </summary>
+        private KeyValuePair<string, YUEnums.SortOrderType> LastSearchColKvr { get; set; }
+
+        private readonly static object syncFillSearchObject = new object();
 
         private readonly static object syncInfoObject = new object();
+
+        /// <summary>
+        /// 是否正在搜索中
+        /// </summary>
+        private bool IsSearching { get; set; }
+
 
         #endregion
 
@@ -48,6 +66,10 @@ namespace YPT
             InitializeComponent();
             this.Text = string.Format("YPT {0}", YUUtils.GetVersion());
 
+            cbIsPostSiteOrder.Checked = Global.Config.IsPostSiteOrder;
+            cbIsIngoreTop.Checked = Global.Config.IsIngoreTop;
+            cbIsLastSort.Checked = Global.Config.IsLastSort;
+            cbIsSearchTiming.Checked = Global.Config.IsSearchTiming;
             FormUtils.InitDataGridView(dgvTorrent);
             FormUtils.CreateDataGridColumns(dgvTorrent, typeof(PTTorrentGridEntity));
             FormUtils.InitDataGridView(dgvPersonInfo);
@@ -58,7 +80,6 @@ namespace YPT
             InitTorrentCmb();
 
         }
-
 
         #region 签到，登录
 
@@ -220,6 +241,15 @@ namespace YPT
 
         #region 窗体事件
 
+        private void tabMain_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabMain.SelectedTab == tabSearch)
+                this.AcceptButton = btnSearch;
+            else
+                this.AcceptButton = null;
+        }
+
+
         private void MainFrm_Load(object sender, EventArgs e)
         {
             progressPanel = new YUTransparentPanel(this);
@@ -355,7 +385,7 @@ namespace YPT
                     cb.AutoSize = true;
                     cb.Size = new Size(100, 25);
                     cb.Location = new Point(20, i * cb.Size.Height + 10);
-                    cb.Name = cb + user.Site.Name;
+                    cb.Name = "cb" + user.Site.Name;
                     cb.TabIndex = i;
                     cb.Text = user.Site.Name;
                     cb.UseVisualStyleBackColor = true;
@@ -371,7 +401,7 @@ namespace YPT
                     cb.AutoSize = true;
                     cb.Size = new Size(100, 25);
                     cb.Location = new Point(20, panelSite.Controls.Count * cb.Size.Height + 10);
-                    cb.Name = cb + "Select";
+                    cb.Name = "cbSelect";
                     cb.TabIndex = panelSite.Controls.Count;
                     cb.Text = "全选";
                     cb.Tag = false;
@@ -415,19 +445,40 @@ namespace YPT
                 (sender as CheckBox).Text = "全选";
         }
 
-
         private void Cb_CheckedChanged(object sender, EventArgs e)
         {
-            Task t = Task.Factory.StartNew(() =>
+            //这里延迟写入
+            if (WriteDBTimer != null)
             {
-                CheckBox cb = (sender as CheckBox);
-                JObject o = new JObject();
-                string selectSiteJson = Global.GetConfig<string>(YUConst.CONFIG_SEARCHSITEHISTORY);
-                if (!selectSiteJson.IsNullOrEmptyOrWhiteSpace())
-                    o = JsonConvert.DeserializeObject<JObject>(selectSiteJson);
-                o[cb.Name] = cb.Checked;
-                Global.SetConfig(YUConst.CONFIG_SEARCHSITEHISTORY, JsonConvert.SerializeObject(o));
-            });
+                WriteDBTimer.Stop();
+                WriteDBTimer.Interval = 1000;
+                WriteDBTimer.Start();
+            }
+            else
+            {
+                WriteDBTimer = new System.Timers.Timer();
+                WriteDBTimer.Elapsed += WriteDBTimer_Elapsed;
+                WriteDBTimer.Interval = 1000;
+                WriteDBTimer.AutoReset = false;
+                WriteDBTimer.Start();
+            }
+        }
+
+        private void WriteDBTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            JObject o = new JObject();
+            foreach (var item in panelSite.Controls)
+            {
+                if (item is CheckBox)
+                {
+                    var cb = item as CheckBox;
+                    if (!cb.Name.EqualIgnoreCase("cbSelect"))
+                    {
+                        o[cb.Name] = cb.Checked;
+                    }
+                }
+            }
+            Global.SetConfig(YUConst.CONFIG_SEARCHSITEHISTORY, JsonConvert.SerializeObject(o));
         }
 
         private void panelSite_Paint(object sender, PaintEventArgs e)
@@ -468,6 +519,12 @@ namespace YPT
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
+            if (SearchTimer != null && Global.Config.IsSearchTiming)
+                SearchTimer.Interval = Global.Config.SearchTimeSpan * 1000;
+
+            if (IsSearching)
+                return;
+
             List<PTSite> searchSites = new List<PTSite>();
             foreach (var control in panelSite.Controls)
             {
@@ -484,23 +541,33 @@ namespace YPT
                 }
             }
             if (searchSites.Count > 0)
-                SearchTorrent(searchSites, txtSearch.Text);
+                this.Invoke(new Action(() =>
+                {
+                    SearchTorrent(searchSites, txtSearch.Text);
+                }));
             else
                 LogMessage(null, "请选择站点。", true);
+
         }
 
         private void SearchTorrent(List<PTSite> searchSites, string searchKey)
         {
             if (searchSites != null && searchSites.Count > 0)
             {
+                IsSearching = true;
                 bool isFill = false;
                 List<PTTorrent> searchTorrents = new List<PTTorrent>();
                 StringBuilder sb = new StringBuilder();
                 var cts = new CancellationTokenSource();
 
-                YUEnums.PromotionType promotionType = (YUEnums.PromotionType)cmbPromotion.SelectedValue;
-                YUEnums.AliveType aliveType = (YUEnums.AliveType)cmbAlive.SelectedValue;
-                YUEnums.FavType favType = (YUEnums.FavType)cmbFav.SelectedValue;
+                PTSearchArgs args = new PTSearchArgs();
+                args.PromotionType = (YUEnums.PromotionType)cmbPromotion.SelectedValue;
+                args.AliveType = (YUEnums.AliveType)cmbAlive.SelectedValue;
+                args.FavType = (YUEnums.FavType)cmbFav.SelectedValue;
+                args.SearchKey = searchKey;
+                args.IsPostSiteOrder = Global.Config.IsPostSiteOrder;
+                args.SortKvr = LastSearchColKvr;
+                args.IsIngoreTop = Global.Config.IsIngoreTop;
 
                 Task task = new Task(() =>
                 {
@@ -511,8 +578,8 @@ namespace YPT
                         //假设4核Cpu，5个任务，因为是并行的原因，如果前4个在并行执行的过程任意一个发生了异常，那么此时前4个中其他3个还会继续执行到结束，但最后一个是不会执行的，所以这里需要做异常捕获处理。
                         try
                         {
-                            List<PTTorrent> torrents = pt.SearchTorrent(searchKey, promotionType, aliveType, favType);
-                            lock (syncSearchObject)
+                            List<PTTorrent> torrents = pt.SearchTorrent(args);
+                            lock (syncFillSearchObject)
                             {
                                 if (torrents != null && torrents.Count > 0)
                                     searchTorrents.AddRange(torrents);
@@ -520,7 +587,7 @@ namespace YPT
                         }
                         catch (Exception ex)
                         {
-                            lock (syncSearchObject)
+                            lock (syncFillSearchObject)
                             {
                                 Logger.Error(string.Format("{0} 搜索过程中发生错误。", site.Name), ex);
                                 sb.AppendLine(ex.GetInnerExceptionMessage());
@@ -555,6 +622,7 @@ namespace YPT
                         bool isOpen = searchTorrents.Count <= 0;
                         LogMessage(null, errMsg.TrimEnd(), isOpen);
                     }
+                    IsSearching = false;
                 });
             }
         }
@@ -563,21 +631,30 @@ namespace YPT
         {
             isFill = true;
             progressPanel.StopLoading();
+
             if (searchTorrents != null && searchTorrents.Count > 0)
             {
                 List<PTTorrentGridEntity> entitys = new List<PTTorrentGridEntity>();
-                if (!txtSearch.Text.IsNullOrEmptyOrWhiteSpace())
-                    searchTorrents.OrderByDescending(g => g.UpLoadTime).ToList().ForEach(x => entitys.Add(x.ToGridEntity()));
-                else
-                    searchTorrents.ToList().ForEach(x => entitys.Add(x.ToGridEntity()));
+                searchTorrents.ToList().ForEach(x => entitys.Add(x.ToGridEntity()));
 
-                this.Invoke(new Action<List<PTTorrentGridEntity>>(x =>
+                if (Global.Config.IsLastSort && !LastSearchColKvr.Key.IsNullOrEmptyOrWhiteSpace())
                 {
-                    dgvTorrent.Tag = searchTorrents;
-                    dgvTorrent.DataSource = entitys;
-                }), entitys);
+                    this.Invoke(new Action(() =>
+                    {
+                        ReSort(dgvTorrent, LastSearchColKvr.Key, (SortOrder)(int)LastSearchColKvr.Value, entitys);
+                        dgvTorrent.Tag = searchTorrents;
+                    }));
+                }
+                else
+                {
+                    this.Invoke(new Action(() =>
+                    {
+                        dgvTorrent.DataSource = entitys;
+                        //ReSort(dgvTorrent, "UpLoadTime", SortOrder.Descending, entitys);
+                        dgvTorrent.Tag = searchTorrents;
+                    }));
+                }
             }
-
         }
 
         private void dgvTorrent_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
@@ -679,15 +756,57 @@ namespace YPT
             });
         }
 
-        private void txtSearch_KeyPress(object sender, KeyPressEventArgs e)
+        private void cbIsPostSiteOrder_CheckedChanged(object sender, EventArgs e)
         {
-            if (e.KeyChar == Convert.ToChar(13))
+            Global.Config.IsPostSiteOrder = (sender as CheckBox).Checked;
+            if (Global.Config.IsPostSiteOrder)
+                cbIsLastSort.Checked = true;
+            Global.SetConfig(YUConst.CONFIG_SEARCH_POSTSITEORDER, Global.Config.IsPostSiteOrder);
+        }
+
+
+        private void cbIsLastSort_CheckedChanged(object sender, EventArgs e)
+        {
+            Global.Config.IsLastSort = (sender as CheckBox).Checked;
+            if (!Global.Config.IsLastSort)
+                cbIsPostSiteOrder.Checked = false;
+            Global.SetConfig(YUConst.CONFIG_SEARCH_ISLASTSORT, Global.Config.IsLastSort);
+        }
+
+        private void cbIsIngoreTop_CheckedChanged(object sender, EventArgs e)
+        {
+            Global.Config.IsIngoreTop = (sender as CheckBox).Checked;
+            Global.SetConfig(YUConst.CONFIG_SEARCH_INGORETOP, Global.Config.IsIngoreTop);
+        }
+
+        private void cbIsSearchTiming_CheckedChanged(object sender, EventArgs e)
+        {
+            Global.Config.IsSearchTiming = (sender as CheckBox).Checked;
+            if (Global.Config.IsSearchTiming)
             {
-                btnSearch_Click(sender, e);
-                e.Handled = true;
+                if (SearchTimer == null)
+                    SearchTimer = new System.Timers.Timer();
+                SearchTimer.Elapsed -= SearchTimer_Elapsed;
+                SearchTimer.Enabled = true;
+                SearchTimer.AutoReset = true;
+                SearchTimer.Interval = Global.Config.SearchTimeSpan * 1000;
+                SearchTimer.Elapsed += SearchTimer_Elapsed;
+                SearchTimer.Start();
+            }
+            else
+            {
+                if (SearchTimer != null)
+                {
+                    SearchTimer.Enabled = false;
+                    SearchTimer.Stop();
+                }
             }
         }
 
+        private void SearchTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            btnSearch_Click(sender, e);
+        }
 
         private void toolStripMenuItemCopy_Click(object sender, EventArgs e)
         {
@@ -711,17 +830,19 @@ namespace YPT
         private void dgv_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             DataGridView dgv = sender as DataGridView;
+
+            //这里重新获取列名，比如Size，获取到的应该是RealSize
+            string colName = dgv.Columns[e.ColumnIndex].DataPropertyName;
+            foreach (DataGridViewColumn col in dgv.Columns)
+            {
+                if (col.DataPropertyName.Contains(colName) && !col.DataPropertyName.EqualIgnoreCase(colName))
+                {
+                    colName = col.DataPropertyName;
+                    break;
+                }
+            }
             if (dgv.Columns[e.ColumnIndex].SortMode == DataGridViewColumnSortMode.Programmatic)
             {
-                string colName = dgv.Columns[e.ColumnIndex].DataPropertyName;
-                foreach (DataGridViewColumn col in dgv.Columns)
-                {
-                    if (col.DataPropertyName.Contains(colName) && !col.DataPropertyName.EqualIgnoreCase(colName))
-                    {
-                        colName = col.DataPropertyName;
-                        break;
-                    }
-                }
                 switch (dgv.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection)
                 {
                     case SortOrder.None:
@@ -745,7 +866,8 @@ namespace YPT
                         break;
                 }
             }
-
+            if (dgv.Name == "dgvTorrent")
+                LastSearchColKvr = new KeyValuePair<string, YUEnums.SortOrderType>(dgv.Columns[e.ColumnIndex].DataPropertyName, (YUEnums.SortOrderType)(int)dgv.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection);
         }
 
         /// <summary>
@@ -762,7 +884,6 @@ namespace YPT
 
             var entityType = typeof(T);
             PropertyInfo propertyInfo = entityType.GetProperty(colName);
-
             try
             {
                 switch (sortMode)
@@ -771,13 +892,14 @@ namespace YPT
                         dgv.DataSource = dataSource.OrderBy(x => Convert.ChangeType(propertyInfo.GetValue(x, null), propertyInfo.PropertyType)).ToList();
                         break;
                     case SortOrder.Descending:
-                        dgv.DataSource = dataSource.OrderByDescending(x => Convert.ChangeType(propertyInfo.GetValue(x, null), propertyInfo.PropertyType)).ToList();
+                        dgv.DataSource = dataSource.OrderByDescending(x => Convert.ChangeType(propertyInfo.GetValue(x, null),
+                            propertyInfo.PropertyType)).ToList();
                         break;
                 }
-                dgv.Refresh();
             }
             catch (Exception ex)
             {
+                dgv.DataSource = dataSource;
                 Logger.Error(colName + "排序失败", ex);
             }
         }
@@ -920,7 +1042,6 @@ namespace YPT
             }
         }
 
-
         private void dgvPersonInfo_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -960,5 +1081,6 @@ namespace YPT
             AboutFrm frm = new AboutFrm();
             frm.ShowDialog();
         }
+
     }
 }

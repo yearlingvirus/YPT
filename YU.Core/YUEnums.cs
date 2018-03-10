@@ -23,11 +23,11 @@ namespace YU.Core
             CHDBits,
             CMCT,
             OurBits,
-            KeepFrds, 
+            KeepFrds,
             U2,
             HDHome,
             OpenCD,
-            GZTown, 
+            GZTown,
             BTSchool,
             HDU,
             NYPT,
@@ -127,7 +127,7 @@ namespace YU.Core
             /// </summary>
             [Description("2X")]
             TWOUP = 3,
-       
+
             /// <summary>
             /// 2XFREE
             /// </summary>
@@ -234,6 +234,25 @@ namespace YU.Core
             NONE = 4,
         }
 
+        /// <summary>
+        /// 排序类型
+        /// </summary>
+
+        public enum SortOrderType
+        {
+            /// <summary>
+            /// 无
+            /// </summary>
+            None = 0,
+            /// <summary>
+            /// 正序
+            /// </summary>
+            Asc = 1,
+            /// <summary>
+            /// 倒序
+            /// </summary>
+            Desc = 2,
+        }
 
         /// <summary>
         /// 用户映射

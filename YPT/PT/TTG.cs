@@ -83,8 +83,6 @@ namespace YPT.PT
             return HttpUtils.PostData(Site.LoginUrl, postData, _cookie, true);
         }
 
-
-
         public override string Sign()
         {
             if (_cookie != null && _cookie.Count > 0)
@@ -130,6 +128,19 @@ namespace YPT.PT
         protected override HtmlNodeCollection GetTorrentNodes(HtmlDocument htmlDocument)
         {
             return htmlDocument.DocumentNode.SelectNodes("//*[@id=\"torrent_table\"]/tr");
+        }
+
+        protected override bool IsTopTorrentNode(HtmlNode trNode)
+        {
+            if (trNode != null && trNode.Attributes.Contains("class"))
+            {
+                foreach (var item in trNode.Attributes)
+                {
+                    if (item.Value.Contains("sticky"))
+                        return true;
+                }
+            }
+            return false;
         }
 
         protected override bool SetTorrentTitleAndLink(HtmlNode node, PTTorrent torrent)
@@ -230,7 +241,7 @@ namespace YPT.PT
             }
         }
 
-        protected override string BuildSearchUrl(string searchKey, YUEnums.PromotionType promotionType = YUEnums.PromotionType.ALL, YUEnums.AliveType aliveType = YUEnums.AliveType.ALL, YUEnums.FavType favType = YUEnums.FavType.ALL)
+        protected override string BuildSearchUrl(PTSearchArgs args)
         {
             //https://totheglory.im/browse.php?search_field=北京 +halfdown +30down +freeleech +incdead +onlydead +excl +hr&c=M
             //TTG看起来只支持5种情况的过滤，其他都认为是全部过滤。
@@ -246,13 +257,15 @@ namespace YPT.PT
                 { YUEnums.AliveType.Dead , " +onlydead"},
             };
 
-            string queryString = string.Format("?search_field={0}", Uri.EscapeDataString(searchKey));
-            if (motionDict.ContainsKey(promotionType))
-                queryString += Uri.EscapeDataString(motionDict[promotionType]);
+            string queryString = string.Format("?c=M&search_field={0}", Uri.EscapeDataString(args.SearchKey));
+            if (motionDict.ContainsKey(args.PromotionType))
+                queryString += Uri.EscapeDataString(motionDict[args.PromotionType]);
 
-            if (aliveDict.ContainsKey(aliveType))
-                queryString += Uri.EscapeDataString(aliveDict[aliveType]);
+            if (aliveDict.ContainsKey(args.AliveType))
+                queryString += Uri.EscapeDataString(aliveDict[args.AliveType]);
 
+            if (args.IsPostSiteOrder && !args.SortKvr.Key.IsNullOrEmptyOrWhiteSpace() && Site.SearchOrderMaps.ContainsKey(args.SortKvr.Key))
+                queryString += string.Format("&sort={0}&type={1}", Site.SearchOrderMaps[args.SortKvr.Key], Convert.ToString(args.SortKvr.Value).ToLowerInvariant());
             return Site.SearchUrl + queryString;
         }
 
