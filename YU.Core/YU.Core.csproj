@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\GridViewAttribute.cs" />
+    <Compile Include="DataEntity\PTForum.cs" />
     <Compile Include="DataEntity\PTInfo.cs" />
     <Compile Include="DataEntity\PTInfoGridEntity.cs" />
     <Compile Include="DataEntity\PTSearchArgs.cs" />

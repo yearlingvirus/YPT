@@ -76,7 +76,7 @@ namespace YPT
             FormUtils.CreateDataGridColumns(dgvPersonInfo, typeof(PTInfoGridEntity));
             InitSign(this, null);
             InitSync(this, null);
-            InitTorrentSite(this, null);
+            InitTorrentForum(this, null);
             InitTorrentCmb();
 
         }
@@ -260,7 +260,7 @@ namespace YPT
         {
             SettingFrm frm = new SettingFrm(this);
             frm.SignChanged += InitSign;
-            frm.UserChanged += InitTorrentSite;
+            frm.UserChanged += InitTorrentForum;
             frm.SyncChanged += InitSync;
             frm.ShowDialog();
         }
@@ -371,25 +371,44 @@ namespace YPT
         }
 
         /// <summary>
-        /// 初始化种子搜索站点
+        /// 初始化种子搜索版块信息
         /// </summary>
-        private void InitTorrentSite(object sender, OnUserChangeEventArgs e)
+        private void InitTorrentForum(object sender, OnUserChangeEventArgs e)
         {
             panelSite.Controls.Clear();
             if (Global.Users != null && Global.Users.Count > 0)
             {
-                for (int i = 0; i < Global.Users.Count; i++)
+                List<PTForum> forums = new List<PTForum>();
+
+                foreach (var user in Global.Users)
                 {
-                    var user = Global.Users[i];
+                    if (user != null && user.Site != null && user.Site.Forums != null && user.Site.Forums.Count > 0)
+                    {
+                        foreach (var forum in user.Site.Forums)
+                        {
+                            if (!forum.Visable)
+                                continue;
+                            else
+                                forums.Add(forum);
+                        }
+                    }
+                }
+
+                //这里需要做排序处理，先按站点排序，再按版块排序
+                forums = forums.OrderBy(x => x.SiteId).ThenBy(x => x.Order).ToList();
+
+                for (int i = 0; i < forums.Count; i++)
+                {
+                    var forum = forums[i];
                     CheckBox cb = new CheckBox();
                     cb.AutoSize = true;
                     cb.Size = new Size(100, 25);
                     cb.Location = new Point(20, i * cb.Size.Height + 10);
-                    cb.Name = "cb" + user.Site.Name;
+                    cb.Name = "cb" + forum.Name;
                     cb.TabIndex = i;
-                    cb.Text = user.Site.Name;
+                    cb.Text = forum.Name;
                     cb.UseVisualStyleBackColor = true;
-                    cb.Tag = user.Site.Id;
+                    cb.Tag = forum;
                     cb.CheckedChanged += Cb_CheckedChanged;
                     panelSite.Controls.Add(cb);
                 }
@@ -525,34 +544,32 @@ namespace YPT
             if (IsSearching)
                 return;
 
-            List<PTSite> searchSites = new List<PTSite>();
+            List<PTForum> searchForums = new List<PTForum>();
             foreach (var control in panelSite.Controls)
             {
                 if (control is CheckBox)
                 {
                     var cb = (control as CheckBox);
-                    if (cb.Checked && cb.Tag is YUEnums.PTEnum)
+                    if (cb.Checked && cb.Tag is PTForum)
                     {
-                        YUEnums.PTEnum siteId = (YUEnums.PTEnum)cb.Tag;
-                        var site = Global.Sites.Where(x => x.Id == siteId).FirstOrDefault();
-                        if (site != null && !searchSites.Contains(site))
-                            searchSites.Add(site);
+                        PTForum forum = (PTForum)cb.Tag;
+                        searchForums.Add(forum);
                     }
                 }
             }
-            if (searchSites.Count > 0)
+            if (searchForums.Count > 0)
                 this.Invoke(new Action(() =>
                 {
-                    SearchTorrent(searchSites, txtSearch.Text);
+                    SearchTorrent(searchForums, txtSearch.Text);
                 }));
             else
                 LogMessage(null, "请选择站点。", true);
 
         }
 
-        private void SearchTorrent(List<PTSite> searchSites, string searchKey)
+        private void SearchTorrent(List<PTForum> searchForums, string searchKey)
         {
-            if (searchSites != null && searchSites.Count > 0)
+            if (searchForums != null && searchForums.Count > 0)
             {
                 IsSearching = true;
                 bool isFill = false;
@@ -571,14 +588,17 @@ namespace YPT
 
                 Task task = new Task(() =>
                 {
-                    Parallel.ForEach(searchSites.Distinct(), (site, state, i) =>
+                    Parallel.ForEach(searchForums.Distinct(), (forum, state, i) =>
                     {
-                        //即便日后支持站点多用户，这里也只会取第一个用户。
-                        AbstractPT pt = PTFactory.GetPT(site.Id, Global.Users.Where(x => x.Site.Id == site.Id).FirstOrDefault()) as AbstractPT;
+                        var o = ObjectUtils.CreateCopy<PTSearchArgs>(args);
+                        o.Forum = forum;
+
+                        //即便日后支持站点多用户，目前这里也只会取第一个用户。
+                        AbstractPT pt = PTFactory.GetPT(forum.SiteId, Global.Users.Where(x => x.Site.Id == forum.SiteId).FirstOrDefault()) as AbstractPT;
                         //假设4核Cpu，5个任务，因为是并行的原因，如果前4个在并行执行的过程任意一个发生了异常，那么此时前4个中其他3个还会继续执行到结束，但最后一个是不会执行的，所以这里需要做异常捕获处理。
                         try
                         {
-                            List<PTTorrent> torrents = pt.SearchTorrent(args);
+                            List<PTTorrent> torrents = pt.SearchTorrent(o);
                             lock (syncFillSearchObject)
                             {
                                 if (torrents != null && torrents.Count > 0)
@@ -589,7 +609,7 @@ namespace YPT
                         {
                             lock (syncFillSearchObject)
                             {
-                                Logger.Error(string.Format("{0} 搜索过程中发生错误。", site.Name), ex);
+                                Logger.Error(string.Format("{0} 搜索过程中发生错误。", forum.Name), ex);
                                 sb.AppendLine(ex.GetInnerExceptionMessage());
                             }
                         }

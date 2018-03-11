@@ -8,8 +8,14 @@ namespace YU.Core.DataEntity
     /// <summary>
     /// 搜索参数
     /// </summary>
+    [Serializable]
     public class PTSearchArgs
     {
+        /// <summary>
+        /// PT搜索版块
+        /// </summary>
+        public PTForum Forum { get; set; }
+
         /// <summary>
         /// 搜索关键字
         /// </summary>

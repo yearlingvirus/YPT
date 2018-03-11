@@ -21,8 +21,14 @@ namespace YU.Core.DataEntity
         /// <summary>
         /// 站点
         /// </summary>
-        [GridView("站点", true, 100)]
+        [GridView("站点", false, 100)]
         public string SiteName { get; set; }
+
+        /// <summary>
+        /// 版块
+        /// </summary>
+        [GridView("版块", true, 100)]
+        public string ForumName { get; set; }
 
         /// <summary>
         /// 种子Id

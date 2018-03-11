@@ -75,6 +75,8 @@ namespace YU.Core
 //注意：扩展添加的站点Id请大于10000，以免与预置站点冲突
 //添加为JSON格式，具体可以参考sampleSite.json
 //如果种子和用户信息如果没有正常显示，请在PersonInfoMaps和TorrentMaps添加对应的行头或者列头名称。
+//如果在请求站点排序中异常，请检查SearchColUrlMaps，查看站点对应列的Url参数，并回填到SearchColUrlMaps中。
+//如果需要添加站点其他版块，请在Forums中添加，并将站点对应Url回填。
 //如果正常显示，则不需要添加，这样程序升级后可以兼容更多的站点";
     }
 }

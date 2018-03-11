@@ -32,6 +32,12 @@ namespace YU.Core.DataEntity
         /// </summary>
         public string SiteName { get; set; }
 
+        /// <summary>
+        /// 版块名称
+        /// </summary>
+        public string ForumName { get; set; }
+
+
         public string Id { get; set; }
 
         /// <summary>
@@ -123,6 +129,7 @@ namespace YU.Core.DataEntity
             entity.SeederNumber = this.SeederNumber;
             entity.SiteId = (int)this.SiteId;
             entity.SiteName = this.SiteName;
+            entity.ForumName = this.ForumName;
             entity.Size = this.Size;
             entity.RealSize = YUUtils.ParseB(this.Size);
             entity.SnatchedNumber = this.SnatchedNumber;

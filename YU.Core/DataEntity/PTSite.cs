@@ -19,8 +19,6 @@ namespace YU.Core.DataEntity
 
         public string SignUrl { get; set; }
 
-        public string SearchUrl { get; set; }
-
         public string InfoUrl { get; set; }
 
         public bool IsEableSecurityQuestion { get; set; }
@@ -30,6 +28,8 @@ namespace YU.Core.DataEntity
         public bool isEnableTwo_StepVerification { get; set; }
 
         public int Order { get; set; }
+
+        public List<PTForum> Forums { get; set; }
 
         private Dictionary<YUEnums.PersonInfoMap, string[]> _personInfoMaps;
 
@@ -55,15 +55,15 @@ namespace YU.Core.DataEntity
             }
         }
 
-        private Dictionary<string, string> _searchOrderMaps;
+        private Dictionary<string, string> _searchColUrlMaps;
 
-        public Dictionary<string, string> SearchOrderMaps
+        public Dictionary<string, string> SearchColUrlMaps
         {
             get
             {
-                if (_searchOrderMaps == null)
-                    _searchOrderMaps = GetDefaultSearchOrderMaps();
-                return _searchOrderMaps;
+                if (_searchColUrlMaps == null)
+                    _searchColUrlMaps = GetDefaultSearchOrderMaps();
+                return _searchColUrlMaps;
             }
         }
 
@@ -130,7 +130,10 @@ namespace YU.Core.DataEntity
                 LoginUrl =  "https://totheglory.im/takelogin.php",
                 SignUrl = "https://totheglory.im/signed.php",
                 InfoUrl = "https://totheglory.im/userdetails.php?id={0}",
-                SearchUrl = "https://totheglory.im/browse.php",
+                Forums = new List<PTForum>()
+                {
+                    new PTForum() { SiteId = YUEnums.PTEnum.TTG, Name = "TTG", SearchUrl = "https://totheglory.im/browse.php", Visable = true, Order = 1 },
+                },
                 Order = (int)YUEnums.PTEnum.TTG,
             },
             new PTSite() {
@@ -140,7 +143,12 @@ namespace YU.Core.DataEntity
                 isEnableTwo_StepVerification = true,
                 LoginUrl =  "https://tp.m-team.cc/takelogin.php",
                 InfoUrl = "https://tp.m-team.cc/userdetails.php?id={0}",
-                SearchUrl = "https://tp.m-team.cc/torrents.php",
+                Forums = new List<PTForum>()
+                {
+                    new PTForum() { SiteId = YUEnums.PTEnum.MTeam, Name = "MTeam", SearchUrl = "https://tp.m-team.cc/torrents.php", Visable = true, Order = 1 },
+                    new PTForum() { SiteId = YUEnums.PTEnum.MTeam, Name = "MTeam_4k", SearchUrl = "https://tp.m-team.cc/torrents.php?standard6=1", Visable = true, Order = 2 },
+                    new PTForum() { SiteId = YUEnums.PTEnum.MTeam, Name = "MTeam_Adult", SearchUrl = "https://tp.m-team.cc/adult.php", Visable = true, Order = 3 },
+                },
                 Order = (int)YUEnums.PTEnum.MTeam,
             },
             new PTSite() {
@@ -151,7 +159,10 @@ namespace YU.Core.DataEntity
                 isEnableTwo_StepVerification = true,
                 LoginUrl =  "https://hdsky.me/takelogin.php",
                 InfoUrl = "https://hdsky.me/userdetails.php?id={0}",
-                SearchUrl = "https://hdsky.me/torrents.php",
+                Forums = new List<PTForum>()
+                {
+                    new PTForum() { SiteId = YUEnums.PTEnum.HDSky, Name = "HDSky", SearchUrl = "https://hdsky.me/torrents.php", Visable = true, Order = 1 },
+                },
                 Order = (int)YUEnums.PTEnum.HDSky,
             },
             new PTSite() {
@@ -160,7 +171,10 @@ namespace YU.Core.DataEntity
                 Id = YUEnums.PTEnum.CHDBits,
                 LoginUrl =  "https://chdbits.co/takelogin.php",
                 InfoUrl = "https://chdbits.co/userdetails.php?id={0}",
-                SearchUrl = "https://chdbits.co/torrents.php",
+                Forums = new List<PTForum>()
+                {
+                    new PTForum() { SiteId = YUEnums.PTEnum.CHDBits, Name = "CHDBits", SearchUrl = "https://chdbits.co/torrents.php", Visable = true, Order = 1 },
+                },
                 Order = (int)YUEnums.PTEnum.CHDBits,
             },
             new PTSite() {
@@ -170,7 +184,10 @@ namespace YU.Core.DataEntity
                 LoginUrl =  "https://ourbits.club/takelogin.php",
                 InfoUrl = "https://ourbits.club/userdetails.php?id={0}",
                 SignUrl = "https://ourbits.club/attendance.php",
-                SearchUrl = "https://ourbits.club/torrents.php",
+                Forums = new List<PTForum>()
+                {
+                    new PTForum() { SiteId = YUEnums.PTEnum.OurBits, Name = "OurBits", SearchUrl = "https://ourbits.club/torrents.php", Visable = true, Order = 1 },
+                },
                 Order = (int)YUEnums.PTEnum.OurBits,
             },
             new PTSite() {
@@ -180,7 +197,10 @@ namespace YU.Core.DataEntity
                 IsEnableVerificationCode = true,
                 LoginUrl =  "https://pt.keepfrds.com/takelogin.php",
                 InfoUrl = "https://pt.keepfrds.com/userdetails.php?id={0}",
-                SearchUrl = "https://pt.keepfrds.com/torrents.php",
+                Forums = new List<PTForum>()
+                {
+                    new PTForum() { SiteId = YUEnums.PTEnum.KeepFrds, Name = "KeepFrds", SearchUrl = "https://pt.keepfrds.com/torrents.php", Visable = true, Order = 1 },
+                },
                 Order = (int)YUEnums.PTEnum.KeepFrds,
             },
             new PTSite() {
@@ -191,7 +211,10 @@ namespace YU.Core.DataEntity
                 LoginUrl =  "https://hdhome.org/takelogin.php",
                 InfoUrl = "https://hdhome.org/userdetails.php?id={0}",
                 SignUrl = "https://hdhome.org/attendance.php",
-                SearchUrl = "https://hdhome.org/torrents.php",
+                Forums = new List<PTForum>()
+                {
+                    new PTForum() { SiteId = YUEnums.PTEnum.HDHome, Name = "HDHome", SearchUrl = "https://hdhome.org/torrents.php", Visable = true, Order = 1 },
+                },
                 Order = (int)YUEnums.PTEnum.HDHome,
             },
             new PTSite() {
@@ -202,7 +225,10 @@ namespace YU.Core.DataEntity
                 LoginUrl =  "https://pt.gztown.net/takelogin.php",
                 InfoUrl = "https://pt.gztown.net/userdetails.php?id={0}",
                 SignUrl = "https://pt.gztown.net/attendance.php",
-                SearchUrl = "https://pt.gztown.net/torrents.php",
+                Forums = new List<PTForum>()
+                {
+                    new PTForum() { SiteId = YUEnums.PTEnum.GZTown, Name = "GZTown",  SearchUrl = "https://pt.gztown.net/torrents.php", Visable = true, Order = 1 },
+                },
                 Order = (int)YUEnums.PTEnum.GZTown,
             },
             new PTSite() {
@@ -213,7 +239,10 @@ namespace YU.Core.DataEntity
                 LoginUrl =  "http://pt.btschool.net/takelogin.php",
                 InfoUrl = "http://pt.btschool.net/userdetails.php?id={0}",
                 SignUrl = "http://pt.btschool.net/index.php?action=addbonus",
-                SearchUrl = "http://pt.btschool.net/torrents.php",
+                Forums = new List<PTForum>()
+                {
+                    new PTForum() { SiteId = YUEnums.PTEnum.BTSchool, Name = "BTSchool", SearchUrl = "http://pt.btschool.net/torrents.php", Visable = true, Order = 1 },
+                },
                 Order = (int)YUEnums.PTEnum.BTSchool,
             },
             new PTSite() {
@@ -224,7 +253,10 @@ namespace YU.Core.DataEntity
                 LoginUrl =  "https://pt.upxin.net/takelogin.php",
                 InfoUrl = "https://pt.upxin.net/userdetails.php?id={0}",
                 SignUrl = "https://pt.upxin.net/added.php",
-                SearchUrl = "https://pt.upxin.net/torrents.php",
+                Forums = new List<PTForum>()
+                {
+                    new PTForum() { SiteId = YUEnums.PTEnum.HDU, Name = "HDU", SearchUrl = "https://pt.upxin.net/torrents.php", Visable = true, Order = 1 },
+                },
                 Order = (int)YUEnums.PTEnum.HDU,
             },
             new PTSite() {
@@ -235,7 +267,10 @@ namespace YU.Core.DataEntity
                 LoginUrl =  "https://nanyangpt.com/takelogin.php",
                 InfoUrl = "https://nanyangpt.com/userdetails.php?id={0}",
                 SignUrl = "",
-                SearchUrl = "https://nanyangpt.com/torrents.php",
+                Forums = new List<PTForum>()
+                {
+                    new PTForum() { SiteId = YUEnums.PTEnum.NYPT, Name = "NYPT", SearchUrl = "https://nanyangpt.com/torrents.php", Visable = true, Order = 1 },
+                },
                 Order = (int)YUEnums.PTEnum.NYPT,
             },
 

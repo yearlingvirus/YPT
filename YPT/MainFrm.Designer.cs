@@ -55,9 +55,10 @@ namespace YPT
             this.lblFav = new System.Windows.Forms.Label();
             this.cmbFav = new YU.Core.YUComponent.YUComboBox(this.components);
             this.innerPanel4 = new System.Windows.Forms.Panel();
-            this.cbIsSearchTiming = new System.Windows.Forms.CheckBox();
+            this.cbIsLastSort = new System.Windows.Forms.CheckBox();
             this.cbIsPostSiteOrder = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.cbIsSearchTiming = new System.Windows.Forms.CheckBox();
             this.cbIsIngoreTop = new System.Windows.Forms.CheckBox();
             this.innerPanel5 = new System.Windows.Forms.Panel();
             this.btnSearch = new System.Windows.Forms.Button();
@@ -79,7 +80,6 @@ namespace YPT
             this.toolStripMenuItemCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.dgvInfoContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuOpenInfo = new System.Windows.Forms.ToolStripMenuItem();
-            this.cbIsLastSort = new System.Windows.Forms.CheckBox();
             this.mainMenuStrip.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tabSearch.SuspendLayout();
@@ -114,7 +114,7 @@ namespace YPT
             this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.mainMenuStrip.Name = "mainMenuStrip";
             this.mainMenuStrip.Padding = new System.Windows.Forms.Padding(7, 3, 0, 3);
-            this.mainMenuStrip.Size = new System.Drawing.Size(1114, 27);
+            this.mainMenuStrip.Size = new System.Drawing.Size(1134, 27);
             this.mainMenuStrip.TabIndex = 0;
             this.mainMenuStrip.Text = "menuStrip1";
             // 
@@ -164,7 +164,7 @@ namespace YPT
             this.tabMain.Margin = new System.Windows.Forms.Padding(4);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
-            this.tabMain.Size = new System.Drawing.Size(1114, 595);
+            this.tabMain.Size = new System.Drawing.Size(1134, 595);
             this.tabMain.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabMain.TabIndex = 1;
             this.tabMain.TabStop = false;
@@ -177,7 +177,7 @@ namespace YPT
             this.tabSearch.Location = new System.Drawing.Point(4, 29);
             this.tabSearch.Name = "tabSearch";
             this.tabSearch.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSearch.Size = new System.Drawing.Size(1106, 562);
+            this.tabSearch.Size = new System.Drawing.Size(1126, 562);
             this.tabSearch.TabIndex = 1;
             this.tabSearch.Text = "种子搜索";
             this.tabSearch.UseVisualStyleBackColor = true;
@@ -187,9 +187,9 @@ namespace YPT
             this.panelMain.Controls.Add(this.panelTorrent);
             this.panelMain.Controls.Add(this.panelSearch);
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelMain.Location = new System.Drawing.Point(139, 3);
+            this.panelMain.Location = new System.Drawing.Point(164, 3);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(964, 556);
+            this.panelMain.Size = new System.Drawing.Size(959, 556);
             this.panelMain.TabIndex = 1;
             // 
             // panelTorrent
@@ -198,7 +198,7 @@ namespace YPT
             this.panelTorrent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelTorrent.Location = new System.Drawing.Point(0, 117);
             this.panelTorrent.Name = "panelTorrent";
-            this.panelTorrent.Size = new System.Drawing.Size(964, 439);
+            this.panelTorrent.Size = new System.Drawing.Size(959, 439);
             this.panelTorrent.TabIndex = 1;
             // 
             // dgvTorrent
@@ -212,7 +212,7 @@ namespace YPT
             this.dgvTorrent.Name = "dgvTorrent";
             this.dgvTorrent.RowTemplate.Height = 23;
             this.dgvTorrent.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTorrent.Size = new System.Drawing.Size(964, 439);
+            this.dgvTorrent.Size = new System.Drawing.Size(959, 439);
             this.dgvTorrent.TabIndex = 0;
             this.dgvTorrent.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTorrent_CellMouseDown);
             this.dgvTorrent.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgv_ColumnHeaderMouseClick);
@@ -226,7 +226,7 @@ namespace YPT
             this.panelSearch.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelSearch.Location = new System.Drawing.Point(0, 0);
             this.panelSearch.Name = "panelSearch";
-            this.panelSearch.Size = new System.Drawing.Size(964, 117);
+            this.panelSearch.Size = new System.Drawing.Size(959, 117);
             this.panelSearch.TabIndex = 0;
             this.panelSearch.Paint += new System.Windows.Forms.PaintEventHandler(this.panelSearch_Paint);
             // 
@@ -243,7 +243,7 @@ namespace YPT
             this.toolSearchPanel.Controls.Add(this.innerPanel5);
             this.toolSearchPanel.Location = new System.Drawing.Point(31, 43);
             this.toolSearchPanel.Name = "toolSearchPanel";
-            this.toolSearchPanel.Size = new System.Drawing.Size(857, 71);
+            this.toolSearchPanel.Size = new System.Drawing.Size(852, 71);
             this.toolSearchPanel.TabIndex = 8;
             // 
             // innerPanel1
@@ -336,16 +336,16 @@ namespace YPT
             this.innerPanel4.Size = new System.Drawing.Size(130, 65);
             this.innerPanel4.TabIndex = 9;
             // 
-            // cbIsSearchTiming
+            // cbIsLastSort
             // 
-            this.cbIsSearchTiming.AutoSize = true;
-            this.cbIsSearchTiming.Location = new System.Drawing.Point(3, 33);
-            this.cbIsSearchTiming.Name = "cbIsSearchTiming";
-            this.cbIsSearchTiming.Size = new System.Drawing.Size(84, 24);
-            this.cbIsSearchTiming.TabIndex = 1;
-            this.cbIsSearchTiming.Text = "定时搜索";
-            this.cbIsSearchTiming.UseVisualStyleBackColor = true;
-            this.cbIsSearchTiming.CheckedChanged += new System.EventHandler(this.cbIsSearchTiming_CheckedChanged);
+            this.cbIsLastSort.AutoSize = true;
+            this.cbIsLastSort.Location = new System.Drawing.Point(5, 33);
+            this.cbIsLastSort.Name = "cbIsLastSort";
+            this.cbIsLastSort.Size = new System.Drawing.Size(112, 24);
+            this.cbIsLastSort.TabIndex = 1;
+            this.cbIsLastSort.Text = "记住上次排序";
+            this.cbIsLastSort.UseVisualStyleBackColor = true;
+            this.cbIsLastSort.CheckedChanged += new System.EventHandler(this.cbIsLastSort_CheckedChanged);
             // 
             // cbIsPostSiteOrder
             // 
@@ -366,6 +366,17 @@ namespace YPT
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(130, 65);
             this.panel1.TabIndex = 10;
+            // 
+            // cbIsSearchTiming
+            // 
+            this.cbIsSearchTiming.AutoSize = true;
+            this.cbIsSearchTiming.Location = new System.Drawing.Point(3, 33);
+            this.cbIsSearchTiming.Name = "cbIsSearchTiming";
+            this.cbIsSearchTiming.Size = new System.Drawing.Size(84, 24);
+            this.cbIsSearchTiming.TabIndex = 1;
+            this.cbIsSearchTiming.Text = "定时搜索";
+            this.cbIsSearchTiming.UseVisualStyleBackColor = true;
+            this.cbIsSearchTiming.CheckedChanged += new System.EventHandler(this.cbIsSearchTiming_CheckedChanged);
             // 
             // cbIsIngoreTop
             // 
@@ -407,7 +418,7 @@ namespace YPT
             this.txtSearch.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.txtSearch.Location = new System.Drawing.Point(43, 15);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(837, 26);
+            this.txtSearch.Size = new System.Drawing.Size(832, 26);
             this.txtSearch.TabIndex = 0;
             // 
             // panelSite
@@ -415,7 +426,7 @@ namespace YPT
             this.panelSite.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelSite.Location = new System.Drawing.Point(3, 3);
             this.panelSite.Name = "panelSite";
-            this.panelSite.Size = new System.Drawing.Size(136, 556);
+            this.panelSite.Size = new System.Drawing.Size(161, 556);
             this.panelSite.TabIndex = 0;
             this.panelSite.Paint += new System.Windows.Forms.PaintEventHandler(this.panelSite_Paint);
             // 
@@ -573,23 +584,12 @@ namespace YPT
             this.toolStripMenuOpenInfo.Text = "打开链接";
             this.toolStripMenuOpenInfo.Click += new System.EventHandler(this.toolStripMenuOpenInfo_Click);
             // 
-            // cbIsLastSort
-            // 
-            this.cbIsLastSort.AutoSize = true;
-            this.cbIsLastSort.Location = new System.Drawing.Point(5, 33);
-            this.cbIsLastSort.Name = "cbIsLastSort";
-            this.cbIsLastSort.Size = new System.Drawing.Size(112, 24);
-            this.cbIsLastSort.TabIndex = 1;
-            this.cbIsLastSort.Text = "记住上次排序";
-            this.cbIsLastSort.UseVisualStyleBackColor = true;
-            this.cbIsLastSort.CheckedChanged += new System.EventHandler(this.cbIsLastSort_CheckedChanged);
-            // 
             // MainFrm
             // 
             this.AcceptButton = this.btnSearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1114, 622);
+            this.ClientSize = new System.Drawing.Size(1134, 622);
             this.Controls.Add(this.tabMain);
             this.Controls.Add(this.mainMenuStrip);
             this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));

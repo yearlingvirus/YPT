@@ -339,28 +339,28 @@ namespace YPT.PT
 
         public List<PTTorrent> SearchTorrent(PTSearchArgs args)
         {
-            if (Site.SearchUrl.IsNullOrEmptyOrWhiteSpace())
-            {
+            if (args.Forum == null)
+                throw new Exception("无法获取正确的搜索信息。");
+
+            if (args.Forum.SearchUrl.IsNullOrEmptyOrWhiteSpace())
                 //站点还没有支持搜索
-                throw new Exception(string.Format("搜索种子错误，错误站点：{0}，关键字：{1}，错误原因：该站点尚未支持搜索。", Site.Name, args.SearchKey));
-            }
+                throw new Exception(string.Format("搜索种子错误，错误站点：{0}，关键字：{1}，错误原因：该站点尚未支持搜索。", args.Forum.Name, args.SearchKey));
+
 
             if (_cookie == null || _cookie.Count <= 0)
-            {
-                throw new Exception(string.Format("搜索种子错误，错误站点：{0}，关键字：{1}，错误原因：未登录，请先登录。", Site.Name, args.SearchKey));
-            }
+                throw new Exception(string.Format("搜索种子错误，错误站点：{0}，关键字：{1}，错误原因：未登录，请先登录。", args.Forum.Name, args.SearchKey));
 
 
             string searchUrl = BuildSearchUrl(args);
             string htmlResult = HttpUtils.GetDataGetHtml(searchUrl, _cookie);
 
             HtmlDocument htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
 
+            htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
             var trNodes = GetTorrentNodes(htmlDocument);
             //如果只有一个节点，那么应该是Table的标题，这里忽略，从第二个节点开始算。
             if (trNodes == null || trNodes.Count <= 1)
-                throw new Exception(string.Format("{0}无法搜索到对应结果，请尝试更换其他关键字。", Site.Name));
+                throw new Exception(string.Format("{0}无法搜索到对应结果，请尝试更换其他关键字。", args.Forum.Name));
             else
             {
                 List<PTTorrent> torrents = new List<PTTorrent>();
@@ -382,6 +382,7 @@ namespace YPT.PT
                         PTTorrent torrent = new PTTorrent();
                         torrent.SiteId = SiteId;
                         torrent.SiteName = Site.Name;
+                        torrent.ForumName = args.Forum.Name;
 
                         //tdNodes[1]为种子信息
                         //种子链接和标题是最重要的，如果这里拿不到，直接跳过了
@@ -412,9 +413,9 @@ namespace YPT.PT
             //https://ourbits.club/torrents.php?incldead=2&spstate=2&inclbookmarked=1&search=&search_area=0&search_mode=0
             //incldead->活种/断种 | spstate->促销 | inclbookmarked->收藏 | search->关键字 | search_area->范围 | search_mode->匹配模式
             string queryString = string.Format("?incldead={0}&spstate={1}&inclbookmarked={2}&search={3}&search_area={4}&search_mode={5}", (int)args.AliveType, (int)args.PromotionType, (int)args.FavType, Uri.EscapeDataString(args.SearchKey), 0, 0);
-            if (args.IsPostSiteOrder && !args.SortKvr.Key.IsNullOrEmptyOrWhiteSpace() && Site.SearchOrderMaps.ContainsKey(args.SortKvr.Key))
-                queryString += string.Format("&sort={0}&type={1}", Site.SearchOrderMaps[args.SortKvr.Key], Convert.ToString(args.SortKvr.Value).ToLowerInvariant());
-            return Site.SearchUrl + queryString;
+            if (args.IsPostSiteOrder && !args.SortKvr.Key.IsNullOrEmptyOrWhiteSpace() && Site.SearchColUrlMaps.ContainsKey(args.SortKvr.Key))
+                queryString += string.Format("&sort={0}&type={1}", Site.SearchColUrlMaps[args.SortKvr.Key], Convert.ToString(args.SortKvr.Value).ToLowerInvariant());
+            return args.Forum.SearchUrl + queryString;
         }
 
         /// <summary>

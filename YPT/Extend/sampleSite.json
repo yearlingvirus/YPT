@@ -4,12 +4,55 @@
     "Name": "TTG",
     "LoginUrl": "https://totheglory.im/takelogin.php",
     "SignUrl": "https://totheglory.im/signed.php",
-    "SearchUrl": "https://totheglory.im/browse.php",
     "InfoUrl": "https://totheglory.im/userdetails.php?id={0}",
     "IsEableSecurityQuestion": true,
     "IsEnableVerificationCode": false,
     "isEnableTwo_StepVerification": true,
     "Order": 1,
+    "Forums": [
+      {
+        "SiteId": 1,
+        "Name": "TTG",
+        "SearchUrl": "https://totheglory.im/browse.php",
+        "Order": 1,
+        "Visable": true
+      }
+    ],
+    "Id": 1
+  },
+  {
+    "Url": "https://tp.m-team.cc",
+    "Name": "MTeam",
+    "LoginUrl": "https://tp.m-team.cc/takelogin.php",
+    "SignUrl": null,
+    "InfoUrl": "https://tp.m-team.cc/userdetails.php?id={0}",
+    "IsEableSecurityQuestion": false,
+    "IsEnableVerificationCode": false,
+    "isEnableTwo_StepVerification": true,
+    "Order": 2,
+    "Forums": [
+      {
+        "SiteId": 2,
+        "Name": "MTeam",
+        "SearchUrl": "https://tp.m-team.cc/torrents.php",
+        "Order": 1,
+        "Visable": true
+      },
+      {
+        "SiteId": 2,
+        "Name": "MTeam_4k",
+        "SearchUrl": "https://tp.m-team.cc/torrents.php?standard6=1",
+        "Order": 2,
+        "Visable": true
+      },
+      {
+        "SiteId": 2,
+        "Name": "MTeam_Adult",
+        "SearchUrl": "https://tp.m-team.cc/adult.php",
+        "Order": 3,
+        "Visable": true
+      }
+    ],
     "PersonInfoMaps": {
       "Bonus": [ "魔力值", "魔力豆", "积分", "Karma Points", "Bonus", "포인트" ],
       "RegisterDate": [ "Join date", "加入日期", "注册日期", "가입 날짜" ],
@@ -33,19 +76,36 @@
       "SnatchedNumber": [ "snatched", "完成", "完成數" ],
       "UpLoader": [ "发布者", "發佈者", "上传者" ]
     },
-    "Id": 1
+    "SearchColUrlMaps": {
+      "Title": "1",
+      "Size": "5",
+      "UpLoadTime": "4",
+      "SeederNumber": "7",
+      "LeecherNumber": "8",
+      "SnatchedNumber": "6",
+      "UpLoader": "9"
+    },
+    "Id": 2
   },
   {
-    "Url": "https://tp.m-team.cc",
-    "Name": "MTeam",
-    "LoginUrl": "https://tp.m-team.cc/takelogin.php",
+    "Url": "https://hdsky.me",
+    "Name": "HDSky",
+    "LoginUrl": "https://hdsky.me/takelogin.php",
     "SignUrl": null,
-    "SearchUrl": "https://tp.m-team.cc/torrents.php",
-    "InfoUrl": "https://tp.m-team.cc/userdetails.php?id={0}",
+    "InfoUrl": "https://hdsky.me/userdetails.php?id={0}",
     "IsEableSecurityQuestion": false,
-    "IsEnableVerificationCode": false,
+    "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": true,
     "Order": 3,
+    "Forums": [
+      {
+        "SiteId": 3,
+        "Name": "HDSky",
+        "SearchUrl": "https://hdsky.me/torrents.php",
+        "Order": 1,
+        "Visable": true
+      }
+    ],
     "Id": 3
   },
   {
@@ -53,103 +113,167 @@
     "Name": "CHDBits",
     "LoginUrl": "https://chdbits.co/takelogin.php",
     "SignUrl": null,
-    "SearchUrl": "https://chdbits.co/torrents.php",
     "InfoUrl": "https://chdbits.co/userdetails.php?id={0}",
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": false,
     "isEnableTwo_StepVerification": false,
-    "Order": 7,
-    "Id": 7
+    "Order": 5,
+    "Forums": [
+      {
+        "SiteId": 5,
+        "Name": "CHDBits",
+        "SearchUrl": "https://chdbits.co/torrents.php",
+        "Order": 1,
+        "Visable": true
+      }
+    ],
+    "Id": 5
   },
   {
     "Url": "https://ourbits.club",
     "Name": "OurBits",
     "LoginUrl": "https://ourbits.club/takelogin.php",
     "SignUrl": "https://ourbits.club/attendance.php",
-    "SearchUrl": "https://ourbits.club/torrents.php",
     "InfoUrl": "https://ourbits.club/userdetails.php?id={0}",
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": false,
     "isEnableTwo_StepVerification": false,
-    "Order": 9,
-    "Id": 9
+    "Order": 7,
+    "Forums": [
+      {
+        "SiteId": 7,
+        "Name": "OurBits",
+        "SearchUrl": "https://ourbits.club/torrents.php",
+        "Order": 1,
+        "Visable": true
+      }
+    ],
+    "Id": 7
   },
   {
     "Url": "https://pt.keepfrds.com",
     "Name": "KeepFrds",
     "LoginUrl": "https://pt.keepfrds.com/takelogin.php",
     "SignUrl": null,
-    "SearchUrl": "https://pt.keepfrds.com/torrents.php",
     "InfoUrl": "https://pt.keepfrds.com/userdetails.php?id={0}",
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
-    "Order": 10,
-    "Id": 10
+    "Order": 8,
+    "Forums": [
+      {
+        "SiteId": 8,
+        "Name": "KeepFrds",
+        "SearchUrl": "https://pt.keepfrds.com/torrents.php",
+        "Order": 1,
+        "Visable": true
+      }
+    ],
+    "Id": 8
   },
   {
     "Url": "https://hdhome.org/",
     "Name": "HDHome",
     "LoginUrl": "https://hdhome.org/takelogin.php",
     "SignUrl": "https://hdhome.org/attendance.php",
-    "SearchUrl": "https://hdhome.org/torrents.php",
     "InfoUrl": "https://hdhome.org/userdetails.php?id={0}",
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
-    "Order": 12,
-    "Id": 12
+    "Order": 10,
+    "Forums": [
+      {
+        "SiteId": 10,
+        "Name": "HDHome",
+        "SearchUrl": "https://hdhome.org/torrents.php",
+        "Order": 1,
+        "Visable": true
+      }
+    ],
+    "Id": 10
   },
   {
     "Url": "https://pt.gztown.net",
     "Name": "GZTown",
     "LoginUrl": "https://pt.gztown.net/takelogin.php",
     "SignUrl": "https://pt.gztown.net/attendance.php",
-    "SearchUrl": "https://pt.gztown.net/torrents.php",
     "InfoUrl": "https://pt.gztown.net/userdetails.php?id={0}",
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
-    "Order": 14,
-    "Id": 14
+    "Order": 12,
+    "Forums": [
+      {
+        "SiteId": 12,
+        "Name": "GZTown",
+        "SearchUrl": "https://pt.gztown.net/torrents.php",
+        "Order": 1,
+        "Visable": true
+      }
+    ],
+    "Id": 12
   },
   {
     "Url": "http://pt.btschool.net",
     "Name": "BTSchool",
     "LoginUrl": "http://pt.btschool.net/takelogin.php",
     "SignUrl": "http://pt.btschool.net/index.php?action=addbonus",
-    "SearchUrl": "http://pt.btschool.net/torrents.php",
     "InfoUrl": "http://pt.btschool.net/userdetails.php?id={0}",
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
-    "Order": 15,
-    "Id": 15
+    "Order": 13,
+    "Forums": [
+      {
+        "SiteId": 13,
+        "Name": "BTSchool",
+        "SearchUrl": "http://pt.btschool.net/torrents.php",
+        "Order": 1,
+        "Visable": true
+      }
+    ],
+    "Id": 13
   },
   {
     "Url": "https://pt.upxin.net",
     "Name": "HDU",
     "LoginUrl": "https://pt.upxin.net/takelogin.php",
     "SignUrl": "https://pt.upxin.net/added.php",
-    "SearchUrl": "https://pt.upxin.net/torrents.php",
     "InfoUrl": "https://pt.upxin.net/userdetails.php?id={0}",
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
-    "Order": 16,
-    "Id": 16
+    "Order": 14,
+    "Forums": [
+      {
+        "SiteId": 14,
+        "Name": "HDU",
+        "SearchUrl": "https://pt.upxin.net/torrents.php",
+        "Order": 1,
+        "Visable": true
+      }
+    ],
+    "Id": 14
   },
   {
     "Url": "https://nanyangpt.com/",
     "Name": "NYPT",
     "LoginUrl": "https://nanyangpt.com/takelogin.php",
     "SignUrl": "",
-    "SearchUrl": "https://nanyangpt.com/torrents.php",
     "InfoUrl": "https://nanyangpt.com/userdetails.php?id={0}",
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
-    "Order": 17,
-    "Id": 17
+    "Order": 15,
+    "Forums": [
+      {
+        "SiteId": 15,
+        "Name": "NYPT",
+        "SearchUrl": "https://nanyangpt.com/torrents.php",
+        "Order": 1,
+        "Visable": true
+      }
+    ],
+    "Id": 15
   }
 ]

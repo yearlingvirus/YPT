@@ -264,9 +264,9 @@ namespace YPT.PT
             if (aliveDict.ContainsKey(args.AliveType))
                 queryString += Uri.EscapeDataString(aliveDict[args.AliveType]);
 
-            if (args.IsPostSiteOrder && !args.SortKvr.Key.IsNullOrEmptyOrWhiteSpace() && Site.SearchOrderMaps.ContainsKey(args.SortKvr.Key))
-                queryString += string.Format("&sort={0}&type={1}", Site.SearchOrderMaps[args.SortKvr.Key], Convert.ToString(args.SortKvr.Value).ToLowerInvariant());
-            return Site.SearchUrl + queryString;
+            if (args.IsPostSiteOrder && !args.SortKvr.Key.IsNullOrEmptyOrWhiteSpace() && Site.SearchColUrlMaps.ContainsKey(args.SortKvr.Key))
+                queryString += string.Format("&sort={0}&type={1}", Site.SearchColUrlMaps[args.SortKvr.Key], Convert.ToString(args.SortKvr.Value).ToLowerInvariant());
+            return args.Forum.SearchUrl + queryString;
         }
 
         protected override Dictionary<YUEnums.TorrentMap, int> GetTorrentMaps(HtmlNodeCollection headNodes)
