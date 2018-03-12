@@ -12,8 +12,6 @@ namespace YU.Core.DataEntity
     {
         public PTSite Site { get; set; }
 
-        public PTInfo Info { get; set; }
-
         public int Id { get; set; }
 
         public string UserName { get; set; }

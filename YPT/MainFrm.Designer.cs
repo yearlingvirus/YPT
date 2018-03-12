@@ -363,7 +363,6 @@ namespace YPT
             this.cbIsLastSort.TabIndex = 1;
             this.cbIsLastSort.Text = "记住上次排序";
             this.cbIsLastSort.UseVisualStyleBackColor = true;
-            this.cbIsLastSort.CheckedChanged += new System.EventHandler(this.cbIsLastSort_CheckedChanged);
             // 
             // cbIsPostSiteOrder
             // 
@@ -374,7 +373,6 @@ namespace YPT
             this.cbIsPostSiteOrder.TabIndex = 0;
             this.cbIsPostSiteOrder.Text = "请求站点排序";
             this.cbIsPostSiteOrder.UseVisualStyleBackColor = true;
-            this.cbIsPostSiteOrder.CheckedChanged += new System.EventHandler(this.cbIsPostSiteOrder_CheckedChanged);
             // 
             // panel1
             // 
@@ -394,7 +392,6 @@ namespace YPT
             this.cbIsSearchTiming.TabIndex = 1;
             this.cbIsSearchTiming.Text = "定时搜索";
             this.cbIsSearchTiming.UseVisualStyleBackColor = true;
-            this.cbIsSearchTiming.CheckedChanged += new System.EventHandler(this.cbIsSearchTiming_CheckedChanged);
             // 
             // cbIsIngoreTop
             // 
@@ -405,7 +402,6 @@ namespace YPT
             this.cbIsIngoreTop.TabIndex = 0;
             this.cbIsIngoreTop.Text = "忽略置顶";
             this.cbIsIngoreTop.UseVisualStyleBackColor = true;
-            this.cbIsIngoreTop.CheckedChanged += new System.EventHandler(this.cbIsIngoreTop_CheckedChanged);
             // 
             // innerPanel5
             // 

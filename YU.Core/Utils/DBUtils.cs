@@ -63,6 +63,17 @@ namespace YU.Core.Utils
         }
 
         /// <summary>
+        /// 判断是否存在表
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        public static bool ExistTable(string tableName)
+        {
+            string sql = string.Format("SELECT COUNT(*) FROM sqlite_master where type='table' and name='{0}'", tableName);
+            return ExecuteScalar(sql, 0) > 0;
+        }
+
+        /// <summary>
         /// 批量处理数据操作语句。
         /// </summary>
         /// <param name="list">SQL语句集合。</param>

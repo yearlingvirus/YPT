@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -74,9 +75,9 @@ namespace YU.Core.Utils
             gridView.ColumnHeadersDefaultCellStyle.Font = gridView.DefaultCellStyle.Font;
             gridView.RowHeadersDefaultCellStyle.Font = gridView.DefaultCellStyle.Font;
             gridView.RowHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            
+
             gridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
-            
+
             gridView.AllowUserToResizeColumns = true;
             gridView.AllowUserToDeleteRows = false;
             gridView.ReadOnly = true;
@@ -132,5 +133,70 @@ namespace YU.Core.Utils
 
         }
 
+        /// <summary>
+        /// 绑定控件值
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="controlKvr"></param>
+        public static void BindControlValue(object instance, IEnumerable<KeyValuePair<Control, string>> controlKvr)
+        {
+            Type t = instance.GetType();
+            if (controlKvr != null && controlKvr.Count() > 0)
+            {
+                foreach (var kvr in controlKvr)
+                {
+                    PropertyInfo info = t.GetProperty(kvr.Value);
+                    var o = info.GetValue(instance, null);
+                    if (kvr.Key is CheckBox)
+                        (kvr.Key as CheckBox).Checked = o.TryPareValue<bool>();
+                    else if (kvr.Key is DateTimePicker)
+                        (kvr.Key as DateTimePicker).Value = o.TryPareValue<DateTime>();
+                    else if (kvr.Key is NumericUpDown)
+                        (kvr.Key as NumericUpDown).Value = o.TryPareValue<decimal>();
+                    else if (kvr.Key is TextBox)
+                        (kvr.Key as TextBox).Text = o.TryPareValue<string>();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 绑定数据源
+        /// </summary>
+        /// <param name="instance"></param>
+        /// <param name="controlKvr"></param>
+        public static void BindControlDataSource(object instance, IEnumerable<KeyValuePair<Control, string>> controlKvr)
+        {
+            Type t = instance.GetType();
+            if (controlKvr != null && controlKvr.Count() > 0)
+            {
+                foreach (var kvr in controlKvr)
+                {
+                    if (kvr.Key is CheckBox)
+                        (kvr.Key as CheckBox).DataBindings.Add("Checked", instance, kvr.Value);
+                    else if (kvr.Key is DateTimePicker)
+                        (kvr.Key as DateTimePicker).DataBindings.Add("Value", instance, kvr.Value);
+                    else if (kvr.Key is NumericUpDown)
+                        (kvr.Key as NumericUpDown).DataBindings.Add("Value", instance, kvr.Value);
+                    else if (kvr.Key is TextBox)
+                        (kvr.Key as TextBox).DataBindings.Add("Text", instance, kvr.Value);
+                }
+            }
+        }
+
+        public static void BindControlDataChanged(IEnumerable<Control> controls, EventHandler dataChanged)
+        {
+            foreach (var control in controls)
+            {
+                if (control is CheckBox)
+                    (control as CheckBox).CheckedChanged += dataChanged;
+                else if (control is DateTimePicker)
+                    (control as DateTimePicker).ValueChanged += dataChanged;
+                else if (control is NumericUpDown)
+                    (control as NumericUpDown).ValueChanged += dataChanged;
+                else if (control is TextBox)
+                    (control as TextBox).Text += dataChanged;
+            }
+
+        }
     }
 }

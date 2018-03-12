@@ -58,6 +58,7 @@ namespace YPT
         /// </summary>
         private bool IsSearching { get; set; }
 
+        private Dictionary<Control, KeyValuePair<string, string>> SettingDict = new Dictionary<Control, KeyValuePair<string, string>>();
 
         #endregion
 
@@ -66,24 +67,30 @@ namespace YPT
             InitializeComponent();
             this.Text = string.Format("YPT {0}", YUUtils.GetVersion());
 
-            cbIsPostSiteOrder.Checked = Global.Config.IsPostSiteOrder;
-            cbIsIngoreTop.Checked = Global.Config.IsIngoreTop;
-            cbIsLastSort.Checked = Global.Config.IsLastSort;
-            cbIsSearchTiming.Checked = Global.Config.IsSearchTiming;
+            SettingDict.Add(cbIsPostSiteOrder, new KeyValuePair<string, string>(YUConst.CONFIG_SEARCH_POSTSITEORDER, "IsPostSiteOrder"));
+            SettingDict.Add(cbIsIngoreTop, new KeyValuePair<string, string>(YUConst.CONFIG_SEARCH_INGORETOP, "IsIngoreTop"));
+            SettingDict.Add(cbIsLastSort, new KeyValuePair<string, string>(YUConst.CONFIG_SEARCH_ISLASTSORT, "IsLastSort"));
+            SettingDict.Add(cbIsSearchTiming, new KeyValuePair<string, string>(string.Empty, "IsSearchTiming"));
+            FormUtils.BindControlValue(Global.Config, SettingDict.Select(x => new KeyValuePair<Control, string>(x.Key, x.Value.Value)));
+            FormUtils.BindControlDataChanged(SettingDict.Select(x => x.Key), Control_DataChanged);
+            cbIsSearchTiming.CheckedChanged += CbIsSearchTiming_CheckedChanged;
+            cbIsPostSiteOrder.CheckedChanged += CbIsPostSiteOrder_CheckedChanged;
+            cbIsLastSort.CheckedChanged += CbIsLastSort_CheckedChanged;
+
             FormUtils.InitDataGridView(dgvTorrent);
             FormUtils.CreateDataGridColumns(dgvTorrent, typeof(PTTorrentGridEntity));
             FormUtils.InitDataGridView(dgvPersonInfo);
             FormUtils.CreateDataGridColumns(dgvPersonInfo, typeof(PTInfoGridEntity));
-            InitSign(this, null);
-            InitSync(this, null);
-            InitTorrentForum(this, null);
+            InitSign();
+            InitSync();
+            InitTorrentForum();
             InitTorrentCmb();
-
+            RefreshPersonInfo();
         }
 
         #region 签到，登录
 
-        private void InitSign(object sender, EventArgs e)
+        private void InitSign()
         {
             if (Global.Config.IsAutoSign)
             {
@@ -159,21 +166,10 @@ namespace YPT
                         pt.VerificationCode += Pt_VerificationCode;
                         pt.TwoStepVerification += Pt_TwoStepVerification;
                         string msg = pt.Login();
-
                         if (isNeedUpdate && pt.User != null && pt.User.Id > 0)
                         {
                             user.Id = pt.User.Id;
-                            string sql = "UPDATE USER SET USERID = @USERID WHERE PTSITEID = @PTSITEID AND USERNAME = @USERNAME ";
-                            SQLiteParameter[] parms = new SQLiteParameter[]
-                            {
-                            new SQLiteParameter("@USERID", DbType.Int32),
-                            new SQLiteParameter("@PTSITEID", DbType.Int32),
-                            new SQLiteParameter("@USERNAME", DbType.String),
-                            };
-                            parms[0].Value = pt.User.Id;
-                            parms[1].Value = pt.User.Site.Id;
-                            parms[2].Value = pt.User.UserName;
-                            sqlList.Add(new KeyValuePair<string, SQLiteParameter[]>(sql, parms));
+                            sqlList.Add(AppService.GetUpdateUserIdParameter(user));
                         }
                         LogMessage(user.Site, msg);
                     }
@@ -256,7 +252,6 @@ namespace YPT
                 this.AcceptButton = null;
         }
 
-
         private void MainFrm_Load(object sender, EventArgs e)
         {
             progressPanel = new YUTransparentPanel(this);
@@ -266,10 +261,26 @@ namespace YPT
         private void 设置ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SettingFrm frm = new SettingFrm(this);
-            frm.SignChanged += InitSign;
-            frm.UserChanged += InitTorrentForum;
-            frm.SyncChanged += InitSync;
+            frm.SignChanged += Frm_SignChanged;
+            frm.UserChanged += Frm_UserChanged;
+            frm.SyncChanged += Frm_SyncChanged;
             frm.ShowDialog();
+        }
+
+        private void Frm_SyncChanged(object sender, EventArgs e)
+        {
+            InitSync();
+        }
+
+        private void Frm_SignChanged(object sender, EventArgs e)
+        {
+            InitSign();
+        }
+
+        private void Frm_UserChanged(object sender, OnUserChangeEventArgs e)
+        {
+            InitTorrentForum();
+            RefreshPersonInfo();
         }
 
         private void 登录ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -283,7 +294,6 @@ namespace YPT
             tabMain.SelectTab("tabLog");
             Task t = Task.Factory.StartNew(() => Sign());
         }
-
 
         private void 同步StripMenuItem_Click(object sender, EventArgs e)
         {
@@ -333,8 +343,8 @@ namespace YPT
                     {
                         Global.Config.IsMiniWhenClose = false;
                     }
-                    Global.SetConfig(YUConst.CONFIG_ISFIRSTOPEN, Global.Config.IsFirstOpen);
-                    Global.SetConfig(YUConst.CONFIG_ISMINIWHENCLOSE, Global.Config.IsMiniWhenClose);
+                    AppService.SetConfig(YUConst.CONFIG_ISFIRSTOPEN, Global.Config.IsFirstOpen);
+                    AppService.SetConfig(YUConst.CONFIG_ISMINIWHENCLOSE, Global.Config.IsMiniWhenClose);
                 }
                 if (Global.Config.IsMiniWhenClose)
                 {
@@ -347,6 +357,66 @@ namespace YPT
             }
         }
 
+        #region CheckBox_Changed
+
+        private void CbIsLastSort_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!cbIsLastSort.Checked)
+                cbIsPostSiteOrder.Checked = false;
+        }
+
+        private void CbIsPostSiteOrder_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbIsPostSiteOrder.Checked)
+                cbIsLastSort.Checked = true;
+        }
+
+        private void CbIsSearchTiming_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbIsSearchTiming.Checked)
+            {
+                if (SearchTimer == null)
+                    SearchTimer = new System.Timers.Timer();
+                SearchTimer.Elapsed -= SearchTimer_Elapsed;
+                SearchTimer.Enabled = true;
+                SearchTimer.AutoReset = true;
+                SearchTimer.Interval = Global.Config.SearchTimeSpan * 1000;
+                SearchTimer.Elapsed += SearchTimer_Elapsed;
+                SearchTimer.Start();
+            }
+            else
+            {
+                if (SearchTimer != null)
+                {
+                    SearchTimer.Enabled = false;
+                    SearchTimer.Stop();
+                }
+            }
+        }
+
+        private void Control_DataChanged(object sender, EventArgs e)
+        {
+            object value = null;
+            if (sender is CheckBox)
+                value = (sender as CheckBox).Checked;
+            else if (sender is DateTimePicker)
+                value = (sender as DateTimePicker).Value;
+            else if (sender is NumericUpDown)
+                value = (sender as NumericUpDown).Value;
+            else if (sender is TextBox)
+                value = (sender as TextBox).Text;
+            var control = sender as Control;
+            if (SettingDict.ContainsKey(control))
+            {
+                if (!SettingDict[control].Key.IsNullOrEmptyOrWhiteSpace())
+                    AppService.SetConfig(SettingDict[control].Key, value);
+                Type t = Global.Config.GetType();
+                var info = t.GetProperty(SettingDict[control].Value);
+                info.SetValue(Global.Config, value, null);
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -380,7 +450,7 @@ namespace YPT
         /// <summary>
         /// 初始化种子搜索版块信息
         /// </summary>
-        private void InitTorrentForum(object sender, OnUserChangeEventArgs e)
+        private void InitTorrentForum()
         {
             panelSite.Controls.Clear();
             if (Global.Users != null && Global.Users.Count > 0)
@@ -437,7 +507,7 @@ namespace YPT
                 }
 
                 JObject o = new JObject();
-                string selectSiteJson = Global.GetConfig<string>(YUConst.CONFIG_SEARCHSITEHISTORY);
+                string selectSiteJson = AppService.GetConfig<string>(YUConst.CONFIG_SEARCHSITEHISTORY);
                 if (!selectSiteJson.IsNullOrEmptyOrWhiteSpace())
                 {
                     o = JsonConvert.DeserializeObject<JObject>(selectSiteJson);
@@ -504,7 +574,7 @@ namespace YPT
                     }
                 }
             }
-            Global.SetConfig(YUConst.CONFIG_SEARCHSITEHISTORY, JsonConvert.SerializeObject(o));
+            AppService.SetConfig(YUConst.CONFIG_SEARCHSITEHISTORY, JsonConvert.SerializeObject(o));
         }
 
         private void panelSite_Paint(object sender, PaintEventArgs e)
@@ -783,53 +853,6 @@ namespace YPT
             });
         }
 
-        private void cbIsPostSiteOrder_CheckedChanged(object sender, EventArgs e)
-        {
-            Global.Config.IsPostSiteOrder = (sender as CheckBox).Checked;
-            if (Global.Config.IsPostSiteOrder)
-                cbIsLastSort.Checked = true;
-            Global.SetConfig(YUConst.CONFIG_SEARCH_POSTSITEORDER, Global.Config.IsPostSiteOrder);
-        }
-
-
-        private void cbIsLastSort_CheckedChanged(object sender, EventArgs e)
-        {
-            Global.Config.IsLastSort = (sender as CheckBox).Checked;
-            if (!Global.Config.IsLastSort)
-                cbIsPostSiteOrder.Checked = false;
-            Global.SetConfig(YUConst.CONFIG_SEARCH_ISLASTSORT, Global.Config.IsLastSort);
-        }
-
-        private void cbIsIngoreTop_CheckedChanged(object sender, EventArgs e)
-        {
-            Global.Config.IsIngoreTop = (sender as CheckBox).Checked;
-            Global.SetConfig(YUConst.CONFIG_SEARCH_INGORETOP, Global.Config.IsIngoreTop);
-        }
-
-        private void cbIsSearchTiming_CheckedChanged(object sender, EventArgs e)
-        {
-            Global.Config.IsSearchTiming = (sender as CheckBox).Checked;
-            if (Global.Config.IsSearchTiming)
-            {
-                if (SearchTimer == null)
-                    SearchTimer = new System.Timers.Timer();
-                SearchTimer.Elapsed -= SearchTimer_Elapsed;
-                SearchTimer.Enabled = true;
-                SearchTimer.AutoReset = true;
-                SearchTimer.Interval = Global.Config.SearchTimeSpan * 1000;
-                SearchTimer.Elapsed += SearchTimer_Elapsed;
-                SearchTimer.Start();
-            }
-            else
-            {
-                if (SearchTimer != null)
-                {
-                    SearchTimer.Enabled = false;
-                    SearchTimer.Stop();
-                }
-            }
-        }
-
         private void SearchTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             btnSearch_Click(sender, e);
@@ -933,7 +956,7 @@ namespace YPT
 
         #region 个人信息
 
-        private void InitSync(object sender, EventArgs e)
+        private void InitSync()
         {
             if (Global.Config.IsSyncTiming)
             {
@@ -976,28 +999,24 @@ namespace YPT
                 bool isFill = false;
                 StringBuilder sb = new StringBuilder();
                 var cts = new CancellationTokenSource();
-                //Dictionary<YUEnums.PTEnum, KeyValuePair<bool, PTInfo>> infoDict = ObjectUtils.CreateCopy<Dictionary<YUEnums.PTEnum, KeyValuePair<bool, PTInfo>>>(dgvPersonInfo.Tag);
-                //if (infoDict == null)
-                List<PTInfo> infos = new List<PTInfo>();
-
+                Dictionary<YUEnums.PTEnum, KeyValuePair<bool, PTInfo>> infoDict = ObjectUtils.CreateCopy<Dictionary<YUEnums.PTEnum, KeyValuePair<bool, PTInfo>>>(dgvPersonInfo.Tag);
+                if (infoDict == null)
+                    infoDict = new Dictionary<YUEnums.PTEnum, KeyValuePair<bool, PTInfo>>();
+                List<KeyValuePair<string, SQLiteParameter[]>> sqlList = new List<KeyValuePair<string, SQLiteParameter[]>>();
                 Task task = new Task(() =>
                 {
-                    var infoDict = new Dictionary<YUEnums.PTEnum, KeyValuePair<bool, PTInfo>>();
-
                     Parallel.ForEach(Global.Users, (user, state, i) =>
                     {
+                        bool isNeedUpdate = user.Id <= 0;
                         IPT pt = PTFactory.GetPT(user.Site.Id, Global.Users.Where(x => x.Site.Id == user.Site.Id).FirstOrDefault());
-                        //IPT pt = PTFactory.GetPT(YUEnums.PTEnum.MTEAM, Global.Users.Where(x => x.Site.Id == YUEnums.PTEnum.MTEAM).FirstOrDefault());
-                        //假设4核Cpu，5个任务，因为是并行的原因，如果前4个在并行执行的过程任意一个发生了异常，那么此时前4个中其他3个还会继续执行到结束，但最后一个是不会执行的，所以这里需要做异常捕获处理。
                         try
                         {
                             var info = pt.GetPersonInfo();
-                            //infoDict[user.Site.Id] = new KeyValuePair<bool, PTInfo>(true, info);
-                            infos.Add(info);
-                            lock (syncInfoObject)
+                            infoDict[user.Site.Id] = new KeyValuePair<bool, PTInfo>(true, info);
+                            if (isNeedUpdate && info != null && info.Id > 0)
                             {
-                                //FillPersonInfo(infoDict.Select(x => x.Value.Value), ref isFill);
-                                FillPersonInfo(infos, ref isFill);
+                                user.Id = info.Id;
+                                sqlList.Add(AppService.GetUpdateUserIdParameter(user));
                             }
                         }
                         catch (Exception ex)
@@ -1009,7 +1028,6 @@ namespace YPT
                                 sb.AppendLine(ex.GetInnerExceptionMessage());
                             }
                         }
-
                     });
                 }, cts.Token);
                 if (!isBack)
@@ -1024,42 +1042,20 @@ namespace YPT
                 {
                     this.Invoke(new Action(() =>
                     {
-                        //if (infos != null && infos.Count > 0)
-                        //{
-                        //    List<PTInfoGridEntity> entitys = new List<PTInfoGridEntity>();
-                        //    foreach (var info in infos)
-                        //    {
-                        //        try
-                        //        {
-                        //            entitys.Add(info.ToGridEntity());
-                        //        }
-                        //        catch (Exception ex)
-                        //        {
-                        //            LogMessage(null, string.Format("{0} {1} 请检查用户信息映射。", info.SiteName, ex.GetInnerExceptionMessage()));
-                        //        }
-                        //    }
-
-                        //    entitys = entitys.OrderByDescending(x => x.RealUpSize).ToList();
-                        //    this.Invoke(new Action(() =>
-                        //    {
-                        //        dgvPersonInfo.DataSource = entitys;
-                        //    }));
-                        //}
-                        //dgvPersonInfo.Tag = infoDict;
-                        //var errInfos = infoDict.Where(x => x.Value.Key == false);
-                        //foreach (var errInfo in errInfos)
-                        //{
-                        //    foreach (DataGridViewRow row in dgvPersonInfo.Rows)
-                        //    {
-                        //        if (row.Cells["SiteId"].Value.TryPareValue<int>() == (int)errInfo.Key)
-                        //        {
-                        //            row.DefaultCellStyle.ForeColor = Color.Red;
-                        //        }
-                        //    }
-                        //}
+                        isFill = FillPersonInfo(infoDict);
                         if (!isBack)
                             progressPanel.StopLoading();
                     }));
+
+                    if (sqlList.Count > 0)
+                        DBUtils.ExecuteNonQueryBatch(sqlList);
+
+                    var correctInfoDict = infoDict.Where(x => x.Value.Key == true);
+                    if (correctInfoDict != null && correctInfoDict.Count() > 0)
+                    {
+                        var correnctInfo = correctInfoDict.Select(x => x.Value.Value);
+                        AppService.InsertPersonInfo(correnctInfo);
+                    }
 
                     bool isOpen = !isBack && !isFill;
                     if (cts.Token.IsCancellationRequested)
@@ -1077,21 +1073,41 @@ namespace YPT
             }
         }
 
-        private void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e, CancellationTokenSource cts)
+        private void RefreshPersonInfo()
         {
-            cts.Cancel();
+            var infos = AppService.GetLastPersonInfo(Global.Users.Select(x => Convert.ToInt32(x.Site.Id)), Global.Users);
+            var initSiteIds = Global.Users.Select(x => x.Site.Id).Except(infos.Select(g => g.SiteId));
+            foreach (var siteId in initSiteIds)
+            {
+                PTInfo info = new PTInfo();
+                var user = Global.Users.Where(x => x.Site.Id == siteId).FirstOrDefault();
+                if (user != null)
+                {
+                    info.SiteId = user.Site.Id;
+                    info.SiteName = user.Site.Name;
+                    info.Name = user.UserName;
+                    info.Id = user.Id;
+                    infos.Add(info);
+                }
+            }
+
+
+            Dictionary<YUEnums.PTEnum, KeyValuePair<bool, PTInfo>> infoDict = new Dictionary<YUEnums.PTEnum, KeyValuePair<bool, PTInfo>>();
+            foreach (var info in infos)
+            {
+                if (!infoDict.ContainsKey(info.SiteId))
+                    infoDict.Add(info.SiteId, new KeyValuePair<bool, PTInfo>(true, info));
+            }
+            FillPersonInfo(infoDict);
         }
 
-        /// <summary>
-        /// 填充个人信息
-        /// </summary>
-        /// <param name="infos"></param>
-        private void FillPersonInfo(List<PTInfo> infos, ref bool isFill)
+        private bool FillPersonInfo(Dictionary<YUEnums.PTEnum, KeyValuePair<bool, PTInfo>> infoDict)
         {
-            isFill = true;
-            if (infos != null && infos.Count > 0)
+            bool isFill = false;
+            if (infoDict != null && infoDict.Count > 0)
             {
                 List<PTInfoGridEntity> entitys = new List<PTInfoGridEntity>();
+                var infos = infoDict.Values.Select(x => x.Value).ToList();
                 foreach (var info in infos)
                 {
                     try
@@ -1103,13 +1119,29 @@ namespace YPT
                         LogMessage(null, string.Format("{0} {1} 请检查用户信息映射。", info.SiteName, ex.GetInnerExceptionMessage()));
                     }
                 }
-
-                entitys = entitys.OrderByDescending(x => x.RealUpSize).ToList();
-                this.Invoke(new Action(() =>
-                {
-                    dgvPersonInfo.DataSource = entitys;
-                }));
+                entitys = entitys.OrderBy(x => x.SiteId).ToList();
+                dgvPersonInfo.DataSource = entitys;
+                dgvPersonInfo.Tag = infoDict;
+                isFill = true;
             }
+            var errInfos = infoDict.Where(x => x.Value.Key == false);
+            foreach (var errInfo in errInfos)
+            {
+                foreach (DataGridViewRow row in dgvPersonInfo.Rows)
+                {
+                    if (row.Cells["SiteId"].Value.TryPareValue<int>() == (int)errInfo.Key)
+                    {
+                        row.DefaultCellStyle.ForeColor = Color.Red;
+                    }
+                }
+            }
+            return isFill;
+        }
+
+
+        private void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e, CancellationTokenSource cts)
+        {
+            cts.Cancel();
         }
 
         private void dgvPersonInfo_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
@@ -1166,5 +1198,6 @@ namespace YPT
             }
 
         }
+
     }
 }

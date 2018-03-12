@@ -140,6 +140,14 @@ namespace YU.Core.DataEntity
             entity.RealDownTimes = YUUtils.ParseMilliSecond(this.DownTimes);
             entity.RealSeedTimes = YUUtils.ParseMilliSecond(this.SeedTimes);
             entity.RegisterDate = this.RegisterDate;
+
+            if (this.RegisterDate == DateTime.MinValue)
+                entity.RegisterWeek = "--";
+            else
+            {
+                int registerDays = DateTime.Now.Subtract(this.RegisterDate).Duration().Days;
+                entity.RegisterWeek = string.Format("{0}周", registerDays / 7) + ((registerDays % 7) > 0 ? string.Format("{0}天", registerDays % 7) : string.Empty);
+            }
             entity.SeedNumber = this.SeedNumber.Trim().TryPareValue<int>();
             entity.SeedRate = this.SeedRate.Trim().TryPareValue<double>();
             entity.SeedTimes = this.SeedTimes.IsNullOrEmptyOrWhiteSpace() ? "--" : this.SeedTimes;

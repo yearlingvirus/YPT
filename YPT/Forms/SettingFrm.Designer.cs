@@ -123,7 +123,6 @@
             this.cbAutoSign.TabIndex = 2;
             this.cbAutoSign.Text = "启用自动签到";
             this.cbAutoSign.UseVisualStyleBackColor = true;
-            this.cbAutoSign.CheckedChanged += new System.EventHandler(this.cbAutoSign_CheckedChanged);
             // 
             // lblSignTime
             // 
@@ -144,7 +143,6 @@
             this.dtpSignTime.Size = new System.Drawing.Size(161, 26);
             this.dtpSignTime.TabIndex = 0;
             this.dtpSignTime.Value = new System.DateTime(2018, 3, 10, 0, 5, 0, 0);
-            this.dtpSignTime.ValueChanged += new System.EventHandler(this.dtpSignTime_ValueChanged);
             // 
             // tabOther
             // 
@@ -170,7 +168,6 @@
             this.cbIsMiniWhenClose.TabIndex = 5;
             this.cbIsMiniWhenClose.Text = "关闭主面板时是否最小化到系统托盘";
             this.cbIsMiniWhenClose.UseVisualStyleBackColor = true;
-            this.cbIsMiniWhenClose.CheckedChanged += new System.EventHandler(this.cbIsMiniWhenClose_CheckedChanged);
             // 
             // cbIsSyncTiming
             // 
@@ -181,7 +178,6 @@
             this.cbIsSyncTiming.TabIndex = 4;
             this.cbIsSyncTiming.Text = "准点自动同步个人信息";
             this.cbIsSyncTiming.UseVisualStyleBackColor = true;
-            this.cbIsSyncTiming.CheckedChanged += new System.EventHandler(this.cbIsSyncTiming_CheckedChanged);
             // 
             // cbIsEnablePostFileName
             // 
@@ -192,7 +188,6 @@
             this.cbIsEnablePostFileName.TabIndex = 0;
             this.cbIsEnablePostFileName.Text = "启用请求服务器下载文件名";
             this.cbIsEnablePostFileName.UseVisualStyleBackColor = true;
-            this.cbIsEnablePostFileName.CheckedChanged += new System.EventHandler(this.cbIsEnablePostFileName_CheckedChanged);
             // 
             // nudSearchTimeSpan
             // 
@@ -216,7 +211,6 @@
             0,
             0,
             0});
-            this.nudSearchTimeSpan.ValueChanged += new System.EventHandler(this.nudSearchTimeSpan_ValueChanged);
             // 
             // lblSearchTimespan
             // 

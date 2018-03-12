@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SQLite;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -45,24 +44,29 @@ namespace YPT
                 throw new Exception("配置数据库名称不能为空。");
             else
             {
-                DBUtils.SetConnectionString(dbName, dbPassWord);
+                AppService.InitConn(dbName, dbPassWord);
                 if (!File.Exists(ConfigUtil.GetConfigValue(YUConst.SETTING_SQLLITEDB)))
                 {
-                    InitDB(dbName);
+                    AppService.InitDB(dbName);
+                    AppService.InitTable();
                     Users = new List<PTUser>();
                 }
                 else
+                {
+                    AppService.InitTable();
                     InitUser();
-                Config.SignTime = GetConfig(YUConst.CONFIG_SIGN_TIME, new DateTime(1970, 1, 1, 0, 0, 0));
-                Config.IsAutoSign = GetConfig(YUConst.CONFIG_SIGN_AUTO, true);
-                Config.IsEnablePostFileName = GetConfig(YUConst.CONFIG_ENABLEPOSTFILENAME, true);
-                Config.IsSyncTiming = GetConfig(YUConst.CONFIG_SYNC_AUTO, true);
-                Config.IsFirstOpen = GetConfig(YUConst.CONFIG_ISFIRSTOPEN, true);
-                Config.IsMiniWhenClose = GetConfig(YUConst.CONFIG_ISMINIWHENCLOSE, false);
-                Config.IsPostSiteOrder = GetConfig(YUConst.CONFIG_SEARCH_POSTSITEORDER, false);
-                Config.IsIngoreTop = GetConfig(YUConst.CONFIG_SEARCH_INGORETOP, false);
-                Config.IsLastSort = GetConfig(YUConst.CONFIG_SEARCH_ISLASTSORT, false);
-                Config.SearchTimeSpan = GetConfig(YUConst.CONFIG_SEARCH_TIMESPAN, 300);
+                }
+                
+                Config.SignTime = AppService.GetConfig(YUConst.CONFIG_SIGN_TIME, new DateTime(1970, 1, 1, 0, 0, 0));
+                Config.IsAutoSign = AppService.GetConfig(YUConst.CONFIG_SIGN_AUTO, true);
+                Config.IsEnablePostFileName = AppService.GetConfig(YUConst.CONFIG_ENABLEPOSTFILENAME, true);
+                Config.IsSyncTiming = AppService.GetConfig(YUConst.CONFIG_SYNC_AUTO, true);
+                Config.IsFirstOpen = AppService.GetConfig(YUConst.CONFIG_ISFIRSTOPEN, true);
+                Config.IsMiniWhenClose = AppService.GetConfig(YUConst.CONFIG_ISMINIWHENCLOSE, false);
+                Config.IsPostSiteOrder = AppService.GetConfig(YUConst.CONFIG_SEARCH_POSTSITEORDER, false);
+                Config.IsIngoreTop = AppService.GetConfig(YUConst.CONFIG_SEARCH_INGORETOP, false);
+                Config.IsLastSort = AppService.GetConfig(YUConst.CONFIG_SEARCH_ISLASTSORT, false);
+                Config.SearchTimeSpan = AppService.GetConfig(YUConst.CONFIG_SEARCH_TIMESPAN, 300);
             }
         }
 
@@ -126,71 +130,5 @@ namespace YPT
             Users = Users.OrderBy(x => x.Site.Order).ToList();
         }
 
-        /// <summary>
-        /// 初始化数据库
-        /// </summary>
-        /// <param name="dbName"></param>
-        public static void InitDB(string dbName)
-        {
-            DBUtils.CreateDB(dbName);
-
-            List<KeyValuePair<string, SQLiteParameter[]>> sqlList = new List<KeyValuePair<string, SQLiteParameter[]>>();
-
-            //Config表
-            string sql = "CREATE TABLE CONFIG (FID VARCAHR(16),VALUE VARCHAR(2000))";
-            sqlList.Add(new KeyValuePair<string, SQLiteParameter[]>(sql, null));
-
-            //User表
-            sql = "CREATE TABLE USER (PTSITEID INT,USERID INT,USERNAME VARCAHR(100),PASSWORD VARCHAR(100),SECURITYQUESTIONORDER INT,SECUITYANSWER VARCHAR(200),ISENABLETWO_STEPVERIFICATION INT)";
-            sqlList.Add(new KeyValuePair<string, SQLiteParameter[]>(sql, null));
-
-            DBUtils.ExecuteNonQueryBatch(sqlList);
-        }
-
-        /// <summary>
-        /// 获取配置
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="configKey"></param>
-        /// <returns></returns>
-        public static T GetConfig<T>(string configKey, T defaultValue = default(T))
-        {
-            string selectSql = " SELECT VALUE FROM CONFIG WHERE FID = @FID ";
-            SQLiteParameter parm = new SQLiteParameter("@FID", DbType.String);
-            parm.Value = configKey;
-            string dbValue = DBUtils.ExecuteScalar(selectSql, "", parm);
-            if (dbValue.IsNullOrEmptyOrWhiteSpace())
-                return defaultValue;
-            else
-                return JsonConvert.DeserializeObject<T>(dbValue);
-        }
-
-        /// <summary>
-        /// 设置配置
-        /// </summary>
-        /// <param name="configKey"></param>
-        /// <param name="configValue"></param>
-        public static void SetConfig(string configKey, object configValue)
-        {
-            string selectSql = " SELECT 1 FROM CONFIG WHERE FID = @FID ";
-            SQLiteParameter parm = new SQLiteParameter("@FID", DbType.String);
-            parm.Value = configKey;
-            string sql = string.Empty;
-
-            if (DBUtils.ExecuteScalar<int>(selectSql, -1, parm) == -1)
-                sql = @" INSERT INTO CONFIG(FID,VALUE) VALUES(@FID,@VALUE) ";
-            else
-                sql = @" UPDATE CONFIG SET VALUE = @VALUE WHERE FID = @FID ";
-
-            SQLiteParameter[] parms = new SQLiteParameter[]
-                              {
-                        new SQLiteParameter("@FID", DbType.String),
-                        new SQLiteParameter("@VALUE", DbType.String)
-                              };
-            parms[0].Value = configKey;
-            parms[1].Value = JsonConvert.SerializeObject(configValue);
-
-            DBUtils.ExecuteNonQuery(sql, parms);
-        }
     }
 }

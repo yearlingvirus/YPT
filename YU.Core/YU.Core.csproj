@@ -78,6 +78,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppService.cs" />
     <Compile Include="Attributes\GridViewAttribute.cs" />
     <Compile Include="DataEntity\PTForum.cs" />
     <Compile Include="DataEntity\PTInfo.cs" />

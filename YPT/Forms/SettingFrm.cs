@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SQLite;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -35,17 +35,48 @@ namespace YPT.Forms
         /// </summary>
         public event EventHandler<EventArgs> SyncChanged;
 
+        private Dictionary<Control, KeyValuePair<string, string>> SettingDict = new Dictionary<Control, KeyValuePair<string, string>>();
+
+
         public SettingFrm(Form owner)
         {
             this.Owner = owner;
             InitializeComponent();
             InitUser();
-            dtpSignTime.Value = Global.Config.SignTime;
-            cbAutoSign.Checked = Global.Config.IsAutoSign;
-            cbIsSyncTiming.Checked = Global.Config.IsSyncTiming;
-            cbIsEnablePostFileName.Checked = Global.Config.IsEnablePostFileName;
-            cbIsMiniWhenClose.Checked = Global.Config.IsMiniWhenClose;
-            nudSearchTimeSpan.Value = Global.Config.SearchTimeSpan;
+
+            SettingDict.Add(nudSearchTimeSpan, new KeyValuePair<string, string>(YUConst.CONFIG_SEARCH_TIMESPAN, "SearchTimeSpan"));
+            SettingDict.Add(cbIsMiniWhenClose, new KeyValuePair<string, string>(YUConst.CONFIG_ISMINIWHENCLOSE, "IsMiniWhenClose"));
+            SettingDict.Add(cbIsSyncTiming, new KeyValuePair<string, string>(YUConst.CONFIG_SYNC_AUTO, "IsSyncTiming"));
+            SettingDict.Add(cbIsEnablePostFileName, new KeyValuePair<string, string>(YUConst.CONFIG_ENABLEPOSTFILENAME, "IsEnablePostFileName"));
+            SettingDict.Add(cbAutoSign, new KeyValuePair<string, string>(YUConst.CONFIG_SIGN_AUTO, "IsAutoSign"));
+            SettingDict.Add(dtpSignTime, new KeyValuePair<string, string>(YUConst.CONFIG_SIGN_TIME, "SignTime"));
+            FormUtils.BindControlValue(Global.Config, SettingDict.Select(x => new KeyValuePair<Control, string>(x.Key, x.Value.Value)));
+            FormUtils.BindControlDataChanged(SettingDict.Select(x => x.Key), Control_DataChanged);
+            dtpSignTime.ValueChanged += OnSignChanged;
+            cbAutoSign.CheckedChanged += OnSignChanged;
+            cbIsSyncTiming.CheckedChanged += OnSyncChanged;
+        }
+
+        private void Control_DataChanged(object sender, EventArgs e)
+        {
+            object value = null;
+            if (sender is CheckBox)
+                value = (sender as CheckBox).Checked;
+            else if (sender is DateTimePicker)
+                value = (sender as DateTimePicker).Value;
+            else if (sender is NumericUpDown)
+                value = (sender as NumericUpDown).Value;
+            else if (sender is TextBox)
+                value = (sender as TextBox).Text;
+            var control = sender as Control;
+            if (SettingDict.ContainsKey(control))
+            {
+                if (!SettingDict[control].Key.IsNullOrEmptyOrWhiteSpace())
+                    AppService.SetConfig(SettingDict[control].Key, value);
+                Type t = Global.Config.GetType();
+                var info = t.GetProperty(SettingDict[control].Value);
+                info.SetValue(Global.Config, value, null);
+            }
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -66,11 +97,7 @@ namespace YPT.Forms
                 throw new Exception("获取用户数据失败。");
             else
             {
-                YUEnums.PTEnum siteId = user.Site.Id;
-                string delSql = "DELETE FROM USER WHERE PTSITEID = @PTSITEID";
-                SQLiteParameter parm = new SQLiteParameter("@PTSITEID", DbType.Int32);
-                parm.Value = (int)siteId;
-                if (DBUtils.ExecuteNonQuery(delSql, parm) > 0)
+                if (AppService.DeleteUser(user.Site.Id) > 0)
                 {
                     OnUserChangeEventArgs el = new OnUserChangeEventArgs();
                     el.User = user;
@@ -160,8 +187,6 @@ namespace YPT.Forms
                     btnEdit.Tag = user;
                     btnEdit.Click += BtnEdit_Click;
 
-
-
                     panel.Controls.Add(lblSite);
                     panel.Controls.Add(lblUser);
                     panel.Controls.Add(btnEdit);
@@ -176,20 +201,6 @@ namespace YPT.Forms
             }
         }
 
-        private void dtpSignTime_ValueChanged(object sender, EventArgs e)
-        {
-            Global.SetConfig(YUConst.CONFIG_SIGN_TIME, dtpSignTime.Value);
-            Global.Config.SignTime = dtpSignTime.Value;
-            OnSignChanged(e);
-        }
-
-        private void cbAutoSign_CheckedChanged(object sender, EventArgs e)
-        {
-            Global.SetConfig(YUConst.CONFIG_SIGN_AUTO, cbAutoSign.Checked);
-            Global.Config.IsAutoSign = cbAutoSign.Checked;
-            OnSignChanged(e);
-        }
-
         private void OnUserChanged(OnUserChangeEventArgs e)
         {
             if (e.User != null)
@@ -201,41 +212,17 @@ namespace YPT.Forms
             }
         }
 
-        private void OnSignChanged(EventArgs e)
+        private void OnSignChanged(object sender, EventArgs e)
         {
             if (SignChanged != null)
                 SignChanged.Invoke(this, e);
         }
 
-        private void cbIsEnablePostFileName_CheckedChanged(object sender, EventArgs e)
-        {
-            Global.SetConfig(YUConst.CONFIG_ENABLEPOSTFILENAME, cbIsEnablePostFileName.Checked);
-            Global.Config.IsEnablePostFileName = cbIsEnablePostFileName.Checked;
-        }
-
-        private void cbIsSyncTiming_CheckedChanged(object sender, EventArgs e)
-        {
-            Global.SetConfig(YUConst.CONFIG_SYNC_AUTO, cbIsSyncTiming.Checked);
-            Global.Config.IsSyncTiming = cbIsSyncTiming.Checked;
-            OnSyncChanged(e);
-        }
-
-        private void OnSyncChanged(EventArgs e)
+        private void OnSyncChanged(object sender, EventArgs e)
         {
             if (SyncChanged != null)
                 SyncChanged.Invoke(this, e);
         }
 
-        private void cbIsMiniWhenClose_CheckedChanged(object sender, EventArgs e)
-        {
-            Global.SetConfig(YUConst.CONFIG_ISMINIWHENCLOSE, cbIsMiniWhenClose.Checked);
-            Global.Config.IsMiniWhenClose = cbIsMiniWhenClose.Checked;
-        }
-
-        private void nudSearchTimeSpan_ValueChanged(object sender, EventArgs e)
-        {
-            Global.Config.SearchTimeSpan = (int)nudSearchTimeSpan.Value;
-            Global.SetConfig(YUConst.CONFIG_SEARCH_TIMESPAN, Global.Config.SearchTimeSpan);
-        }
     }
 }

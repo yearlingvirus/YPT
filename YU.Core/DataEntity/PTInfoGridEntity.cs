@@ -121,6 +121,12 @@ namespace YU.Core.DataEntity
         public DateTime RegisterDate { get; set; }
 
         /// <summary>
+        /// 注册日期
+        /// </summary>
+        [GridView("注册日期(周)", true, 100)]
+        public string RegisterWeek { get; set; }
+
+        /// <summary>
         /// 等级
         /// </summary>
         [GridView("等级", true, 100)]

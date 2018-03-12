@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Data.SQLite;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -100,32 +99,7 @@ namespace YPT.Forms
             var pt = PTFactory.GetPT(User.Site.Id, User) as AbstractPT;
             try
             {
-                string selectSql = " SELECT PTSITEID FROM USER WHERE PTSITEID = @PTSITEID ";
-                SQLiteParameter param = new SQLiteParameter("@PTSITEID", DbType.Int32);
-                param.Value = User.Site.Id;
-                string sql = string.Empty;
-                if (DBUtils.ExecuteScalar<int>(selectSql, -1, param) != (int)User.Site.Id)
-                    sql = @" INSERT INTO USER(PTSITEID,USERNAME,PASSWORD,SECURITYQUESTIONORDER,SECUITYANSWER,ISENABLETWO_STEPVERIFICATION) VALUES(@PTSITEID,@USERNAME,@PASSWORD,@SECURITYQUESTIONORDER,@SECUITYANSWER,@ISENABLETWO_STEPVERIFICATION) ";
-                else
-                    sql = @" UPDATE USER SET USERNAME = @USERNAME, PASSWORD = @PASSWORD, SECURITYQUESTIONORDER = @SECURITYQUESTIONORDER, SECUITYANSWER = @SECUITYANSWER , ISENABLETWO_STEPVERIFICATION = @ISENABLETWO_STEPVERIFICATION WHERE PTSITEID = @PTSITEID";
-
-                SQLiteParameter[] parms = new SQLiteParameter[]
-                {
-                        new SQLiteParameter("@PTSITEID", DbType.Int32),
-                        new SQLiteParameter("@USERNAME", DbType.String),
-                        new SQLiteParameter("@PASSWORD", DbType.String),
-                        new SQLiteParameter("@SECURITYQUESTIONORDER", DbType.Int32),
-                        new SQLiteParameter("@SECUITYANSWER", DbType.String),
-                        new SQLiteParameter("@ISENABLETWO_STEPVERIFICATION", DbType.Boolean),
-                };
-                parms[0].Value = User.Site.Id;
-                parms[1].Value = User.UserName;
-                parms[2].Value = User.PassWord;
-                parms[3].Value = User.SecurityQuestionOrder;
-                parms[4].Value = User.SecuityAnswer;
-                parms[5].Value = User.isEnableTwo_StepVerification;
-
-                if (DBUtils.ExecuteNonQuery(sql, parms) <= 0)
+                if (AppService.UpdateOrInsertUser(User) <= 0)
                 {
                     FormUtils.ShowErrMessage("很抱歉，由于未知原因保存失败。");
                 }
@@ -136,7 +110,7 @@ namespace YPT.Forms
                     this.DialogResult = DialogResult.OK;
                 }
             }
-            catch (SQLiteException ex)
+            catch (System.Data.SQLite.SQLiteException ex)
             {
                 string errMsg = ex.GetInnerExceptionMessage();
                 FormUtils.ShowErrMessage(string.Format("保存失败，失败原因：{0}", errMsg));
