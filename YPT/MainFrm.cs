@@ -152,28 +152,35 @@ namespace YPT
 
                 foreach (var user in Global.Users)
                 {
-                    bool isNeedUpdate = user.Id <= 0;
-                    AbstractPT pt = PTFactory.GetPT(user.Site.Id, user) as AbstractPT;
-                    pt.VerificationCode += Pt_VerificationCode;
-                    pt.TwoStepVerification += Pt_TwoStepVerification;
-                    string msg = pt.Login();
-
-                    if (isNeedUpdate && pt.User != null && pt.User.Id > 0)
+                    try
                     {
-                        user.Id = pt.User.Id;
-                        string sql = "UPDATE USER SET USERID = @USERID WHERE PTSITEID = @PTSITEID AND USERNAME = @USERNAME ";
-                        SQLiteParameter[] parms = new SQLiteParameter[]
+                        bool isNeedUpdate = user.Id <= 0;
+                        AbstractPT pt = PTFactory.GetPT(user.Site.Id, user) as AbstractPT;
+                        pt.VerificationCode += Pt_VerificationCode;
+                        pt.TwoStepVerification += Pt_TwoStepVerification;
+                        string msg = pt.Login();
+
+                        if (isNeedUpdate && pt.User != null && pt.User.Id > 0)
                         {
+                            user.Id = pt.User.Id;
+                            string sql = "UPDATE USER SET USERID = @USERID WHERE PTSITEID = @PTSITEID AND USERNAME = @USERNAME ";
+                            SQLiteParameter[] parms = new SQLiteParameter[]
+                            {
                             new SQLiteParameter("@USERID", DbType.Int32),
                             new SQLiteParameter("@PTSITEID", DbType.Int32),
                             new SQLiteParameter("@USERNAME", DbType.String),
-                        };
-                        parms[0].Value = pt.User.Id;
-                        parms[1].Value = pt.User.Site.Id;
-                        parms[2].Value = pt.User.UserName;
-                        sqlList.Add(new KeyValuePair<string, SQLiteParameter[]>(sql, parms));
+                            };
+                            parms[0].Value = pt.User.Id;
+                            parms[1].Value = pt.User.Site.Id;
+                            parms[2].Value = pt.User.UserName;
+                            sqlList.Add(new KeyValuePair<string, SQLiteParameter[]>(sql, parms));
+                        }
+                        LogMessage(user.Site, msg);
                     }
-                    LogMessage(user.Site, msg);
+                    catch (Exception ex)
+                    {
+                        LogMessage(user.Site, string.Format("登录失败，失败原因：{0}", ex.GetInnerExceptionMessage()));
+                    }
                 }
                 if (sqlList.Count > 0)
                     DBUtils.ExecuteNonQueryBatch(sqlList);
@@ -969,10 +976,14 @@ namespace YPT
                 bool isFill = false;
                 StringBuilder sb = new StringBuilder();
                 var cts = new CancellationTokenSource();
+                //Dictionary<YUEnums.PTEnum, KeyValuePair<bool, PTInfo>> infoDict = ObjectUtils.CreateCopy<Dictionary<YUEnums.PTEnum, KeyValuePair<bool, PTInfo>>>(dgvPersonInfo.Tag);
+                //if (infoDict == null)
+                List<PTInfo> infos = new List<PTInfo>();
 
                 Task task = new Task(() =>
                 {
-                    List<PTInfo> infos = new List<PTInfo>();
+                    var infoDict = new Dictionary<YUEnums.PTEnum, KeyValuePair<bool, PTInfo>>();
+
                     Parallel.ForEach(Global.Users, (user, state, i) =>
                     {
                         IPT pt = PTFactory.GetPT(user.Site.Id, Global.Users.Where(x => x.Site.Id == user.Site.Id).FirstOrDefault());
@@ -980,16 +991,23 @@ namespace YPT
                         //假设4核Cpu，5个任务，因为是并行的原因，如果前4个在并行执行的过程任意一个发生了异常，那么此时前4个中其他3个还会继续执行到结束，但最后一个是不会执行的，所以这里需要做异常捕获处理。
                         try
                         {
-                            infos.Add(pt.GetPersonInfo());
+                            var info = pt.GetPersonInfo();
+                            //infoDict[user.Site.Id] = new KeyValuePair<bool, PTInfo>(true, info);
+                            infos.Add(info);
                             lock (syncInfoObject)
                             {
+                                //FillPersonInfo(infoDict.Select(x => x.Value.Value), ref isFill);
                                 FillPersonInfo(infos, ref isFill);
                             }
                         }
                         catch (Exception ex)
                         {
                             lock (syncInfoObject)
+                            {
+                                if (infoDict.ContainsKey(user.Site.Id))
+                                    infoDict[user.Site.Id] = new KeyValuePair<bool, PTInfo>(false, infoDict[user.Site.Id].Value);
                                 sb.AppendLine(ex.GetInnerExceptionMessage());
+                            }
                         }
 
                     });
@@ -1004,11 +1022,44 @@ namespace YPT
                 task.Start();
                 task.ContinueWith(result =>
                 {
-                    if (!isBack)
-                        this.Invoke(new Action(() =>
-                        {
+                    this.Invoke(new Action(() =>
+                    {
+                        //if (infos != null && infos.Count > 0)
+                        //{
+                        //    List<PTInfoGridEntity> entitys = new List<PTInfoGridEntity>();
+                        //    foreach (var info in infos)
+                        //    {
+                        //        try
+                        //        {
+                        //            entitys.Add(info.ToGridEntity());
+                        //        }
+                        //        catch (Exception ex)
+                        //        {
+                        //            LogMessage(null, string.Format("{0} {1} 请检查用户信息映射。", info.SiteName, ex.GetInnerExceptionMessage()));
+                        //        }
+                        //    }
+
+                        //    entitys = entitys.OrderByDescending(x => x.RealUpSize).ToList();
+                        //    this.Invoke(new Action(() =>
+                        //    {
+                        //        dgvPersonInfo.DataSource = entitys;
+                        //    }));
+                        //}
+                        //dgvPersonInfo.Tag = infoDict;
+                        //var errInfos = infoDict.Where(x => x.Value.Key == false);
+                        //foreach (var errInfo in errInfos)
+                        //{
+                        //    foreach (DataGridViewRow row in dgvPersonInfo.Rows)
+                        //    {
+                        //        if (row.Cells["SiteId"].Value.TryPareValue<int>() == (int)errInfo.Key)
+                        //        {
+                        //            row.DefaultCellStyle.ForeColor = Color.Red;
+                        //        }
+                        //    }
+                        //}
+                        if (!isBack)
                             progressPanel.StopLoading();
-                        }));
+                    }));
 
                     bool isOpen = !isBack && !isFill;
                     if (cts.Token.IsCancellationRequested)
@@ -1053,10 +1104,9 @@ namespace YPT
                     }
                 }
 
-                entitys = entitys.OrderByDescending(x => x.UpSize).ToList();
+                entitys = entitys.OrderByDescending(x => x.RealUpSize).ToList();
                 this.Invoke(new Action(() =>
                 {
-                    dgvPersonInfo.Tag = infos;
                     dgvPersonInfo.DataSource = entitys;
                 }));
             }
@@ -1102,5 +1152,19 @@ namespace YPT
             frm.ShowDialog();
         }
 
+        private void 清空CookieToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (Directory.Exists(YUConst.PATH_LOCALCOOKIE))
+                    Directory.Delete(YUConst.PATH_LOCALCOOKIE, true);
+                MessageBox.Show("清空Cookie成功。", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                LogMessage(null, string.Format("清空Cookie失败，失败原因：{0}", ex.GetInnerExceptionMessage()), true);
+            }
+
+        }
     }
 }

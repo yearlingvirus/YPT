@@ -37,7 +37,9 @@ namespace YPT
             this.同步StripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.登录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.签到ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关于ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.清空CookieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabMain = new System.Windows.Forms.TabControl();
             this.tabSearch = new System.Windows.Forms.TabPage();
             this.panelMain = new System.Windows.Forms.Panel();
@@ -110,7 +112,7 @@ namespace YPT
             this.同步StripMenuItem,
             this.登录ToolStripMenuItem,
             this.签到ToolStripMenuItem,
-            this.关于ToolStripMenuItem});
+            this.帮助ToolStripMenuItem});
             this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.mainMenuStrip.Name = "mainMenuStrip";
             this.mainMenuStrip.Padding = new System.Windows.Forms.Padding(7, 3, 0, 3);
@@ -146,12 +148,28 @@ namespace YPT
             this.签到ToolStripMenuItem.Text = "签到";
             this.签到ToolStripMenuItem.Click += new System.EventHandler(this.签到ToolStripMenuItem_Click);
             // 
+            // 帮助ToolStripMenuItem
+            // 
+            this.帮助ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.关于ToolStripMenuItem,
+            this.清空CookieToolStripMenuItem});
+            this.帮助ToolStripMenuItem.Name = "帮助ToolStripMenuItem";
+            this.帮助ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.帮助ToolStripMenuItem.Text = "帮助";
+            // 
             // 关于ToolStripMenuItem
             // 
             this.关于ToolStripMenuItem.Name = "关于ToolStripMenuItem";
-            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.关于ToolStripMenuItem.Text = "关于";
             this.关于ToolStripMenuItem.Click += new System.EventHandler(this.关于ToolStripMenuItem_Click);
+            // 
+            // 清空CookieToolStripMenuItem
+            // 
+            this.清空CookieToolStripMenuItem.Name = "清空CookieToolStripMenuItem";
+            this.清空CookieToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.清空CookieToolStripMenuItem.Text = "清空Cookie";
+            this.清空CookieToolStripMenuItem.Click += new System.EventHandler(this.清空CookieToolStripMenuItem_Click);
             // 
             // tabMain
             // 
@@ -416,6 +434,7 @@ namespace YPT
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtSearch.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txtSearch.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.txtSearch.Location = new System.Drawing.Point(43, 15);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(832, 26);
@@ -436,7 +455,7 @@ namespace YPT
             this.tabPersonInfo.Location = new System.Drawing.Point(4, 29);
             this.tabPersonInfo.Name = "tabPersonInfo";
             this.tabPersonInfo.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPersonInfo.Size = new System.Drawing.Size(1106, 562);
+            this.tabPersonInfo.Size = new System.Drawing.Size(1126, 562);
             this.tabPersonInfo.TabIndex = 2;
             this.tabPersonInfo.Text = "个人信息";
             this.tabPersonInfo.UseVisualStyleBackColor = true;
@@ -451,7 +470,7 @@ namespace YPT
             this.dgvPersonInfo.Location = new System.Drawing.Point(3, 3);
             this.dgvPersonInfo.Name = "dgvPersonInfo";
             this.dgvPersonInfo.RowTemplate.Height = 23;
-            this.dgvPersonInfo.Size = new System.Drawing.Size(1100, 556);
+            this.dgvPersonInfo.Size = new System.Drawing.Size(1120, 556);
             this.dgvPersonInfo.TabIndex = 1;
             this.dgvPersonInfo.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvPersonInfo_CellMouseDown);
             this.dgvPersonInfo.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgv_ColumnHeaderMouseClick);
@@ -464,7 +483,7 @@ namespace YPT
             this.tabLog.Margin = new System.Windows.Forms.Padding(4);
             this.tabLog.Name = "tabLog";
             this.tabLog.Padding = new System.Windows.Forms.Padding(4);
-            this.tabLog.Size = new System.Drawing.Size(1106, 562);
+            this.tabLog.Size = new System.Drawing.Size(1126, 562);
             this.tabLog.TabIndex = 0;
             this.tabLog.Text = "日志";
             this.tabLog.UseVisualStyleBackColor = true;
@@ -476,7 +495,7 @@ namespace YPT
             this.logPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.logPanel.Location = new System.Drawing.Point(4, 4);
             this.logPanel.Name = "logPanel";
-            this.logPanel.Size = new System.Drawing.Size(1098, 554);
+            this.logPanel.Size = new System.Drawing.Size(1118, 554);
             this.logPanel.TabIndex = 2;
             // 
             // rtbLog
@@ -489,7 +508,7 @@ namespace YPT
             this.rtbLog.Margin = new System.Windows.Forms.Padding(4);
             this.rtbLog.Name = "rtbLog";
             this.rtbLog.ReadOnly = true;
-            this.rtbLog.Size = new System.Drawing.Size(1098, 508);
+            this.rtbLog.Size = new System.Drawing.Size(1118, 508);
             this.rtbLog.TabIndex = 0;
             this.rtbLog.TabStop = false;
             this.rtbLog.Text = "";
@@ -502,7 +521,7 @@ namespace YPT
             this.btnClearLog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnClearLog.Location = new System.Drawing.Point(0, 508);
             this.btnClearLog.Name = "btnClearLog";
-            this.btnClearLog.Size = new System.Drawing.Size(1098, 46);
+            this.btnClearLog.Size = new System.Drawing.Size(1118, 46);
             this.btnClearLog.TabIndex = 1;
             this.btnClearLog.TabStop = false;
             this.btnClearLog.Text = "清空";
@@ -675,7 +694,6 @@ namespace YPT
         private YUComboBox cmbFav;
         private System.Windows.Forms.ContextMenuStrip dgvInfoContextMenu;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuOpenInfo;
-        private System.Windows.Forms.ToolStripMenuItem 关于ToolStripMenuItem;
         private System.Windows.Forms.FlowLayoutPanel toolSearchPanel;
         private System.Windows.Forms.Panel innerPanel1;
         private System.Windows.Forms.Panel innerPanel2;
@@ -687,6 +705,9 @@ namespace YPT
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.CheckBox cbIsIngoreTop;
         private System.Windows.Forms.CheckBox cbIsLastSort;
+        private System.Windows.Forms.ToolStripMenuItem 帮助ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 关于ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 清空CookieToolStripMenuItem;
     }
 }
 

@@ -720,7 +720,7 @@ namespace YPT.PT
                     HttpWebResponse webRespon = (HttpWebResponse)httpWebRequest.GetResponse();
 
                     if (!webRespon.GetResponseHeader("Location").IsNullOrEmptyOrWhiteSpace())
-                        throw new Exception("下载种子失败，也许是二次验证等原因导致，请尝试关闭。");
+                        throw new Exception("下载种子失败，也许是二级验证等原因，请关闭后再尝试，你也可以通过删除Cookie后使用程序自带的登录后再尝试。");
 
                     //如果需要请求服务器文件名的话
                     if (isPostFileName)
@@ -833,6 +833,10 @@ namespace YPT.PT
         public virtual PTInfo GetPersonInfo()
         {
             PTInfo info = new PTInfo();
+
+            if(_cookie == null || _cookie.Count <= 0)
+                throw new Exception(string.Format("{0} 获取Cookie信息失败，请尝试重新登录。", Site.Name));
+
             if (User.Id == 0)
             {
                 string htmlResult = HttpUtils.GetDataGetHtml(Site.Url, _cookie);

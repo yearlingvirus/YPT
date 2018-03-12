@@ -26,7 +26,7 @@ namespace YU.Core.YUComponent
         {
             this.Size = frm.ClientSize;
             this.SetStyle(ControlStyles.SupportsTransparentBackColor | ControlStyles.Opaque, true);
-            this.BackColor =  Color.FromArgb(80, 255, 255, 255) ;
+            this.BackColor = Color.FromArgb(80, 255, 255, 255);
             this.Dock = DockStyle.Fill;
             //frm.SizeChanged += Frm_SizeChanged;
             timer = new System.Timers.Timer();
@@ -58,6 +58,7 @@ namespace YU.Core.YUComponent
                 {
                     this.Invoke(new Action(() =>
                     {
+                        isLoading = true;
                         if (progressBar == null)
                         {
                             progressBar = new ProgressBar();
@@ -68,20 +69,20 @@ namespace YU.Core.YUComponent
                             //int y = (int)(0.5 * (this.Height - progressBar.Height));
                             progressBar.Dock = DockStyle.Bottom;
                             //progressBar.Location = new Point(x, y);
-                            progressBar.Style = ProgressBarStyle.Marquee;
                             //progressBar.Anchor = AnchorStyles.Top;
                             this.Controls.Add(progressBar);
                         }
- 
+
                         if (timeOut != 0)
                         {
                             timer.Interval = timeOut;
                             timer.Start();
                         }
                         this.Cursor = Cursors.WaitCursor;
+                        progressBar.Enabled = true;
+                        progressBar.Style = ProgressBarStyle.Marquee;
                         progressBar.BringToFront();
                         this.BringToFront();
-                        isLoading = true;
                     }));
                 }
             }
@@ -99,9 +100,9 @@ namespace YU.Core.YUComponent
                         this.SendToBack();
                         if (progressBar != null)
                         {
-                            progressBar.Dispose();
-                            progressBar = null;
-                            this.Controls.Remove(progressBar);
+                            progressBar.Enabled = false;
+                            progressBar.Style = ProgressBarStyle.Blocks;
+                            progressBar.Value = 0;
                         }
                         isLoading = false;
                     }));
