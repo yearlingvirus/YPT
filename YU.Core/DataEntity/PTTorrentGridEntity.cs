@@ -72,7 +72,7 @@ namespace YU.Core.DataEntity
         /// </summary>
         [GridView("促销", true, 100, -1, typeof(DataGridViewImageColumn))]
 
-        public Image image { get; set; }
+        public Image Image { get; set; } 
 
         /// <summary>
         /// 大小

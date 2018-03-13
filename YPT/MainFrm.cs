@@ -881,14 +881,22 @@ namespace YPT
         {
             DataGridView dgv = sender as DataGridView;
 
-            //这里重新获取列名，比如Size，获取到的应该是RealSize
             string colName = dgv.Columns[e.ColumnIndex].DataPropertyName;
-            foreach (DataGridViewColumn col in dgv.Columns)
+
+            if (dgv == dgvPersonInfo && colName.EqualIgnoreCase("RegisterWeek"))
+                colName = "RegisterDate";
+            else if (dgv == dgvTorrent && colName.EqualIgnoreCase("Image"))
+                colName = "PromotionType";
+            else
             {
-                if (col.DataPropertyName.Contains(colName) && !col.DataPropertyName.EqualIgnoreCase(colName))
+                //这里重新获取列名，比如Size，获取到的应该是RealSize
+                foreach (DataGridViewColumn col in dgv.Columns)
                 {
-                    colName = col.DataPropertyName;
-                    break;
+                    if (col.DataPropertyName.Contains(colName) && !col.DataPropertyName.EqualIgnoreCase(colName))
+                    {
+                        colName = col.DataPropertyName;
+                        break;
+                    }
                 }
             }
             if (dgv.Columns[e.ColumnIndex].SortMode == DataGridViewColumnSortMode.Programmatic)

@@ -144,7 +144,7 @@ namespace YU.Core.DataEntity
                     var image = FormUtils.GetImage(PTSiteConst.RESOURCE_PROMOTIONIMG[entity.PromotionType]);
                     PromotionImages[entity.PromotionType] = image;
                 }
-                entity.image = PromotionImages[entity.PromotionType];
+                entity.Image = PromotionImages[entity.PromotionType];
             }
 
 

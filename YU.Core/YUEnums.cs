@@ -20,22 +20,22 @@ namespace YU.Core
             HDChina = 4,
             CHDBits = 5,
             CMCT = 6,
-            OurBits= 7,
-            KeepFrds= 8,
-            U2= 9,
-            HDHome= 10,
-            OpenCD= 11,
-            GZTown= 12,
-            BTSchool= 13,
-            HDU= 14,
-            NYPT= 15,
-            HDStreet= 16,
-            HDCity= 17,
-            JoyHD= 18,
-            HDRoute= 19,
-            IPT= 20,
-            HDT= 21,
-            CCFBits= 22,
+            OurBits = 7,
+            KeepFrds = 8,
+            U2 = 9,
+            HDHome = 10,
+            OpenCD = 11,
+            GZTown = 12,
+            BTSchool = 13,
+            HDU = 14,
+            NYPT = 15,
+            HDStreet = 16,
+            HDCity = 17,
+            JoyHD = 18,
+            HDRoute = 19,
+            IPT = 20,
+            HDT = 21,
+            CCFBits = 22,
         }
 
         public enum FormatterType
@@ -106,50 +106,49 @@ namespace YU.Core
             /// 全部
             /// </summary>
             [Description("全部")]
-            ALL = 0,
+            ALL,
 
             /// <summary>
             /// 普通
             /// </summary>
             [Description("NORMAL")]
-            NORMAL = 1,
-
-            /// <summary>
-            /// 免费
-            /// </summary>
-            [Description("FREE")]
-            FREE = 2,
+            NORMAL,
 
             /// <summary>
             /// 两倍上传
             /// </summary>
             [Description("2X")]
-            TWOUP = 3,
-
-            /// <summary>
-            /// 2XFREE
-            /// </summary>
-            [Description("2XFREE")]
-            FREE2UP = 4,
-
-            /// <summary>
-            /// 50%下载
-            /// </summary>
-            [Description("50%")]
-            HALFDOWN = 5,
-
-
-            /// <summary>
-            /// 2X50%
-            /// </summary>
-            [Description("2X50%")]
-            HALF2X = 6,
+            TWOUP,
 
             /// <summary>
             /// 30%下载
             /// </summary>
             [Description("30%")]
-            THIRTYPERDOWN = 7,
+            THIRTYPERDOWN,
+
+            /// <summary>
+            /// 50%下载
+            /// </summary>
+            [Description("50%")]
+            HALFDOWN,
+
+            /// <summary>
+            /// 2X50%
+            /// </summary>
+            [Description("2X50%")]
+            HALF2X,
+
+            /// <summary>
+            /// 免费
+            /// </summary>
+            [Description("FREE")]
+            FREE,
+
+            /// <summary>
+            /// 2XFREE
+            /// </summary>
+            [Description("2XFREE")]
+            FREE2UP,
 
         }
 
