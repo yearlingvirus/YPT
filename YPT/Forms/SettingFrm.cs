@@ -82,6 +82,7 @@ namespace YPT.Forms
         private void btnAdd_Click(object sender, EventArgs e)
         {
             UserFrm frm = new UserFrm(null);
+            frm.UserChanged += Frm_UserChanged;
             if (frm.ShowDialog() == DialogResult.OK)
             {
                 OnUserChangeEventArgs el = new OnUserChangeEventArgs();
@@ -114,6 +115,7 @@ namespace YPT.Forms
             else
             {
                 UserFrm frm = new UserFrm(user);
+                frm.UserChanged += Frm_UserChanged;
                 if (frm.ShowDialog() == DialogResult.OK)
                 {
                     OnUserChangeEventArgs el = new OnUserChangeEventArgs();
@@ -121,6 +123,11 @@ namespace YPT.Forms
                     OnUserChanged(el);
                 }
             }
+        }
+
+        private void Frm_UserChanged(object sender, OnUserChangeEventArgs e)
+        {
+            OnUserChanged(e);
         }
 
         private void InitUser()
@@ -198,6 +205,7 @@ namespace YPT.Forms
                 int defaultHeight = mainPanel.Controls.Count * 150;
 
                 this.Size = new Size(this.Size.Width, defaultHeight > this.Owner.Size.Height ? this.Owner.Size.Height : defaultHeight);
+                this.Location = new Point(this.Location.X, defaultHeight > this.Owner.Size.Height ? this.Owner.Location.Y : this.Location.Y);
             }
         }
 

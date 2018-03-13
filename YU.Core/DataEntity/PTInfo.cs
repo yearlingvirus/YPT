@@ -138,7 +138,8 @@ namespace YU.Core.DataEntity
             entity.Rank = Regex.Replace(this.Rank, regEx, "");
             //如果过滤之后为空字符串，则直接用站点的。
             if (entity.Rank.IsNullOrEmptyOrWhiteSpace())
-                entity.Rank = this.Rank;
+                entity.Rank = this.Rank.IsNullOrEmptyOrWhiteSpace() ? "--" : this.Rank;
+
             entity.RealDownTimes = YUUtils.ParseMilliSecond(this.DownTimes);
             entity.RealSeedTimes = YUUtils.ParseMilliSecond(this.SeedTimes);
             entity.RegisterDate = this.RegisterDate;
@@ -155,7 +156,7 @@ namespace YU.Core.DataEntity
             entity.SeedTimes = this.SeedTimes.IsNullOrEmptyOrWhiteSpace() ? "--" : this.SeedTimes;
             entity.ShareRate = this.ShareRate.Trim().TryPareValue<double>();
             entity.SiteId = (int)this.SiteId;
-            entity.SiteName = this.SiteName;
+            entity.SiteName = this.SiteName.IsNullOrEmptyOrWhiteSpace() ? "--" : this.SiteName;
             entity.UpSize = this.UpSize.IsNullOrEmptyOrWhiteSpace() ? "--" : this.UpSize;
             entity.RealUpSize = YUUtils.ParseB(this.UpSize);
 

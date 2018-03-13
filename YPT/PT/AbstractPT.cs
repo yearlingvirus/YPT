@@ -274,7 +274,7 @@ namespace YPT.PT
 
         protected bool IsLoginSuccess(string htmlResult)
         {
-            if (!htmlResult.Contains("登录失败")  && (htmlResult.Contains("欢迎回来") || htmlResult.Contains("Welcome") || htmlResult.Contains("歡迎回來")))
+            if (!htmlResult.Contains("登录失败") && (htmlResult.Contains("欢迎回来") || htmlResult.Contains("Welcome") || htmlResult.Contains("歡迎回來")))
                 return true;
             else
                 return false;
@@ -309,30 +309,31 @@ namespace YPT.PT
 
         #endregion
 
-
-        protected virtual PTUser UpdateUserWhileChange(string htmlResult, PTUser user)
+        /// <summary>
+        /// 获取用户节点
+        /// </summary>
+        /// <param name="htmlResult"></param>
+        /// <returns></returns>
+        protected virtual HtmlNode GetUserNode(string htmlResult)
         {
             HtmlDocument htmlDocument = new HtmlDocument();
             htmlDocument.OptionOutputAsXml = false;
             htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
             HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"info_block\"]/tr/td/table/tr/td//a");//跟Xpath一样
+            return node;
+        }
+
+
+        protected PTUser UpdateUserWhileChange(string htmlResult, PTUser user)
+        {
+            var node = GetUserNode(htmlResult);
             if (node != null)
             {
                 var url = HttpUtility.HtmlDecode(node.Attributes["href"].Value);
                 url = string.Join("/", Site.Url, url);
                 user.UserId = url.UrlSearchKey("id").TryPareValue<int>();
-                if (user.UserName != node.InnerText)
-                {
-                    //当用户输入的用户名与获取到的用户名不一致时，取获取的用户名为准。
-                    //修改用户名时，同时还要处理本地的Cookie文件
-                    string cookiePath = GetCookieFilePath();
-                    if (File.Exists(cookiePath))
-                    {
-                        user.UserName = node.InnerText;
-                        string newCookiePath = GetCookieFilePath();
-                        File.Move(cookiePath, newCookiePath);
-                    }
-                }
+                //目前本地已有的Cookie是不区分用户的，后面如果要支持多用户的话，这里也许要重新处理Cookie的问题
+                user.UserName = node.InnerText;
             }
             return user;
         }
@@ -702,7 +703,7 @@ namespace YPT.PT
 
         public string GetCookieFilePath()
         {
-            string cookiePath = Path.Combine(YUConst.PATH_LOCALCOOKIE, string.Format("{0}_{1}.cookie", Site.Name, User.UserName));
+            string cookiePath = Path.Combine(YUConst.PATH_LOCALCOOKIE, string.Format("{0}.cookie", Site.Name));
             return cookiePath;
         }
 
@@ -869,7 +870,7 @@ namespace YPT.PT
                 htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
 
                 HtmlNodeCollection headNodes =
-                   htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]//td[contains(concat(' ', normalize-space(@align), ' '), ' right ')]");
+                   htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]//td[contains(concat(' ', normalize-space(@class), ' '), ' rowhead ')]");
 
                 if (headNodes == null || headNodes.Count <= 0)
                     throw new Exception(string.Format("{0} 获取用户详细信息失败，请稍后重试。", Site.Name));
@@ -878,134 +879,145 @@ namespace YPT.PT
                 var infoMaps = GetInfoMaps(headNodes);
 
                 HtmlNodeCollection nodes =
-                    htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]//td[contains(concat(' ', normalize-space(@align), ' '), ' left ')]");
+                    htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]//td[contains(concat(' ', normalize-space(@class), ' '), ' rowfollow ')]");
                 if (nodes == null || nodes.Count <= 0)
                     throw new Exception(string.Format("{0} 获取用户详细信息失败，请稍后重试。", Site.Name));
                 else
-                {
-                    #region Convert
-                    //注册日期
-                    var node = nodes[infoMaps[YUEnums.PersonInfoMap.RegisterDate]];
-                    if (node != null)
-                    {
-                        node = node.SelectSingleNode(".//span");
-                        if (node != null && node.Attributes.Contains("title"))
-                        {
-                            info.RegisterDate = node.Attributes["title"].Value.TryPareValue<DateTime>();
-                        }
-                    }
+                    SetPersonInfo(infoMaps, nodes, info);
 
-                    //分享率
-                    node = nodes[infoMaps[YUEnums.PersonInfoMap.ShareRate]];
-                    if (node != null)
-                    {
-                        var childNode = node.SelectSingleNode(".//td/font/text()");
-                        if (childNode != null)
-                            info.ShareRate = childNode.InnerText;
-                    }
-
-                    //上传量
-                    node = nodes[infoMaps[YUEnums.PersonInfoMap.UpSize]];
-                    if (node != null)
-                    {
-                        var childNode = node.SelectSingleNode(".//tr[2]/td/text()[last()]");
-                        if (childNode != null)
-                        {
-                            var index = childNode.InnerText.IndexOf(":");
-                            if (index > -1)
-                                info.UpSize = childNode.InnerText.Substring(index + 1).Trim();
-                        }
-                    }
-
-                    //下载量
-                    node = nodes[infoMaps[YUEnums.PersonInfoMap.DownSize]];
-                    if (node != null)
-                    {
-                        var childNode = node.SelectSingleNode(".//tr[2]/td[2]/text()[2]");
-                        if (childNode != null)
-                        {
-                            var index = childNode.InnerText.IndexOf(":");
-                            if (index > -1)
-                                info.DownSize = childNode.InnerText.Substring(index + 1).Trim();
-                        }
-                    }
-
-                    //做种率
-                    node = nodes[infoMaps[YUEnums.PersonInfoMap.SeedRate]];
-                    if (node != null)
-                    {
-                        var childNode = node.SelectSingleNode(".//td/font/text()");
-                        if (childNode != null)
-                            info.SeedRate = childNode.InnerText;
-                    }
-
-                    //做种时间
-                    node = nodes[infoMaps[YUEnums.PersonInfoMap.SeedTimes]];
-                    if (node != null)
-                    {
-                        var childNode = node.SelectSingleNode(".//tr[2]/td/text()[last()]");
-                        if (childNode != null)
-                        {
-                            var index = childNode.InnerText.IndexOf(":");
-                            if (index > -1)
-                                info.SeedTimes = childNode.InnerText.Substring(index + 1).Trim();
-                        }
-                    }
-
-                    //下载时间
-                    node = nodes[infoMaps[YUEnums.PersonInfoMap.DownTimes]];
-                    if (node != null)
-                    {
-                        var childNode = node.SelectSingleNode(".//tr[2]/td[2]/text()[last()]");
-                        if (childNode != null)
-                        {
-                            var index = childNode.InnerText.IndexOf(":");
-                            if (index > -1)
-                                info.DownTimes = childNode.InnerText.Substring(index + 1).Trim();
-                        }
-                    }
-
-                    //等级
-                    node = nodes[infoMaps[YUEnums.PersonInfoMap.Rank]];
-                    if (node != null)
-                    {
-                        var childNode = node.SelectSingleNode("./img");
-                        if (childNode != null && childNode.Attributes.Contains("src"))
-                        {
-                            string srcImg = childNode.Attributes["src"].Value;
-                            foreach (var item in PTSiteConst.CLASSIMGS)
-                            {
-                                if (srcImg.IndexOf(item.Key, StringComparison.OrdinalIgnoreCase) > 0)
-                                {
-                                    info.Rank = item.Value;
-                                    break;
-                                }
-                            }
-                            if (info.Rank.IsNullOrEmptyOrWhiteSpace() && childNode.Attributes.Contains("alt"))
-                            {
-                                info.Rank = childNode.Attributes["alt"].Value;
-                            }
-                        }
-                    }
-
-                    //积分
-                    node = nodes[infoMaps[YUEnums.PersonInfoMap.Bonus]];
-                    if (node != null)
-                    {
-                        info.Bonus = node.InnerText.TryPareValue<double>();
-                    }
-
-                    info.LastSyncDate = DateTime.Now;
-                    info.UserId = User.UserId;
-                    info.SiteId = SiteId;
-                    info.SiteName = Site.Name;
-                    info.Name = User.UserName;
-
-                    #endregion
-
-                }
                 return info;
             }
+        }
+
+
+        /// <summary>
+        /// 设置PersonInfo
+        /// </summary>
+        /// <param name="infoMaps"></param>
+        /// <param name="nodes"></param>
+        /// <param name="info"></param>
+        protected virtual void SetPersonInfo(Dictionary<YUEnums.PersonInfoMap, int> infoMaps, HtmlNodeCollection nodes, PTInfo info)
+        {
+
+            #region Convert
+            //注册日期
+            var node = nodes[infoMaps[YUEnums.PersonInfoMap.RegisterDate]];
+            if (node != null)
+            {
+                node = node.SelectSingleNode(".//span");
+                if (node != null && node.Attributes.Contains("title"))
+                {
+                    info.RegisterDate = node.Attributes["title"].Value.TryPareValue<DateTime>();
+                }
+            }
+
+            //分享率
+            node = nodes[infoMaps[YUEnums.PersonInfoMap.ShareRate]];
+            if (node != null)
+            {
+                var childNode = node.SelectSingleNode(".//td/font/text()");
+                if (childNode != null)
+                    info.ShareRate = childNode.InnerText;
+            }
+
+            //上传量
+            node = nodes[infoMaps[YUEnums.PersonInfoMap.UpSize]];
+            if (node != null)
+            {
+                var childNode = node.SelectSingleNode(".//tr[2]/td/text()[last()]");
+                if (childNode != null)
+                {
+                    var index = childNode.InnerText.IndexOf(":");
+                    if (index > -1)
+                        info.UpSize = childNode.InnerText.Substring(index + 1).Trim();
+                }
+            }
+
+            //下载量
+            node = nodes[infoMaps[YUEnums.PersonInfoMap.DownSize]];
+            if (node != null)
+            {
+                var childNode = node.SelectSingleNode(".//tr[2]/td[2]/text()[2]");
+                if (childNode != null)
+                {
+                    var index = childNode.InnerText.IndexOf(":");
+                    if (index > -1)
+                        info.DownSize = childNode.InnerText.Substring(index + 1).Trim();
+                }
+            }
+
+            //做种率
+            node = nodes[infoMaps[YUEnums.PersonInfoMap.SeedRate]];
+            if (node != null)
+            {
+                var childNode = node.SelectSingleNode(".//td/font/text()");
+                if (childNode != null)
+                    info.SeedRate = childNode.InnerText;
+            }
+
+            //做种时间
+            node = nodes[infoMaps[YUEnums.PersonInfoMap.SeedTimes]];
+            if (node != null)
+            {
+                var childNode = node.SelectSingleNode(".//tr[2]/td/text()[last()]");
+                if (childNode != null)
+                {
+                    var index = childNode.InnerText.IndexOf(":");
+                    if (index > -1)
+                        info.SeedTimes = childNode.InnerText.Substring(index + 1).Trim();
+                }
+            }
+
+            //下载时间
+            node = nodes[infoMaps[YUEnums.PersonInfoMap.DownTimes]];
+            if (node != null)
+            {
+                var childNode = node.SelectSingleNode(".//tr[2]/td[2]/text()[last()]");
+                if (childNode != null)
+                {
+                    var index = childNode.InnerText.IndexOf(":");
+                    if (index > -1)
+                        info.DownTimes = childNode.InnerText.Substring(index + 1).Trim();
+                }
+            }
+
+            //等级
+            node = nodes[infoMaps[YUEnums.PersonInfoMap.Rank]];
+            if (node != null)
+            {
+                var childNode = node.SelectSingleNode("./img");
+                if (childNode != null && childNode.Attributes.Contains("src"))
+                {
+                    string srcImg = childNode.Attributes["src"].Value;
+                    foreach (var item in PTSiteConst.CLASSIMGS)
+                    {
+                        if (srcImg.IndexOf(item.Key, StringComparison.OrdinalIgnoreCase) > 0)
+                        {
+                            info.Rank = item.Value;
+                            break;
+                        }
+                    }
+                    if (info.Rank.IsNullOrEmptyOrWhiteSpace() && childNode.Attributes.Contains("alt"))
+                    {
+                        info.Rank = childNode.Attributes["alt"].Value;
+                    }
+                }
+            }
+
+            //积分
+            node = nodes[infoMaps[YUEnums.PersonInfoMap.Bonus]];
+            if (node != null)
+            {
+                info.Bonus = node.InnerText.TryPareValue<double>();
+            }
+
+            info.LastSyncDate = DateTime.Now;
+            info.UserId = User.UserId;
+            info.SiteId = SiteId;
+            info.SiteName = Site.Name;
+            info.Name = User.UserName;
+
+            #endregion
         }
 
         /// <summary>
@@ -1029,10 +1041,12 @@ namespace YPT.PT
                 {
                     for (int i = 0; i < headNodes.Count; i++)
                     {
-                        var headNode = headNodes[i];
+                        var headNode = headNodes[i].SelectSingleNode("./text()");
+                        if (headNode == null)
+                            continue;
                         foreach (var map in Site.PersonInfoMaps)
                         {
-                            if (map.Value.Contains(headNode.InnerText.Trim()))
+                            if (map.Value.Contains(headNode.InnerText))
                             {
                                 infoMaps[map.Key] = i;
                             }

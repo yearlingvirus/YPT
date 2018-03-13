@@ -91,7 +91,7 @@ namespace YU.Core.DataEntity
         {
             return new Dictionary<YUEnums.PersonInfoMap, string[]>()
             {
-                { YUEnums.PersonInfoMap.Bonus, new string[] {"魔力值", "魔力豆", "积分", "Karma Points", "Bonus", "포인트" }},
+                { YUEnums.PersonInfoMap.Bonus, new string[] {"魔力值", "魔力豆", "积分", "UCoin", "Karma Points", "Bonus", "포인트" }},
                 { YUEnums.PersonInfoMap.RegisterDate, new string[] { "Join date", "加入日期", "注册日期", "가입 날짜" } },
                 { YUEnums.PersonInfoMap.ShareRate, new string[] { "Transfers", "传输", "傳送", "分享率", "Ratio" }},
                 { YUEnums.PersonInfoMap.DownSize, new string[] { "Transfers", "传输", "傳送", "下载量", "Downloaded", "다운로드" }},

@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using YPT.PT;
 using YU.Core;
 using YU.Core.DataEntity;
+using YU.Core.Event;
 using YU.Core.Log;
 using YU.Core.Utils;
 
@@ -20,9 +21,10 @@ namespace YPT.Forms
     {
         public PTUser User { get; set; }
 
-        private bool isWriteCookie = false;
-
-        private string cookie = string.Empty;
+        /// <summary>
+        /// 用户发生变更
+        /// </summary>
+        public event EventHandler<OnUserChangeEventArgs> UserChanged;
 
         public UserFrm(PTUser user)
         {
@@ -50,16 +52,30 @@ namespace YPT.Forms
 
             if (selectSiteId != 0)
                 cmbSite.SelectedValue = selectSiteId;
+
+            var pt = PTFactory.GetPT(User.Site.Id, User) as AbstractPT;
+            if (File.Exists(pt.GetCookieFilePath()))
+                rtbInput.Text = File.ReadAllText(pt.GetCookieFilePath());
         }
 
         private void btnConfirm_Click(object sender, EventArgs e)
         {
-            var pt = PTFactory.GetPT(User.Site.Id, User) as AbstractPT;
-            bool isExistCookie = File.Exists(pt.GetCookieFilePath());
-            //存在Cookie时则不要求输入密码
-            if (Validation(!isExistCookie))
+            //存在Cookie时则不要求输入任何信息
+            if (Validation(rtbInput.Text.IsNullOrEmptyOrWhiteSpace()))
             {
-                Save();
+                var result = Save();
+                if (result)
+                {
+                    if (cbIsContinue.Checked)
+                    {
+                        OnUserChangeEventArgs el = new OnUserChangeEventArgs();
+                        el.User = User;
+                        OnUserChanged(el);
+                        FormUtils.ShowInfoMessage("保存成功，你可以选择其他站点继续添加。");
+                    }
+                    else
+                        this.DialogResult = DialogResult.OK;
+                }
             }
         }
 
@@ -67,35 +83,33 @@ namespace YPT.Forms
         {
             var site = Global.Sites.Where(x => (int)x.Id == (int)cmbSite.SelectedValue).FirstOrDefault();
             if (site != null)
+            {
                 User.Site = site;
+                var pt = PTFactory.GetPT(User.Site.Id, User) as AbstractPT;
+                if (File.Exists(pt.GetCookieFilePath()))
+                    rtbInput.Text = File.ReadAllText(pt.GetCookieFilePath());
+                else
+                    rtbInput.Text = string.Empty;
+            }
         }
 
         private void btnGetCookie_Click(object sender, EventArgs e)
         {
-            if (Validation(false))
+            if (grCookie.Height <= 0)
             {
-                System.Diagnostics.Process.Start(User.Site.Url);
-                System.Threading.Thread.Sleep(2000);
-                SendKeys.SendWait("{F12}");
-                System.Threading.Thread.Sleep(1000);
-                SendKeys.SendWait("{F5}");
-                System.Threading.Thread.Sleep(1000);
-
-                InputFrm frm = new InputFrm();
-                frm.Text = "在此窗口输入浏览器中返回的Cookie";
-                if (frm.ShowDialog() == DialogResult.OK)
-                {
-                    if (!frm.ReturnText.IsNullOrEmptyOrWhiteSpace())
-                    {
-                        cookie = frm.ReturnText;
-                        isWriteCookie = true;
-                        Save();
-                    }
-                }
+                grCookie.Visible = true;
+                grCookie.Height = 180;
+                this.Location = new Point(this.Location.X, this.Location.Y - 90);
             }
+
+            System.Diagnostics.Process.Start("explorer.exe", User.Site.Url);
+            System.Threading.Thread.Sleep(500);
+            SendKeys.SendWait("{F12}");
+            System.Threading.Thread.Sleep(500);
+            SendKeys.SendWait("{F5}");
         }
 
-        private void Save()
+        private bool Save()
         {
             var pt = PTFactory.GetPT(User.Site.Id, User) as AbstractPT;
             try
@@ -103,12 +117,13 @@ namespace YPT.Forms
                 if (AppService.UpdateOrInsertUser(User) <= 0)
                 {
                     FormUtils.ShowErrMessage("很抱歉，由于未知原因保存失败。");
+                    return false;
                 }
                 else
                 {
-                    if (isWriteCookie)
-                        YUUtils.WriteCookiesToDisk(pt.GetCookieFilePath(), cookie);
-                    this.DialogResult = DialogResult.OK;
+                    if (!rtbInput.Text.IsNullOrEmptyOrWhiteSpace())
+                        YUUtils.WriteCookiesToDisk(pt.GetCookieFilePath(), rtbInput.Text);
+                    return true;
                 }
             }
             catch (System.Data.SQLite.SQLiteException ex)
@@ -116,27 +131,31 @@ namespace YPT.Forms
                 string errMsg = ex.GetInnerExceptionMessage();
                 FormUtils.ShowErrMessage(string.Format("保存失败，失败原因：{0}", errMsg));
                 Logger.Error(string.Format("用户[{0}]保存失败。", User.UserName), ex);
+                return false;
             }
         }
 
-        private bool Validation(bool isNeedPwd)
+        private bool Validation(bool isNeed)
         {
             List<string> fields = new List<string>();
             if (cmbSite.SelectedValue.TryPareValue(0) <= 0)
             {
                 fields.Add("[站点]");
             }
-            if (User.Site != null && User.Site.IsLoginByMail && txtMail.Text.IsNullOrEmptyOrWhiteSpace())
+            if (isNeed)
             {
-                fields.Add("[邮箱]");
-            }
-            if (txtUserName.Text.IsNullOrEmptyOrWhiteSpace())
-            {
-                fields.Add("[用户名]");
-            }
-            if (txtPassWord.Text.IsNullOrEmptyOrWhiteSpace() && isNeedPwd)
-            {
-                fields.Add("[密码]");
+                if (User.Site != null && User.Site.IsLoginByMail && txtMail.Text.IsNullOrEmptyOrWhiteSpace())
+                {
+                    fields.Add("[邮箱]");
+                }
+                if (txtUserName.Text.IsNullOrEmptyOrWhiteSpace())
+                {
+                    fields.Add("[用户名]");
+                }
+                if (txtPassWord.Text.IsNullOrEmptyOrWhiteSpace())
+                {
+                    fields.Add("[密码]");
+                }
             }
             if (fields.Count > 0)
             {
@@ -144,6 +163,15 @@ namespace YPT.Forms
                 return false;
             }
             return true;
+        }
+
+        private void OnUserChanged(OnUserChangeEventArgs e)
+        {
+            if (e.User != null)
+            {
+                if (UserChanged != null)
+                    UserChanged.Invoke(this, e);
+            }
         }
     }
 }

@@ -287,35 +287,22 @@ namespace YPT.PT
         }
 
 
-        protected override PTUser UpdateUserWhileChange(string htmlResult, PTUser user)
+        protected override HtmlNode GetUserNode(string htmlResult)
         {
             HtmlDocument htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
             HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//table/tr/td/span/b/a");//跟Xpath一样
-            if (node != null)
-            {
-                var url = HttpUtility.HtmlDecode(node.Attributes["href"].Value);
-                url = string.Join("/", Site.Url, url);
-                user.UserId = url.UrlSearchKey("id").TryPareValue<int>();
-                if (user.UserName != node.InnerText)
-                {
-                    //当用户输入的用户名与获取到的用户名不一致时，取获取的用户名为准。
-                    //修改用户名时，同时还要处理本地的Cookie文件
-                    string cookiePath = GetCookieFilePath();
-                    if (File.Exists(cookiePath))
-                    {
-                        user.UserName = node.InnerText;
-                        string newCookiePath = GetCookieFilePath();
-                        File.Move(cookiePath, newCookiePath);
-                    }
-                }
-            }
-            return user;
+            return node;
         }
+
 
         public override PTInfo GetPersonInfo()
         {
             PTInfo info = new PTInfo();
+
+            if (_cookie == null || _cookie.Count <= 0)
+                throw new Exception(string.Format("{0} 获取Cookie信息失败，请尝试重新登录。", Site.Name));
+
             if (User.UserId == 0)
             {
                 string htmlResult = HttpUtils.GetDataGetHtml(Site.Url, _cookie);
@@ -436,6 +423,8 @@ namespace YPT.PT
                 return info;
             }
         }
+
+        
 
     }
 }

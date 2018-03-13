@@ -26,6 +26,16 @@ namespace YU.Core.Utils
         }
 
         /// <summary>
+        /// 显示提示
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <param name="title"></param>
+        public static void ShowInfoMessage(string msg, string title = "提示")
+        {
+            MessageBox.Show(msg, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        /// <summary>
         /// 获取Url中的Image
         /// </summary>
         /// <param name="imgUrl"></param>

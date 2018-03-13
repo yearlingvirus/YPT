@@ -180,5 +180,130 @@ namespace YPT.PT
             torrent.SnatchedNumber = nodes[torrentMaps[YUEnums.TorrentMap.SnatchedNumber]].InnerText.TryPareValue<int>();
             torrent.UpLoader = "--";
         }
+
+
+        protected override void SetPersonInfo(Dictionary<YUEnums.PersonInfoMap, int> infoMaps, HtmlNodeCollection nodes, PTInfo info)
+        {
+
+            #region Convert
+            //注册日期
+            var node = nodes[infoMaps[YUEnums.PersonInfoMap.RegisterDate]];
+            if (node != null)
+            {
+                var childNode = node.SelectSingleNode(".//time");
+                if (childNode != null)
+                    info.RegisterDate = childNode.InnerText.TryPareValue<DateTime>();
+            }
+
+            //分享率
+            node = nodes[infoMaps[YUEnums.PersonInfoMap.ShareRate]];
+            if (node != null)
+            {
+                var childNode = node.SelectSingleNode(".//td/font/text()");
+                if (childNode != null)
+                    info.ShareRate = childNode.InnerText;
+            }
+
+            //上传量
+            node = nodes[infoMaps[YUEnums.PersonInfoMap.UpSize]];
+            if (node != null)
+            {
+                var childNode = node.SelectSingleNode(".//tr[2]/td/text()[last()]");
+                if (childNode != null)
+                {
+                    var index = childNode.InnerText.IndexOf(":");
+                    if (index > -1)
+                        info.UpSize = childNode.InnerText.Substring(index + 1).Trim();
+                }
+            }
+
+            //下载量
+            node = nodes[infoMaps[YUEnums.PersonInfoMap.DownSize]];
+            if (node != null)
+            {
+                var childNode = node.SelectSingleNode(".//tr[2]/td[2]/text()[2]");
+                if (childNode != null)
+                {
+                    var index = childNode.InnerText.IndexOf(":");
+                    if (index > -1)
+                        info.DownSize = childNode.InnerText.Substring(index + 1).Trim();
+                }
+            }
+
+            //做种率
+            node = nodes[infoMaps[YUEnums.PersonInfoMap.SeedRate]];
+            if (node != null)
+            {
+                var childNode = node.SelectSingleNode(".//td/font/text()");
+                if (childNode != null)
+                    info.SeedRate = childNode.InnerText;
+            }
+
+            //做种时间
+            node = nodes[infoMaps[YUEnums.PersonInfoMap.SeedTimes]];
+            if (node != null)
+            {
+                var childNode = node.SelectSingleNode(".//tr[2]/td/text()[last()]");
+                if (childNode != null)
+                {
+                    var index = childNode.InnerText.IndexOf(":");
+                    if (index > -1)
+                        info.SeedTimes = childNode.InnerText.Substring(index + 1).Trim();
+                }
+            }
+
+            //下载时间
+            node = nodes[infoMaps[YUEnums.PersonInfoMap.DownTimes]];
+            if (node != null)
+            {
+                var childNode = node.SelectSingleNode(".//tr[2]/td[2]/text()[last()]");
+                if (childNode != null)
+                {
+                    var index = childNode.InnerText.IndexOf(":");
+                    if (index > -1)
+                        info.DownTimes = childNode.InnerText.Substring(index + 1).Trim();
+                }
+            }
+
+            //等级
+            node = nodes[infoMaps[YUEnums.PersonInfoMap.Rank]];
+            if (node != null)
+            {
+                var childNode = node.SelectSingleNode("./img");
+                if (childNode != null && childNode.Attributes.Contains("src"))
+                {
+                    string srcImg = childNode.Attributes["src"].Value;
+                    foreach (var item in PTSiteConst.CLASSIMGS)
+                    {
+                        if (srcImg.IndexOf(item.Key, StringComparison.OrdinalIgnoreCase) > 0)
+                        {
+                            info.Rank = item.Value;
+                            break;
+                        }
+                    }
+                    if (info.Rank.IsNullOrEmptyOrWhiteSpace() && childNode.Attributes.Contains("alt"))
+                    {
+                        info.Rank = childNode.Attributes["alt"].Value;
+                    }
+                }
+            }
+
+            //积分
+            node = nodes[infoMaps[YUEnums.PersonInfoMap.Bonus]];
+            if (node != null)
+            {
+                var childNode = node.SelectSingleNode("./span[contains(concat(' ', normalize-space(@class), ' '), ' ucoin-notation ')]");
+                if (childNode != null && childNode.Attributes.Contains("title"))
+                    info.Bonus = childNode.Attributes["title"].Value.TryPareValue<double>();
+            }
+
+            info.LastSyncDate = DateTime.Now;
+            info.UserId = User.UserId;
+            info.SiteId = SiteId;
+            info.SiteName = Site.Name;
+            info.Name = User.UserName;
+
+            #endregion
+        }
     }
 }

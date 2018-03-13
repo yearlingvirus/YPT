@@ -38,11 +38,11 @@
             this.lblSignTime = new System.Windows.Forms.Label();
             this.dtpSignTime = new System.Windows.Forms.DateTimePicker();
             this.tabOther = new System.Windows.Forms.TabPage();
+            this.lblSearchTimespan = new System.Windows.Forms.Label();
+            this.nudSearchTimeSpan = new System.Windows.Forms.NumericUpDown();
             this.cbIsMiniWhenClose = new System.Windows.Forms.CheckBox();
             this.cbIsSyncTiming = new System.Windows.Forms.CheckBox();
             this.cbIsEnablePostFileName = new System.Windows.Forms.CheckBox();
-            this.nudSearchTimeSpan = new System.Windows.Forms.NumericUpDown();
-            this.lblSearchTimespan = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabUser.SuspendLayout();
             this.tabSign.SuspendLayout();
@@ -159,6 +159,38 @@
             this.tabOther.Text = "其他";
             this.tabOther.UseVisualStyleBackColor = true;
             // 
+            // lblSearchTimespan
+            // 
+            this.lblSearchTimespan.AutoSize = true;
+            this.lblSearchTimespan.Location = new System.Drawing.Point(36, 145);
+            this.lblSearchTimespan.Name = "lblSearchTimespan";
+            this.lblSearchTimespan.Size = new System.Drawing.Size(117, 20);
+            this.lblSearchTimespan.TabIndex = 7;
+            this.lblSearchTimespan.Text = "定时搜索间隔(秒)";
+            // 
+            // nudSearchTimeSpan
+            // 
+            this.nudSearchTimeSpan.Location = new System.Drawing.Point(159, 142);
+            this.nudSearchTimeSpan.Maximum = new decimal(new int[] {
+            86400,
+            0,
+            0,
+            0});
+            this.nudSearchTimeSpan.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudSearchTimeSpan.Name = "nudSearchTimeSpan";
+            this.nudSearchTimeSpan.Size = new System.Drawing.Size(120, 26);
+            this.nudSearchTimeSpan.TabIndex = 6;
+            this.nudSearchTimeSpan.ThousandsSeparator = true;
+            this.nudSearchTimeSpan.Value = new decimal(new int[] {
+            300,
+            0,
+            0,
+            0});
+            // 
             // cbIsMiniWhenClose
             // 
             this.cbIsMiniWhenClose.AutoSize = true;
@@ -188,38 +220,6 @@
             this.cbIsEnablePostFileName.TabIndex = 0;
             this.cbIsEnablePostFileName.Text = "启用请求服务器下载文件名";
             this.cbIsEnablePostFileName.UseVisualStyleBackColor = true;
-            // 
-            // nudSearchTimeSpan
-            // 
-            this.nudSearchTimeSpan.Location = new System.Drawing.Point(159, 142);
-            this.nudSearchTimeSpan.Maximum = new decimal(new int[] {
-            86400,
-            0,
-            0,
-            0});
-            this.nudSearchTimeSpan.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudSearchTimeSpan.Name = "nudSearchTimeSpan";
-            this.nudSearchTimeSpan.Size = new System.Drawing.Size(120, 26);
-            this.nudSearchTimeSpan.TabIndex = 6;
-            this.nudSearchTimeSpan.ThousandsSeparator = true;
-            this.nudSearchTimeSpan.Value = new decimal(new int[] {
-            300,
-            0,
-            0,
-            0});
-            // 
-            // lblSearchTimespan
-            // 
-            this.lblSearchTimespan.AutoSize = true;
-            this.lblSearchTimespan.Location = new System.Drawing.Point(36, 145);
-            this.lblSearchTimespan.Name = "lblSearchTimespan";
-            this.lblSearchTimespan.Size = new System.Drawing.Size(117, 20);
-            this.lblSearchTimespan.TabIndex = 7;
-            this.lblSearchTimespan.Text = "定时搜索间隔(秒)";
             // 
             // SettingFrm
             // 

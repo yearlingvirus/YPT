@@ -60,6 +60,8 @@ namespace YPT
 
         private Dictionary<Control, KeyValuePair<string, string>> SettingDict = new Dictionary<Control, KeyValuePair<string, string>>();
 
+        private bool IsNeedRefreshInfo { get; set; }
+
         #endregion
 
         public MainFrm()
@@ -262,10 +264,13 @@ namespace YPT
         private void 设置ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SettingFrm frm = new SettingFrm(this);
+            IsNeedRefreshInfo = false;
             frm.SignChanged += Frm_SignChanged;
             frm.UserChanged += Frm_UserChanged;
             frm.SyncChanged += Frm_SyncChanged;
             frm.ShowDialog();
+            if (IsNeedRefreshInfo)
+                RefreshPersonInfo();
         }
 
         private void Frm_SyncChanged(object sender, EventArgs e)
@@ -281,7 +286,7 @@ namespace YPT
         private void Frm_UserChanged(object sender, OnUserChangeEventArgs e)
         {
             InitTorrentForum();
-            RefreshPersonInfo();
+            IsNeedRefreshInfo = true;
         }
 
         private void 登录ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1012,6 +1017,7 @@ namespace YPT
                 if (infoDict == null)
                     infoDict = new Dictionary<YUEnums.PTEnum, KeyValuePair<bool, PTInfo>>();
                 List<KeyValuePair<string, SQLiteParameter[]>> sqlList = new List<KeyValuePair<string, SQLiteParameter[]>>();
+                //Global.Users = Global.Users.Where(x => x.Site.Id == YUEnums.PTEnum.MTeam).ToList();
                 Task task = new Task(() =>
                 {
                     Parallel.ForEach(Global.Users, (user, state, i) =>
