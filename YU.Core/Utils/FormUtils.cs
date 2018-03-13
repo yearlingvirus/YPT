@@ -30,11 +30,13 @@ namespace YU.Core.Utils
         /// </summary>
         /// <param name="imgUrl"></param>
         /// <returns></returns>
-        public static Image ImageFromWebTest(string imgUrl)
+        public static Image ImageFromWebTest(string imgUrl, CookieContainer cookie = null)
         {
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(imgUrl);
+                if (cookie != null)
+                    request.CookieContainer = cookie;
                 using (WebResponse response = request.GetResponse())
                 {
                     Image img = Image.FromStream(response.GetResponseStream());

@@ -218,8 +218,8 @@ namespace YU.Core.Utils
                 }
                 else
                 {
-                    httpWebRequest.Headers.Add(HttpRequestHeader.Cookie, YUUtils.GetCookieFromContainer(cookie, new Uri(url)));
-                    //httpWebRequest.CookieContainer = cookie;
+                    //httpWebRequest.Headers.Add(HttpRequestHeader.Cookie, YUUtils.GetCookieFromContainer(cookie, new Uri(url)));
+                    httpWebRequest.CookieContainer = cookie;
                 }
 
                 HttpWebResponse webRespon = (HttpWebResponse)httpWebRequest.GetResponse();
@@ -244,5 +244,14 @@ namespace YU.Core.Utils
             }
         }
 
+        /// <summary>
+        /// 是否异常请求
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        public static bool IsErrorRequest(string result)
+        {
+            return result.Contains("Network error");
+        }
     }
 }

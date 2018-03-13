@@ -167,6 +167,7 @@
     <Compile Include="PT\OURBITS.cs" />
     <Compile Include="PT\PTFactory.cs" />
     <Compile Include="PT\TTG.cs" />
+    <Compile Include="PT\U2.cs" />
     <EmbeddedResource Include="Forms\AboutFrm.resx">
       <DependentUpon>AboutFrm.cs</DependentUpon>
     </EmbeddedResource>
@@ -246,6 +247,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resource\icon\ico_30.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resource\icon\other.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resource\icon\YPT.ico">

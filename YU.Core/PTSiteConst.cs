@@ -20,6 +20,7 @@ namespace YU.Core
             {YUEnums.PromotionType.FREE, new string[] {"pro_free", "free", "ico_free" } },
             {YUEnums.PromotionType.TWOUP, new string[] { "pro_2up", "twoup", "twoup_bg" } },
             {YUEnums.PromotionType.THIRTYPERDOWN, new string[] { "pro_30pctdown", "thirtypercent", "ico_30" } },
+            {YUEnums.PromotionType.OTHER, new string[] { "pro_custom" } },
         };
 
         /// <summary>
@@ -32,6 +33,7 @@ namespace YU.Core
             { YUEnums.PromotionType.HALF2X, "Resource/icon/2up50down.png"},
             { YUEnums.PromotionType.HALFDOWN, "Resource/icon/halfdown.gif"},
             //{ YUEnums.PromotionType.NORMAL, "Resource/icon/normal.png"},
+            { YUEnums.PromotionType.OTHER, "Resource/icon/other.png"},
             { YUEnums.PromotionType.THIRTYPERDOWN, "Resource/icon/ico_30.gif"},
             { YUEnums.PromotionType.TWOUP, "Resource/icon/2up.gif"},
         };
@@ -55,7 +57,9 @@ namespace YU.Core
             { "Retiree", "Retiree"},
             { "Uploader", "Uploader"},
             { "Moderator", "Moderator"},
-            { "Administrator", "Administrator"},
+            { "Admin", "Administrator"},
+            { "Sysop", "Sysop"},
+            { "Staff", "Staff Leader"},
         };
 
         /// <summary>

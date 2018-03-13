@@ -114,6 +114,9 @@ namespace YU.Core
             [Description("NORMAL")]
             NORMAL,
 
+            [Description("OTHER")]
+            OTHER,
+
             /// <summary>
             /// 两倍上传
             /// </summary>

@@ -33,6 +33,7 @@ namespace YPT.PT
                 _mapServer.Add(YUEnums.PTEnum.NYPT, "YPT.PT.NY,YPT");
                 _mapServer.Add(YUEnums.PTEnum.HDHome, "YPT.PT.HDHOME,YPT");
                 _mapServer.Add(YUEnums.PTEnum.HDSky, "YPT.PT.HDSKY,YPT");
+                _mapServer.Add(YUEnums.PTEnum.U2, "YPT.PT.U2,YPT");
                 notRegistered = false;
             }
 

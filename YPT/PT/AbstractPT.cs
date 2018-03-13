@@ -120,12 +120,14 @@ namespace YPT.PT
 
         #region 登录
 
-        public string Login()
+        public virtual string Login()
         {
             Tuple<string, HttpWebRequest, HttpWebResponse> result = null;
             if (_cookie != null && _cookie.Count > 0)
             {
                 result = HttpUtils.GetData(Site.Url, _cookie);
+                if (HttpUtils.IsErrorRequest(result.Item1))
+                    return result.Item1;
                 if (IsLoginSuccess(result.Item1))
                 {
                     User.Id = GetUserId(result.Item1);
@@ -134,6 +136,9 @@ namespace YPT.PT
             }
 
             result = DoLoginPostWithOutCookie(result);
+            if (HttpUtils.IsErrorRequest(result.Item1))
+                return result.Item1;
+
             string htmlResult = result.Item1;
             if (IsLoginSuccess(htmlResult))
             {
@@ -269,7 +274,7 @@ namespace YPT.PT
 
         protected bool IsLoginSuccess(string htmlResult)
         {
-            if (!htmlResult.Contains("登录失败") && htmlResult.Contains(User.UserName) && (htmlResult.Contains("欢迎回来") || htmlResult.Contains("Welcome") || htmlResult.Contains("歡迎回來")))
+            if (!htmlResult.Contains("登录失败") && (htmlResult.Contains("欢迎回来") || htmlResult.Contains("Welcome") || htmlResult.Contains("歡迎回來")))
                 return true;
             else
                 return false;
@@ -394,7 +399,7 @@ namespace YPT.PT
 
                         SetTorrentPromotionType(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
 
-                        if (torrent.PromotionType == YUEnums.PromotionType.FREE || torrent.PromotionType == YUEnums.PromotionType.FREE2UP)
+                        if (torrent.PromotionType == YUEnums.PromotionType.FREE || torrent.PromotionType == YUEnums.PromotionType.FREE2UP || torrent.PromotionType == YUEnums.PromotionType.OTHER)
                             SetTorrentFreeTime(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
 
                         SetTorrentHR(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
@@ -481,7 +486,6 @@ namespace YPT.PT
                 return true;
             }
             return false;
-
         }
 
         /// <summary>

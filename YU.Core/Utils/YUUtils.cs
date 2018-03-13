@@ -39,6 +39,20 @@ namespace YU.Core.Utils
                         return size * Math.Pow(1024, i + 1);
                 }
             }
+
+            units = new string[] { "KiB", "MiB", "GiB", "TiB", "PiB" };
+            for (int i = 0; i < units.Length; i++)
+            {
+                if (sizeString.IndexOf(units[i], StringComparison.OrdinalIgnoreCase) > 0)
+                {
+                    var index = sizeString.LastIndexOf(units[i], StringComparison.OrdinalIgnoreCase);
+                    var size = sizeString.Substring(0, index).Trim().TryPareValue<double>();
+                    if (size == 0)
+                        return 0;
+                    else
+                        return size * Math.Pow(1024, i + 1);
+                }
+            }
             throw new InvalidCastException(sizeString + "类型转换失败");
         }
 
@@ -98,6 +112,8 @@ namespace YU.Core.Utils
         /// <returns></returns>
         public static string GetCookieFromContainer(CookieContainer container, Uri uri)
         {
+            if (container == null)
+                return string.Empty;
             List<string> cookieStr = new List<string>();
             CookieCollection cookies = container.GetCookies(uri);
             if (cookies != null && cookies.Count > 0)

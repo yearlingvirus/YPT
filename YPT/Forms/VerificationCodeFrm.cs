@@ -29,7 +29,7 @@ namespace YPT.Forms
             if (El != null)
             {
                 if (!El.VerificationCodeUrl.IsNullOrEmptyOrWhiteSpace())
-                    picCode.Image = FormUtils.ImageFromWebTest(El.VerificationCodeUrl);
+                    picCode.Image = FormUtils.ImageFromWebTest(El.VerificationCodeUrl, El.Cookie);
                 if (El.Site != null)
                     this.Text = El.Site.Name + "验证码";
             }

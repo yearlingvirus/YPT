@@ -69,15 +69,14 @@ namespace YU.Core.DataEntity
 
         public YUEnums.PTEnum Id { get; set; }
 
-
         private Dictionary<YUEnums.TorrentMap, string[]> GetDefaultTorrentMaps()
         {
             return new Dictionary<YUEnums.TorrentMap, string[]>()
             {
-                { YUEnums.TorrentMap.ResourceType, new string[] { "类型", "类别" , "類型", "Cat.","Type" } },
+                { YUEnums.TorrentMap.ResourceType, new string[] { "类型", "类别" , "類型", "分类", "Cat.","Type" } },
                 { YUEnums.TorrentMap.Detail, new string[] {"标题", "標題", "Name", "名称"} },
                 { YUEnums.TorrentMap.PromotionType, new string[] {"标题", "標題", "Name", "名称"} },
-                { YUEnums.TorrentMap.TimeAlive,  new string[] { "time", "存活时间", "存活時間", "TTL" } },
+                { YUEnums.TorrentMap.TimeAlive,  new string[] { "time", "存活时间", "存活時間", "生存时间", "TTL" } },
                 { YUEnums.TorrentMap.Size,  new string[] { "size", "大小" } },
                 { YUEnums.TorrentMap.SeederNumber,  new string[] { "seeders", "做种", "种子数", "種子數"} },
                 { YUEnums.TorrentMap.LeecherNumber, new string[] { "leechers", "下载", "下載數"} },
@@ -202,6 +201,19 @@ namespace YU.Core.DataEntity
                     new PTForum() { SiteId = YUEnums.PTEnum.KeepFrds, Name = "KeepFrds", SearchUrl = "https://pt.keepfrds.com/torrents.php", Visable = true, Order = 1 },
                 },
                 Order = (int)YUEnums.PTEnum.KeepFrds,
+            },
+            new PTSite() {
+                Url = "https://u2.dmhy.org",
+                Name = "U2",
+                Id = YUEnums.PTEnum.U2,
+                IsEnableVerificationCode = true,
+                LoginUrl =  "https://u2.dmhy.org/takelogin.php",
+                InfoUrl = "https://u2.dmhy.org/userdetails.php?id={0}",
+                Forums = new List<PTForum>()
+                {
+                    new PTForum() { SiteId = YUEnums.PTEnum.U2, Name = "U2", SearchUrl = "https://u2.dmhy.org/torrents.php", Visable = true, Order = 1 },
+                },
+                Order = (int)YUEnums.PTEnum.U2,
             },
             new PTSite() {
                 Url = "https://hdhome.org/",
