@@ -10,13 +10,17 @@ namespace YU.Core.DataEntity
     [Serializable]
     public class PTUser
     {
+        public string Fid { get; set; }
+
         public PTSite Site { get; set; }
 
-        public int Id { get; set; }
+        public int UserId { get; set; }
 
         public string UserName { get; set; }
 
         public string PassWord { get; set; }
+
+        public string Mail { get; set; }
 
         public int SecurityQuestionOrder { get; set; }
 

@@ -12,6 +12,8 @@ namespace YU.Core.DataEntity
     [Serializable]
     public class PTInfo
     {
+        public string Fid { get; set; }
+
         /// <summary>
         /// 站点
         /// </summary>
@@ -26,7 +28,7 @@ namespace YU.Core.DataEntity
         /// <summary>
         /// Id
         /// </summary>
-        public int Id { get; set; }
+        public int UserId { get; set; }
 
         /// <summary>
         /// URL
@@ -123,7 +125,7 @@ namespace YU.Core.DataEntity
         public PTInfoGridEntity ToGridEntity()
         {
             PTInfoGridEntity entity = new PTInfoGridEntity();
-            entity.Id = this.Id;
+            entity.Id = this.UserId;
             entity.Url = this.Url;
             entity.Bonus = this.Bonus;
             entity.DownSize = this.DownSize.IsNullOrEmptyOrWhiteSpace() ? "--" : this.DownSize;

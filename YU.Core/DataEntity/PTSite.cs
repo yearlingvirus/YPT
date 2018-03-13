@@ -27,6 +27,8 @@ namespace YU.Core.DataEntity
 
         public bool isEnableTwo_StepVerification { get; set; }
 
+        public bool IsLoginByMail { get; set; }
+
         public int Order { get; set; }
 
         public List<PTForum> Forums { get; set; }
@@ -206,6 +208,7 @@ namespace YU.Core.DataEntity
                 Url = "https://u2.dmhy.org",
                 Name = "U2",
                 Id = YUEnums.PTEnum.U2,
+                IsLoginByMail = true,
                 IsEnableVerificationCode = true,
                 LoginUrl =  "https://u2.dmhy.org/takelogin.php",
                 InfoUrl = "https://u2.dmhy.org/userdetails.php?id={0}",

@@ -33,7 +33,10 @@ namespace YPT.Forms
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserFrm));
             this.backPanel = new System.Windows.Forms.Panel();
+            this.btnGetCookie = new System.Windows.Forms.Button();
             this.grUserInfo = new System.Windows.Forms.GroupBox();
+            this.lblMail = new System.Windows.Forms.Label();
+            this.txtMail = new System.Windows.Forms.TextBox();
             this.lblSite = new System.Windows.Forms.Label();
             this.cmbSite = new YU.Core.YUComponent.YUComboBox(this.components);
             this.lblUserName = new System.Windows.Forms.Label();
@@ -48,7 +51,6 @@ namespace YPT.Forms
             this.txtAnswer = new System.Windows.Forms.TextBox();
             this.lblSecurityQuestion = new System.Windows.Forms.Label();
             this.btnConfirm = new System.Windows.Forms.Button();
-            this.btnGetCookie = new System.Windows.Forms.Button();
             this.backPanel.SuspendLayout();
             this.grUserInfo.SuspendLayout();
             this.grOther.SuspendLayout();
@@ -69,8 +71,20 @@ namespace YPT.Forms
             this.backPanel.Size = new System.Drawing.Size(422, 467);
             this.backPanel.TabIndex = 1;
             // 
+            // btnGetCookie
+            // 
+            this.btnGetCookie.Location = new System.Drawing.Point(142, 408);
+            this.btnGetCookie.Name = "btnGetCookie";
+            this.btnGetCookie.Size = new System.Drawing.Size(256, 30);
+            this.btnGetCookie.TabIndex = 10;
+            this.btnGetCookie.Text = "不想输入密码，点这里获取Cookie";
+            this.btnGetCookie.UseVisualStyleBackColor = true;
+            this.btnGetCookie.Click += new System.EventHandler(this.btnGetCookie_Click);
+            // 
             // grUserInfo
             // 
+            this.grUserInfo.Controls.Add(this.lblMail);
+            this.grUserInfo.Controls.Add(this.txtMail);
             this.grUserInfo.Controls.Add(this.lblSite);
             this.grUserInfo.Controls.Add(this.cmbSite);
             this.grUserInfo.Controls.Add(this.lblUserName);
@@ -84,10 +98,26 @@ namespace YPT.Forms
             this.grUserInfo.TabStop = false;
             this.grUserInfo.Text = "用户信息";
             // 
+            // lblMail
+            // 
+            this.lblMail.AutoSize = true;
+            this.lblMail.Location = new System.Drawing.Point(28, 70);
+            this.lblMail.Name = "lblMail";
+            this.lblMail.Size = new System.Drawing.Size(37, 20);
+            this.lblMail.TabIndex = 6;
+            this.lblMail.Text = "邮箱";
+            // 
+            // txtMail
+            // 
+            this.txtMail.Location = new System.Drawing.Point(93, 67);
+            this.txtMail.Name = "txtMail";
+            this.txtMail.Size = new System.Drawing.Size(263, 26);
+            this.txtMail.TabIndex = 3;
+            // 
             // lblSite
             // 
             this.lblSite.AutoSize = true;
-            this.lblSite.Location = new System.Drawing.Point(25, 33);
+            this.lblSite.Location = new System.Drawing.Point(25, 31);
             this.lblSite.Name = "lblSite";
             this.lblSite.Size = new System.Drawing.Size(40, 20);
             this.lblSite.TabIndex = 5;
@@ -103,7 +133,7 @@ namespace YPT.Forms
             "CHDBITS",
             "OURBITS",
             "KEEPFRDS"});
-            this.cmbSite.Location = new System.Drawing.Point(93, 29);
+            this.cmbSite.Location = new System.Drawing.Point(93, 27);
             this.cmbSite.Name = "cmbSite";
             this.cmbSite.Size = new System.Drawing.Size(263, 28);
             this.cmbSite.TabIndex = 0;
@@ -112,7 +142,7 @@ namespace YPT.Forms
             // lblUserName
             // 
             this.lblUserName.AutoSize = true;
-            this.lblUserName.Location = new System.Drawing.Point(14, 83);
+            this.lblUserName.Location = new System.Drawing.Point(14, 106);
             this.lblUserName.Name = "lblUserName";
             this.lblUserName.Size = new System.Drawing.Size(51, 20);
             this.lblUserName.TabIndex = 1;
@@ -121,7 +151,7 @@ namespace YPT.Forms
             // lblPassWord
             // 
             this.lblPassWord.AutoSize = true;
-            this.lblPassWord.Location = new System.Drawing.Point(28, 134);
+            this.lblPassWord.Location = new System.Drawing.Point(28, 144);
             this.lblPassWord.Name = "lblPassWord";
             this.lblPassWord.Size = new System.Drawing.Size(37, 20);
             this.lblPassWord.TabIndex = 2;
@@ -129,18 +159,18 @@ namespace YPT.Forms
             // 
             // txtPassWord
             // 
-            this.txtPassWord.Location = new System.Drawing.Point(93, 131);
+            this.txtPassWord.Location = new System.Drawing.Point(93, 141);
             this.txtPassWord.Name = "txtPassWord";
             this.txtPassWord.PasswordChar = '●';
             this.txtPassWord.Size = new System.Drawing.Size(263, 26);
-            this.txtPassWord.TabIndex = 4;
+            this.txtPassWord.TabIndex = 5;
             // 
             // txtUserName
             // 
-            this.txtUserName.Location = new System.Drawing.Point(93, 80);
+            this.txtUserName.Location = new System.Drawing.Point(93, 103);
             this.txtUserName.Name = "txtUserName";
             this.txtUserName.Size = new System.Drawing.Size(263, 26);
-            this.txtUserName.TabIndex = 3;
+            this.txtUserName.TabIndex = 4;
             // 
             // grOther
             // 
@@ -182,7 +212,7 @@ namespace YPT.Forms
             -2147483648});
             this.nudOrder.Name = "nudOrder";
             this.nudOrder.Size = new System.Drawing.Size(139, 26);
-            this.nudOrder.TabIndex = 12;
+            this.nudOrder.TabIndex = 7;
             // 
             // cbTwo_StepVerification
             // 
@@ -190,7 +220,7 @@ namespace YPT.Forms
             this.cbTwo_StepVerification.Location = new System.Drawing.Point(103, 142);
             this.cbTwo_StepVerification.Name = "cbTwo_StepVerification";
             this.cbTwo_StepVerification.Size = new System.Drawing.Size(112, 24);
-            this.cbTwo_StepVerification.TabIndex = 11;
+            this.cbTwo_StepVerification.TabIndex = 9;
             this.cbTwo_StepVerification.Text = "启用两步验证";
             this.cbTwo_StepVerification.UseVisualStyleBackColor = true;
             // 
@@ -208,7 +238,7 @@ namespace YPT.Forms
             this.txtAnswer.Location = new System.Drawing.Point(103, 97);
             this.txtAnswer.Name = "txtAnswer";
             this.txtAnswer.Size = new System.Drawing.Size(263, 26);
-            this.txtAnswer.TabIndex = 10;
+            this.txtAnswer.TabIndex = 8;
             // 
             // lblSecurityQuestion
             // 
@@ -228,16 +258,6 @@ namespace YPT.Forms
             this.btnConfirm.Text = "确定";
             this.btnConfirm.UseVisualStyleBackColor = true;
             this.btnConfirm.Click += new System.EventHandler(this.btnConfirm_Click);
-            // 
-            // btnGetCookie
-            // 
-            this.btnGetCookie.Location = new System.Drawing.Point(142, 408);
-            this.btnGetCookie.Name = "btnGetCookie";
-            this.btnGetCookie.Size = new System.Drawing.Size(256, 30);
-            this.btnGetCookie.TabIndex = 13;
-            this.btnGetCookie.Text = "不想输入密码，点这里获取Cookie";
-            this.btnGetCookie.UseVisualStyleBackColor = true;
-            this.btnGetCookie.Click += new System.EventHandler(this.btnGetCookie_Click);
             // 
             // UserFrm
             // 
@@ -284,5 +304,7 @@ namespace YPT.Forms
         private System.Windows.Forms.NumericUpDown nudOrder;
         private System.Windows.Forms.Label lblTip;
         private System.Windows.Forms.Button btnGetCookie;
+        private System.Windows.Forms.Label lblMail;
+        private System.Windows.Forms.TextBox txtMail;
     }
 }

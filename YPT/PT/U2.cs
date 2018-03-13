@@ -39,7 +39,7 @@ namespace YPT.PT
                     return result.Item1;
                 if (IsLoginSuccess(result.Item1))
                 {
-                    User.Id = GetUserId(result.Item1);
+                    UpdateUserWhileChange(result.Item1, User);
                     return "登录成功。";
                 }
             }
@@ -59,7 +59,7 @@ namespace YPT.PT
                     if (IsLoginSuccess(htmlResult))
                     {
                         _cookie = result.Item2.CookieContainer;
-                        User.Id = GetUserId(result.Item1);
+                        UpdateUserWhileChange(result.Item1, User);
                         SetLocalCookie(_cookie);
                         return "登录成功。";
                     }
@@ -101,7 +101,9 @@ namespace YPT.PT
             if (checkCodeKey.IsNullOrEmptyOrWhiteSpace())
                 return new Tuple<string, HttpWebRequest, HttpWebResponse>("无法获取到验证码，登录失败，请稍后重试。", null, null);
 
-            string postData = string.Format("login_type=email&login_ajax=1&username={0}&password={1}&captcha={2}&ssl=yes", HttpUtility.UrlEncode(User.UserName), HttpUtility.UrlEncode(User.PassWord), checkCodeKey);
+            //if (Site.IsLoginByMail)
+            //U2是否有使用用户名登录的接口?
+            string postData = string.Format("login_type=email&login_ajax=1&username={0}&password={1}&captcha={2}&ssl=yes", HttpUtility.UrlEncode(User.Mail), HttpUtility.UrlEncode(User.PassWord), checkCodeKey);
             return HttpUtils.PostData(Site.LoginUrl, postData, _cookie);
         }
 

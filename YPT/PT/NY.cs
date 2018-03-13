@@ -7,6 +7,7 @@ using YU.Core;
 using YU.Core.DataEntity;
 using System.Web;
 using YU.Core.Utils;
+using System.IO;
 
 namespace YPT.PT
 {
@@ -29,9 +30,9 @@ namespace YPT.PT
             return htmlDocument.DocumentNode.SelectNodes("//*[@id=\"form_torrent\"]//tr");
         }
 
-        protected override int GetUserId(string htmlResult)
+
+        protected override PTUser UpdateUserWhileChange(string htmlResult, PTUser user)
         {
-            int id = 0;
             HtmlDocument htmlDocument = new HtmlDocument();
             htmlDocument.OptionOutputAsXml = false;
             htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
@@ -40,9 +41,21 @@ namespace YPT.PT
             {
                 var url = HttpUtility.HtmlDecode(node.Attributes["href"].Value);
                 url = string.Join("/", Site.Url, url);
-                id = url.UrlSearchKey("id").TryPareValue<int>();
+                user.UserId = url.UrlSearchKey("id").TryPareValue<int>();
+                if (user.UserName != node.InnerText)
+                {
+                    //当用户输入的用户名与获取到的用户名不一致时，取获取的用户名为准。
+                    //修改用户名时，同时还要处理本地的Cookie文件
+                    string cookiePath = GetCookieFilePath();
+                    if (File.Exists(cookiePath))
+                    {
+                        user.UserName = node.InnerText;
+                        string newCookiePath = GetCookieFilePath();
+                        File.Move(cookiePath, newCookiePath);
+                    }
+                }
             }
-            return id;
+            return user;
         }
     }
 }

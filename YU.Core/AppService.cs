@@ -94,14 +94,14 @@ namespace YU.Core
             if (!DBUtils.ExistTable("USER"))
             {
                 //User表
-                string sql = "CREATE TABLE USER (PTSITEID INTEGER,USERID INTEGER,USERNAME TEXT,PASSWORD TEXT,SECURITYQUESTIONORDER INTEGER,SECUITYANSWER TEXT,ISENABLETWO_STEPVERIFICATION INTEGER)";
+                string sql = "CREATE TABLE USER (FID TEXT,PTSITEID INTEGER,USERID INTEGER,USERNAME TEXT,MAIL TEXT,PASSWORD TEXT,SECURITYQUESTIONORDER INTEGER,SECUITYANSWER TEXT,ISENABLETWO_STEPVERIFICATION INTEGER)";
                 sqlList.Add(new KeyValuePair<string, SQLiteParameter[]>(sql, null));
             }
 
             if (!DBUtils.ExistTable("PERSONINFO"))
             {
                 //PersonInfo表
-                string sql = @"CREATE TABLE PERSONINFO (PTSITEID INTEGER,SITENAME TEXT,ID INTEGER,URL TEXT,NAME TEXT,
+                string sql = @"CREATE TABLE PERSONINFO (FID TEXT,PTSITEID INTEGER,SITENAME TEXT,USERID INTEGER,URL TEXT,NAME TEXT,
 DOWNSIZE TEXT,UPSIZE TEXT,SHARERATE TEXT,SEEDNUMBER TEXT,SEEDTIMES TEXT,DOWNTIMES TEXT,SEEDRATE TEXT,BONUS REAL,REGISTERDATE TEXT,RANK TEXT,LASTSYNCDATE TEXT)";
                 sqlList.Add(new KeyValuePair<string, SQLiteParameter[]>(sql, null));
 
@@ -123,13 +123,13 @@ DOWNSIZE TEXT,UPSIZE TEXT,SHARERATE TEXT,SEEDNUMBER TEXT,SEEDTIMES TEXT,DOWNTIME
             {
                 foreach (var info in infos)
                 {
-                    string sql = @" INSERT INTO PERSONINFO(PTSITEID,SITENAME,ID,URL,NAME,DOWNSIZE,UPSIZE,SHARERATE,SEEDNUMBER,SEEDTIMES,DOWNTIMES,SEEDRATE,BONUS,REGISTERDATE,RANK,LASTSYNCDATE)
-VALUES(@PTSITEID,@SITENAME,@ID,@URL,@NAME,@DOWNSIZE,@UPSIZE,@SHARERATE,@SEEDNUMBER,@SEEDTIMES,@DOWNTIMES,@SEEDRATE,@BONUS,@REGISTERDATE,@RANK,@LASTSYNCDATE) ";
+                    string sql = @" INSERT INTO PERSONINFO(PTSITEID,SITENAME,USERID,URL,NAME,DOWNSIZE,UPSIZE,SHARERATE,SEEDNUMBER,SEEDTIMES,DOWNTIMES,SEEDRATE,BONUS,REGISTERDATE,RANK,LASTSYNCDATE,FID)
+VALUES(@PTSITEID,@SITENAME,@USERID,@URL,@NAME,@DOWNSIZE,@UPSIZE,@SHARERATE,@SEEDNUMBER,@SEEDTIMES,@DOWNTIMES,@SEEDRATE,@BONUS,@REGISTERDATE,@RANK,@LASTSYNCDATE,@FID) ";
                     SQLiteParameter[] parms = new SQLiteParameter[]
                       {
                                     new SQLiteParameter("@PTSITEID", DbType.Int32),
                                     new SQLiteParameter("@SITENAME", DbType.String),
-                                    new SQLiteParameter("@ID", DbType.Int32),
+                                    new SQLiteParameter("@USERID", DbType.Int32),
                                     new SQLiteParameter("@URL", DbType.String),
                                     new SQLiteParameter("@NAME", DbType.String),
                                     new SQLiteParameter("@DOWNSIZE", DbType.String),
@@ -143,10 +143,11 @@ VALUES(@PTSITEID,@SITENAME,@ID,@URL,@NAME,@DOWNSIZE,@UPSIZE,@SHARERATE,@SEEDNUMB
                                     new SQLiteParameter("@REGISTERDATE", DbType.DateTime),
                                     new SQLiteParameter("@RANK", DbType.String),
                                     new SQLiteParameter("@LASTSYNCDATE", DbType.DateTime),
+                                    new SQLiteParameter("@FID", DbType.String),
                       };
                     parms[0].Value = info.SiteId;
                     parms[1].Value = info.SiteName;
-                    parms[2].Value = info.Id;
+                    parms[2].Value = info.UserId;
                     parms[3].Value = info.Url;
                     parms[4].Value = info.Name;
                     parms[5].Value = info.DownSize;
@@ -160,6 +161,7 @@ VALUES(@PTSITEID,@SITENAME,@ID,@URL,@NAME,@DOWNSIZE,@UPSIZE,@SHARERATE,@SEEDNUMB
                     parms[13].Value = info.RegisterDate;
                     parms[14].Value = info.Rank;
                     parms[15].Value = info.LastSyncDate;
+                    parms[16].Value = Convert.ToString(Guid.NewGuid());
                     sqlList.Add(new KeyValuePair<string, SQLiteParameter[]>(sql, parms));
                 }
             }
@@ -175,14 +177,15 @@ VALUES(@PTSITEID,@SITENAME,@ID,@URL,@NAME,@DOWNSIZE,@UPSIZE,@SHARERATE,@SEEDNUMB
         public static List<PTInfo> GetLastPersonInfo(IEnumerable<int> siteIds, IEnumerable<PTUser> users)
         {
             List<PTInfo> infos = new List<PTInfo>();
-            string sql = string.Format("SELECT * FROM PERSONINFO A WHERE NOT EXISTS(SELECT 1 FROM PERSONINFO B WHERE A.PTSITEID = B.PTSITEID AND A.LASTSYNCDATE < B.LASTSYNCDATE) AND A.PTSITEID IN ({0}) AND ( A.NAME IN ('{1}') OR  A.ID IN ({2}) )", string.Join(",", siteIds), string.Join("','", users.Select(x => x.UserName).Distinct()), string.Join(",", users.Select(x => x.Id).Distinct()));
+            string sql = string.Format("SELECT * FROM PERSONINFO A WHERE NOT EXISTS(SELECT 1 FROM PERSONINFO B WHERE A.PTSITEID = B.PTSITEID AND A.LASTSYNCDATE < B.LASTSYNCDATE) AND A.PTSITEID IN ({0}) AND ( A.NAME IN ('{1}') OR  A.USERID IN ({2}) )", string.Join(",", siteIds), string.Join("','", users.Select(x => x.UserName).Distinct()), string.Join(",", users.Select(x => x.UserId).Distinct()));
             SQLiteDataReader reader = DBUtils.ExecuteReader(sql);
             while (reader.Read())
             {
                 PTInfo info = new PTInfo();
+                info.Fid = reader["FID"].TryPareValue<string>();
                 info.SiteId = (YUEnums.PTEnum)reader["PTSITEID"].TryPareValue<int>();
                 info.SiteName = reader["SITENAME"].TryPareValue<string>();
-                info.Id = reader["ID"].TryPareValue<int>();
+                info.UserId = reader["USERID"].TryPareValue<int>();
                 info.Url = reader["URL"].TryPareValue<string>();
                 info.Name = reader["NAME"].TryPareValue<string>();
                 info.DownSize = reader["DOWNSIZE"].TryPareValue<string>();
@@ -202,36 +205,73 @@ VALUES(@PTSITEID,@SITENAME,@ID,@URL,@NAME,@DOWNSIZE,@UPSIZE,@SHARERATE,@SEEDNUMB
         }
 
         /// <summary>
+        /// 获取所有用户信息
+        /// </summary>
+        /// <param name="sites"></param>
+        /// <returns></returns>
+        public static List<PTUser> GetAllUsers(List<PTSite> sites)
+        {
+            var users = new List<PTUser>();
+
+            IDataReader dr = DBUtils.ExecuteReader("SELECT * FROM USER");
+            while (dr.Read())
+            {
+                int siteId = dr["PTSITEID"].TryPareValue(0);
+                PTUser user = new PTUser();
+                user.Fid = dr["FID"].TryPareValue<string>();
+                user.UserId = dr["USERID"].TryPareValue<int>();
+                user.UserName = dr["USERNAME"].TryPareValue<string>();
+                user.Mail = dr["MAIL"].TryPareValue<string>();
+                user.PassWord = dr["PASSWORD"].TryPareValue<string>();
+                user.isEnableTwo_StepVerification = dr["ISENABLETWO_STEPVERIFICATION"].TryPareValue(false);
+                user.SecuityAnswer = dr["SECUITYANSWER"].TryPareValue(string.Empty);
+                user.SecurityQuestionOrder = dr["SECURITYQUESTIONORDER"].TryPareValue(-1);
+                user.Site = sites.Where(x => (int)x.Id == siteId).FirstOrDefault();
+                //如果找不到相应站点，这里就直接跳过该用户了。
+                if (user.Site == null)
+                    continue;
+                users.Add(user);
+            }
+            users = users.OrderBy(x => x.Site.Order).ToList();
+            return users;
+        }
+
+        /// <summary>
         /// 插入或更新用户
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
         public static int UpdateOrInsertUser(PTUser user)
         {
+            //目前同一个站点有且只能有一个用户存在
             string selectSql = " SELECT PTSITEID FROM USER WHERE PTSITEID = @PTSITEID ";
             SQLiteParameter param = new SQLiteParameter("@PTSITEID", DbType.Int32);
             param.Value = user.Site.Id;
             string sql = string.Empty;
             if (DBUtils.ExecuteScalar<int>(selectSql, -1, param) != (int)user.Site.Id)
-                sql = @" INSERT INTO USER(PTSITEID,USERNAME,PASSWORD,SECURITYQUESTIONORDER,SECUITYANSWER,ISENABLETWO_STEPVERIFICATION) VALUES(@PTSITEID,@USERNAME,@PASSWORD,@SECURITYQUESTIONORDER,@SECUITYANSWER,@ISENABLETWO_STEPVERIFICATION) ";
+                sql = @" INSERT INTO USER(FID,PTSITEID,USERNAME,MAIL,PASSWORD,SECURITYQUESTIONORDER,SECUITYANSWER,ISENABLETWO_STEPVERIFICATION) VALUES(@FID,@PTSITEID,@USERNAME,@MAIL,@PASSWORD,@SECURITYQUESTIONORDER,@SECUITYANSWER,@ISENABLETWO_STEPVERIFICATION) ";
             else
-                sql = @" UPDATE USER SET USERNAME = @USERNAME, PASSWORD = @PASSWORD, SECURITYQUESTIONORDER = @SECURITYQUESTIONORDER, SECUITYANSWER = @SECUITYANSWER , ISENABLETWO_STEPVERIFICATION = @ISENABLETWO_STEPVERIFICATION WHERE PTSITEID = @PTSITEID";
+                sql = @" UPDATE USER SET USERNAME = @USERNAME, MAIL = @MAIL, PASSWORD = @PASSWORD, SECURITYQUESTIONORDER = @SECURITYQUESTIONORDER, SECUITYANSWER = @SECUITYANSWER , ISENABLETWO_STEPVERIFICATION = @ISENABLETWO_STEPVERIFICATION WHERE PTSITEID = @PTSITEID ";
 
             SQLiteParameter[] parms = new SQLiteParameter[]
             {
+                        new SQLiteParameter("@FID", DbType.String),
                         new SQLiteParameter("@PTSITEID", DbType.Int32),
                         new SQLiteParameter("@USERNAME", DbType.String),
+                        new SQLiteParameter("@MAIL", DbType.String),
                         new SQLiteParameter("@PASSWORD", DbType.String),
                         new SQLiteParameter("@SECURITYQUESTIONORDER", DbType.Int32),
                         new SQLiteParameter("@SECUITYANSWER", DbType.String),
                         new SQLiteParameter("@ISENABLETWO_STEPVERIFICATION", DbType.Boolean),
             };
-            parms[0].Value = user.Site.Id;
-            parms[1].Value = user.UserName;
-            parms[2].Value = user.PassWord;
-            parms[3].Value = user.SecurityQuestionOrder;
-            parms[4].Value = user.SecuityAnswer;
-            parms[5].Value = user.isEnableTwo_StepVerification;
+            parms[0].Value = Convert.ToString(Guid.NewGuid());
+            parms[1].Value = user.Site.Id;
+            parms[2].Value = user.UserName;
+            parms[3].Value = user.Mail;
+            parms[4].Value = user.PassWord;
+            parms[5].Value = user.SecurityQuestionOrder;
+            parms[6].Value = user.SecuityAnswer;
+            parms[7].Value = user.isEnableTwo_StepVerification;
             return DBUtils.ExecuteNonQuery(sql, parms);
         }
 
@@ -253,18 +293,20 @@ VALUES(@PTSITEID,@SITENAME,@ID,@URL,@NAME,@DOWNSIZE,@UPSIZE,@SHARERATE,@SEEDNUMB
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public static KeyValuePair<string, SQLiteParameter[]> GetUpdateUserIdParameter(PTUser user)
+        public static KeyValuePair<string, SQLiteParameter[]> GetUpdateUserParameter(PTUser user)
         {
-            string sql = "UPDATE USER SET USERID = @USERID WHERE PTSITEID = @PTSITEID AND USERNAME = @USERNAME ";
+            string sql = "UPDATE USER SET USERID = @USERID,USERNAME = @USERNAME  WHERE PTSITEID = @PTSITEID AND FID = @FID ";
             SQLiteParameter[] parms = new SQLiteParameter[]
             {
                     new SQLiteParameter("@USERID", DbType.Int32),
-                    new SQLiteParameter("@PTSITEID", DbType.Int32),
                     new SQLiteParameter("@USERNAME", DbType.String),
+                    new SQLiteParameter("@PTSITEID", DbType.Int32),
+                    new SQLiteParameter("@FID", DbType.String),
             };
-            parms[0].Value = user.Id;
-            parms[1].Value = user.Site.Id;
-            parms[2].Value = user.UserName;
+            parms[0].Value = user.UserId;
+            parms[1].Value = user.UserName;
+            parms[2].Value = user.Site.Id;
+            parms[3].Value = user.Fid;
             return new KeyValuePair<string, SQLiteParameter[]>(sql, parms);
         }
 

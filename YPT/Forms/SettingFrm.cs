@@ -205,7 +205,7 @@ namespace YPT.Forms
         {
             if (e.User != null)
             {
-                Global.InitUser();
+                Global.Users = AppService.GetAllUsers(Global.Sites);
                 InitUser();
                 if (UserChanged != null)
                     UserChanged.Invoke(this, e);

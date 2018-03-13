@@ -54,9 +54,9 @@ namespace YPT
                 else
                 {
                     AppService.InitTable();
-                    InitUser();
+                    Users = AppService.GetAllUsers(Sites);
                 }
-                
+
                 Config.SignTime = AppService.GetConfig(YUConst.CONFIG_SIGN_TIME, new DateTime(1970, 1, 1, 0, 0, 0));
                 Config.IsAutoSign = AppService.GetConfig(YUConst.CONFIG_SIGN_AUTO, true);
                 Config.IsEnablePostFileName = AppService.GetConfig(YUConst.CONFIG_ENABLEPOSTFILENAME, true);
@@ -103,32 +103,7 @@ namespace YPT
             _sites = _sites.OrderBy(x => x.Order).ToList();
         }
 
-        /// <summary>
-        /// 初始化用户数据
-        /// </summary>
-        public static void InitUser()
-        {
-            Users = new List<PTUser>();
-
-            IDataReader dr = DBUtils.ExecuteReader("SELECT * FROM USER");
-            while (dr.Read())
-            {
-                int siteId = dr["PTSITEID"].TryPareValue(0);
-                PTUser user = new PTUser();
-                user.Id = dr["USERID"].TryPareValue<int>();
-                user.UserName = dr["USERNAME"].TryPareValue<string>();
-                user.PassWord = dr["PASSWORD"].TryPareValue<string>();
-                user.isEnableTwo_StepVerification = dr["ISENABLETWO_STEPVERIFICATION"].TryPareValue(false);
-                user.SecuityAnswer = dr["SECUITYANSWER"].TryPareValue(string.Empty);
-                user.SecurityQuestionOrder = dr["SECURITYQUESTIONORDER"].TryPareValue(-1);
-                user.Site = Sites.Where(x => (int)x.Id == siteId).FirstOrDefault();
-                //如果找不到相应站点，这里就直接跳过该用户了。
-                if (user.Site == null)
-                    continue;
-                Users.Add(user);
-            }
-            Users = Users.OrderBy(x => x.Site.Order).ToList();
-        }
+     
 
     }
 }

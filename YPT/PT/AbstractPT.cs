@@ -130,7 +130,7 @@ namespace YPT.PT
                     return result.Item1;
                 if (IsLoginSuccess(result.Item1))
                 {
-                    User.Id = GetUserId(result.Item1);
+                    UpdateUserWhileChange(result.Item1, User);
                     return "登录成功。";
                 }
             }
@@ -143,7 +143,7 @@ namespace YPT.PT
             if (IsLoginSuccess(htmlResult))
             {
                 _cookie = result.Item2.CookieContainer;
-                User.Id = GetUserId(result.Item1);
+                UpdateUserWhileChange(result.Item1, User);
                 SetLocalCookie(_cookie);
                 return "登录成功。";
             }
@@ -274,7 +274,7 @@ namespace YPT.PT
 
         protected bool IsLoginSuccess(string htmlResult)
         {
-            if (!htmlResult.Contains("登录失败") && (htmlResult.Contains("欢迎回来") || htmlResult.Contains("Welcome") || htmlResult.Contains("歡迎回來")))
+            if (!htmlResult.Contains("登录失败")  && (htmlResult.Contains("欢迎回来") || htmlResult.Contains("Welcome") || htmlResult.Contains("歡迎回來")))
                 return true;
             else
                 return false;
@@ -309,14 +309,9 @@ namespace YPT.PT
 
         #endregion
 
-        /// <summary>
-        /// 获取用户ID
-        /// </summary>
-        /// <param name="htmlResult"></param>
-        /// <returns></returns>
-        protected virtual int GetUserId(string htmlResult)
+
+        protected virtual PTUser UpdateUserWhileChange(string htmlResult, PTUser user)
         {
-            int id = 0;
             HtmlDocument htmlDocument = new HtmlDocument();
             htmlDocument.OptionOutputAsXml = false;
             htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
@@ -325,9 +320,21 @@ namespace YPT.PT
             {
                 var url = HttpUtility.HtmlDecode(node.Attributes["href"].Value);
                 url = string.Join("/", Site.Url, url);
-                id = url.UrlSearchKey("id").TryPareValue<int>();
+                user.UserId = url.UrlSearchKey("id").TryPareValue<int>();
+                if (user.UserName != node.InnerText)
+                {
+                    //当用户输入的用户名与获取到的用户名不一致时，取获取的用户名为准。
+                    //修改用户名时，同时还要处理本地的Cookie文件
+                    string cookiePath = GetCookieFilePath();
+                    if (File.Exists(cookiePath))
+                    {
+                        user.UserName = node.InnerText;
+                        string newCookiePath = GetCookieFilePath();
+                        File.Move(cookiePath, newCookiePath);
+                    }
+                }
             }
-            return id;
+            return user;
         }
 
         /// <summary>
@@ -838,24 +845,21 @@ namespace YPT.PT
         {
             PTInfo info = new PTInfo();
 
-            if(_cookie == null || _cookie.Count <= 0)
+            if (_cookie == null || _cookie.Count <= 0)
                 throw new Exception(string.Format("{0} 获取Cookie信息失败，请尝试重新登录。", Site.Name));
 
-            if (User.Id == 0)
+            if (User.UserId == 0)
             {
                 string htmlResult = HttpUtils.GetDataGetHtml(Site.Url, _cookie);
-                int id = GetUserId(htmlResult);
-                if (id == 0)
+                UpdateUserWhileChange(htmlResult, User);
+                if (User.UserId == 0)
                     throw new Exception(string.Format("{0} 无法获取用户ID，请尝试重新登录。", Site.Name));
                 else
-                {
-                    User.Id = id;
                     return GetPersonInfo();
-                }
             }
             else
             {
-                string url = string.Format(Site.InfoUrl, User.Id);
+                string url = string.Format(Site.InfoUrl, User.UserId);
                 info.Url = url;
                 string htmlResult = HttpUtils.GetDataGetHtml(url, _cookie);
 
@@ -992,7 +996,7 @@ namespace YPT.PT
                     }
 
                     info.LastSyncDate = DateTime.Now;
-                    info.Id = User.Id;
+                    info.UserId = User.UserId;
                     info.SiteId = SiteId;
                     info.SiteName = Site.Name;
                     info.Name = User.UserName;

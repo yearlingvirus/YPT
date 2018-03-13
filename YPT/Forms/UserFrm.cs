@@ -43,6 +43,7 @@ namespace YPT.Forms
 
             txtUserName.DataBindings.Add("Text", User, "UserName");
             txtPassWord.DataBindings.Add("Text", User, "PassWord");
+            txtMail.DataBindings.Add("Text", User, "Mail");
             txtAnswer.DataBindings.Add("Text", User, "SecuityAnswer");
             nudOrder.DataBindings.Add("Value", User, "SecurityQuestionOrder");
             cbTwo_StepVerification.DataBindings.Add("Checked", User, "isEnableTwo_StepVerification");
@@ -124,6 +125,10 @@ namespace YPT.Forms
             if (cmbSite.SelectedValue.TryPareValue(0) <= 0)
             {
                 fields.Add("[站点]");
+            }
+            if (User.Site != null && User.Site.IsLoginByMail && txtMail.Text.IsNullOrEmptyOrWhiteSpace())
+            {
+                fields.Add("[邮箱]");
             }
             if (txtUserName.Text.IsNullOrEmptyOrWhiteSpace())
             {

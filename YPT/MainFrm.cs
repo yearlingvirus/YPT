@@ -161,15 +161,16 @@ namespace YPT
                 {
                     try
                     {
-                        bool isNeedUpdate = user.Id <= 0;
+                        bool isNeedUpdate = user.UserId <= 0;
                         AbstractPT pt = PTFactory.GetPT(user.Site.Id, user) as AbstractPT;
                         pt.VerificationCode += Pt_VerificationCode;
                         pt.TwoStepVerification += Pt_TwoStepVerification;
                         string msg = pt.Login();
-                        if (isNeedUpdate && pt.User != null && pt.User.Id > 0)
+                        if (isNeedUpdate && pt.User != null && pt.User.UserId > 0)
                         {
-                            user.Id = pt.User.Id;
-                            sqlList.Add(AppService.GetUpdateUserIdParameter(user));
+                            user.UserId = pt.User.UserId;
+                            user.UserName = pt.User.UserName;
+                            sqlList.Add(AppService.GetUpdateUserParameter(user));
                         }
                         LogMessage(user.Site, msg);
                     }
@@ -1015,16 +1016,17 @@ namespace YPT
                 {
                     Parallel.ForEach(Global.Users, (user, state, i) =>
                     {
-                        bool isNeedUpdate = user.Id <= 0;
+                        bool isNeedUpdate = user.UserId <= 0;
                         IPT pt = PTFactory.GetPT(user.Site.Id, Global.Users.Where(x => x.Site.Id == user.Site.Id).FirstOrDefault());
                         try
                         {
                             var info = pt.GetPersonInfo();
                             infoDict[user.Site.Id] = new KeyValuePair<bool, PTInfo>(true, info);
-                            if (isNeedUpdate && info != null && info.Id > 0)
+                            if (isNeedUpdate && info != null && info.UserId > 0)
                             {
-                                user.Id = info.Id;
-                                sqlList.Add(AppService.GetUpdateUserIdParameter(user));
+                                user.UserId = info.UserId;
+                                user.UserName = info.Name;
+                                sqlList.Add(AppService.GetUpdateUserParameter(user));
                             }
                         }
                         catch (Exception ex)
@@ -1094,7 +1096,7 @@ namespace YPT
                     info.SiteId = user.Site.Id;
                     info.SiteName = user.Site.Name;
                     info.Name = user.UserName;
-                    info.Id = user.Id;
+                    info.UserId = user.UserId;
                     infos.Add(info);
                 }
             }

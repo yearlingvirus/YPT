@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -286,9 +287,8 @@ namespace YPT.PT
         }
 
 
-        protected override int GetUserId(string htmlResult)
+        protected override PTUser UpdateUserWhileChange(string htmlResult, PTUser user)
         {
-            int id = 0;
             HtmlDocument htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
             HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//table/tr/td/span/b/a");//跟Xpath一样
@@ -296,30 +296,38 @@ namespace YPT.PT
             {
                 var url = HttpUtility.HtmlDecode(node.Attributes["href"].Value);
                 url = string.Join("/", Site.Url, url);
-                id = url.UrlSearchKey("id").TryPareValue<int>();
+                user.UserId = url.UrlSearchKey("id").TryPareValue<int>();
+                if (user.UserName != node.InnerText)
+                {
+                    //当用户输入的用户名与获取到的用户名不一致时，取获取的用户名为准。
+                    //修改用户名时，同时还要处理本地的Cookie文件
+                    string cookiePath = GetCookieFilePath();
+                    if (File.Exists(cookiePath))
+                    {
+                        user.UserName = node.InnerText;
+                        string newCookiePath = GetCookieFilePath();
+                        File.Move(cookiePath, newCookiePath);
+                    }
+                }
             }
-            return id;
+            return user;
         }
-
 
         public override PTInfo GetPersonInfo()
         {
             PTInfo info = new PTInfo();
-            if (User.Id == 0)
+            if (User.UserId == 0)
             {
                 string htmlResult = HttpUtils.GetDataGetHtml(Site.Url, _cookie);
-                int id = GetUserId(htmlResult);
-                if (id == 0)
+                UpdateUserWhileChange(htmlResult, User);
+                if (User.UserId == 0)
                     throw new Exception(string.Format("{0} 无法获取用户ID，请尝试重新登录。", Site.Name));
                 else
-                {
-                    User.Id = id;
                     return GetPersonInfo();
-                }
             }
             else
             {
-                string url = string.Format(Site.InfoUrl, User.Id);
+                string url = string.Format(Site.InfoUrl, User.UserId);
                 info.Url = url;
                 string htmlResult = HttpUtils.GetDataGetHtml(url, _cookie);
 
@@ -417,7 +425,7 @@ namespace YPT.PT
                     }
 
                     info.LastSyncDate = DateTime.Now;
-                    info.Id = User.Id;
+                    info.UserId = User.UserId;
                     info.SiteId = SiteId;
                     info.SiteName = Site.Name;
                     info.Name = User.UserName;
