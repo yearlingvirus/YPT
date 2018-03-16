@@ -26,7 +26,7 @@ namespace YU.Core.DataEntity
         /// Id
         /// </summary>
         [GridView("ID", true, 100)]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// Url
@@ -44,87 +44,122 @@ namespace YU.Core.DataEntity
         /// 上传量
         /// </summary>
         [GridView("上传量", true, 100)]
-        public string UpSize { get; set; }
+        public string UpSize_Display { get; set; }
 
         /// <summary>
         /// 上传量
         /// </summary>
         [GridView("上传量", false, 100)]
-        public double RealUpSize { get; set; }
+        public double UpSize { get; set; }
 
         /// <summary>
         /// 下载量
         /// </summary>
         [GridView("下载量", true, 100)]
-        public string DownSize { get; set; }
+        public string DownSize_Display { get; set; }
 
         /// <summary>
         /// 下载量
         /// </summary>
         [GridView("下载量", false, 100)]
-        public double RealDownSize { get; set; }
+        public double DownSize { get; set; }
 
 
         /// <summary>
         /// 分享率
         /// </summary>
-        [GridView("分享率", true, 100)]
+        [GridView("分享率", false, 100)]
         public double ShareRate { get; set; }
+
+        /// <summary>
+        /// 分享率
+        /// </summary>
+        [GridView("分享率", true, 100)]
+        public string ShareRate_Display { get; set; }
 
         /// <summary>
         /// 保种数量
         /// </summary>
-        [GridView("保种数量", false, 100)]
+        [GridView("保种", false, 80)]
         public int SeedNumber { get; set; }
 
+        /// <summary>
+        /// 保种数量
+        /// </summary>
+        [GridView("保种", true, 80)]
+        public string SeedNumber_Display { get; set; }
 
         /// <summary>
         /// 做种时间
         /// </summary>
-        [GridView("做种时间", true, 100)]
-        public string SeedTimes { get; set; }
+        [GridView("做种时间", true , 100)]
+        public string SeedTimes_Display { get; set; }
 
         /// <summary>
         /// 做种时间
         /// </summary>
         [GridView("做种时间", false, 100)]
-        public double RealSeedTimes { get; set; }
+        public double SeedTimes { get; set; }
 
         /// <summary>
         /// 下载时间
         /// </summary>
         [GridView("下载时间", true, 100)]
-        public string DownTimes { get; set; }
+        public string DownTimes_Display { get; set; }
 
         /// <summary>
         /// 下载时间
         /// </summary>
         [GridView("下载时间", false, 100)]
-        public double RealDownTimes { get; set; }
+        public double DownTimes { get; set; }
+
+        /// <summary>
+        /// 做种率
+        /// </summary>
+        [GridView("做种率", false, 100)]
+        public double SeedRate { get; set; }
 
         /// <summary>
         /// 做种率
         /// </summary>
         [GridView("做种率", true, 100)]
-        public double SeedRate { get; set; }
+        public string SeedRate_Display { get; set; }
+
+        /// <summary>
+        /// 魔力值
+        /// </summary>
+        [GridView("魔力值", false, 100)]
+        public double Bonus { get; set; }
 
         /// <summary>
         /// 魔力值
         /// </summary>
         [GridView("魔力值", true, 100)]
-        public double Bonus { get; set; }
+        public string Bonus_Display { get; set; }
 
         /// <summary>
         /// 注册日期
         /// </summary>
-        [GridView("注册日期", true, 100)]
+        [GridView("注册日期", false, 100)]
         public DateTime RegisterDate { get; set; }
 
         /// <summary>
         /// 注册日期
         /// </summary>
-        [GridView("注册日期(周)", true, 100)]
-        public string RegisterWeek { get; set; }
+        [GridView("注册日期", true, 100)]
+        public string RegisterDate_Display { get; set; }
+
+        /// <summary>
+        /// 入站至今
+        /// </summary>
+        [GridView("入站至今", true, 100)]
+        public string RegisterWeek_Display { get; set; }
+
+        /// <summary>
+        /// 入站至今
+        /// </summary>
+        [GridView("入站至今", false, 100)]
+        public DateTime RegisterWeek { get; set; }
 
         /// <summary>
         /// 等级
@@ -135,7 +170,13 @@ namespace YU.Core.DataEntity
         /// <summary>
         /// 上次同步时间
         /// </summary>
-        [GridView("同步时间", true, 100)]
+        [GridView("同步时间", false, 100)]
         public DateTime LastSyncDate { get; set; }
+
+        /// <summary>
+        /// 上次同步时间
+        /// </summary>
+        [GridView("同步时间", true, 100)]
+        public string LastSyncDate_Display { get; set; }
     }
 }

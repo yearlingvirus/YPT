@@ -108,10 +108,12 @@ namespace YU.Core.DataEntity
         /// <summary>
         /// 是否启用H&R
         /// </summary>
-        public bool IsHR { get; set; }
+        public YUEnums.HRType IsHR { get; set; }
 
 
         private static Dictionary<YUEnums.PromotionType, Image> PromotionImages = new Dictionary<YUEnums.PromotionType, Image>();
+
+        private static Dictionary<YUEnums.HRType, Image> HRImages = new Dictionary<YUEnums.HRType, Image>();
 
         /// <summary>
         /// ->Grid实体
@@ -124,18 +126,30 @@ namespace YU.Core.DataEntity
             entity.DownUrl = this.DownUrl;
             entity.LinkUrl = this.LinkUrl;
             entity.LeecherNumber = this.LeecherNumber;
-            entity.PromotionType = this.PromotionType;
             entity.ResourceType = this.ResourceType;
             entity.SeederNumber = this.SeederNumber;
             entity.SiteId = (int)this.SiteId;
             entity.SiteName = this.SiteName;
             entity.ForumName = this.ForumName;
-            entity.Size = this.Size;
-            entity.RealSize = YUUtils.ParseB(this.Size);
+            entity.Size_Display = this.Size;
+            entity.Size = YUUtils.ParseB(this.Size);
             entity.SnatchedNumber = this.SnatchedNumber;
             entity.UpLoader = this.UpLoader;
             entity.UpLoadTime = this.UpLoadTime;
             entity.IsHR = this.IsHR;
+
+            if (PTSiteConst.RESOURCE_HRIMG.ContainsKey(entity.IsHR) && !PTSiteConst.RESOURCE_HRIMG[entity.IsHR].IsNullOrEmptyOrWhiteSpace())
+            {
+                //缓存处理
+                if (!HRImages.ContainsKey(entity.IsHR))
+                {
+                    var image = FormUtils.GetImage(PTSiteConst.RESOURCE_HRIMG[entity.IsHR]);
+                    HRImages[entity.IsHR] = image;
+                }
+                entity.IsHR_Display = HRImages[entity.IsHR];
+            }
+
+            entity.PromotionType = this.PromotionType;
             if (PTSiteConst.RESOURCE_PROMOTIONIMG.ContainsKey(entity.PromotionType) && !PTSiteConst.RESOURCE_PROMOTIONIMG[entity.PromotionType].IsNullOrEmptyOrWhiteSpace())
             {
                 //缓存处理
@@ -144,7 +158,7 @@ namespace YU.Core.DataEntity
                     var image = FormUtils.GetImage(PTSiteConst.RESOURCE_PROMOTIONIMG[entity.PromotionType]);
                     PromotionImages[entity.PromotionType] = image;
                 }
-                entity.Image = PromotionImages[entity.PromotionType];
+                entity.PromotionType_Display = PromotionImages[entity.PromotionType];
             }
 
 

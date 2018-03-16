@@ -63,28 +63,28 @@ namespace YU.Core.DataEntity
         /// <summary>
         /// 促销类型
         /// </summary>
-        [GridView("促销类型", false, 100)]
+        [GridView("促销类型", false, 80)]
 
         public YUEnums.PromotionType PromotionType { get; set; }
 
         /// <summary>
         /// 促销类型
         /// </summary>
-        [GridView("促销", true, 100, -1, typeof(DataGridViewImageColumn))]
+        [GridView("促销", true, 80, -1, typeof(DataGridViewImageColumn))]
 
-        public Image Image { get; set; } 
+        public Image PromotionType_Display { get; set; } 
 
         /// <summary>
         /// 大小
         /// </summary>
         [GridView("大小", true, 100)]
-        public string Size { get; set; }
+        public string Size_Display { get; set; }
 
         /// <summary>
         /// 大小
         /// </summary>
         [GridView("大小", false, 100)]
-        public double RealSize { get; set; }
+        public double Size { get; set; }
 
         /// <summary>
         /// 发布时间
@@ -119,7 +119,15 @@ namespace YU.Core.DataEntity
         /// <summary>
         /// HR
         /// </summary>
-        [GridView("HR", true, 50)]
-        public bool IsHR { get; set; }
+        [GridView("HR", false, 80)]
+
+        public YUEnums.HRType IsHR { get; set; }
+
+        /// <summary>
+        /// HR
+        /// </summary>
+        [GridView("HR", true, 80, -1, typeof(DataGridViewImageColumn))]
+
+        public Image IsHR_Display { get; set; }
     }
 }

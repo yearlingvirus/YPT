@@ -319,7 +319,10 @@ namespace YPT.PT
             HtmlDocument htmlDocument = new HtmlDocument();
             htmlDocument.OptionOutputAsXml = false;
             htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
+
             HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"info_block\"]/tr/td/table/tr/td//a");//跟Xpath一样
+            //这里不用User_Name判断，因为不同等级的User，Class也会不一样。
+            //HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//a[contains(concat(' ', normalize-space(@class), ' '), ' User_Name ')]");
             return node;
         }
 
@@ -529,11 +532,11 @@ namespace YPT.PT
                 html = node.InnerHtml.Replace(torrent.Title, "");
             if (!torrent.Subtitle.IsNullOrEmptyOrWhiteSpace())
                 html = node.InnerHtml.Replace(torrent.Subtitle, "");
-            torrent.IsHR = false;
+            torrent.IsHR = YUEnums.HRType.NONE;
 
             if (html.Contains("hit_run") || html.Contains("hitandrun"))
             {
-                torrent.IsHR = true;
+                torrent.IsHR = YUEnums.HRType.HR;
                 return;
             }
         }
@@ -864,10 +867,15 @@ namespace YPT.PT
                 info.Url = url;
                 string htmlResult = HttpUtils.GetDataGetHtml(url, _cookie);
 
+                if (HttpUtils.IsErrorRequest(htmlResult))
+                    throw new Exception(string.Format("{0} 获取用户详细信息失败，请稍后重试。原因：{1}", Site.Name, htmlResult));
+
                 HtmlDocument htmlDocument = new HtmlDocument();
                 //某些站点的HTML可能不规范，导致获取信息失败，这里OptionAutoCloseOnEnd设为True
                 htmlDocument.OptionAutoCloseOnEnd = true;
                 htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
+
+                PreSetPersonInfo(htmlDocument, info);
 
                 HtmlNodeCollection headNodes =
                    htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' main ')]//td[contains(concat(' ', normalize-space(@class), ' '), ' rowhead ')]");
@@ -889,6 +897,34 @@ namespace YPT.PT
             }
         }
 
+        protected virtual void PreSetPersonInfo(HtmlDocument htmlDocument, PTInfo info)
+        {
+            ////魔力值
+            //var node = htmlDocument.DocumentNode.SelectSingleNode("//font[contains(concat(' ', normalize-space(@class), ' '), ' color_invite ')]");
+            //if (node != null && node.PreviousSibling != null)
+            //    info.Bonus = node.PreviousSibling.InnerText.Replace("]", "").Replace(":", "").Trim().TryPareValue<double>();
+
+            ////分享率
+            //node = htmlDocument.DocumentNode.SelectSingleNode("//font[contains(concat(' ', normalize-space(@class), ' '), ' color_uploaded ')]");
+            //if (node != null && node.PreviousSibling != null)
+            //    info.ShareRate = node.PreviousSibling.InnerText.Trim().TryPareValue<string>();
+
+            ////上传量
+            //node = htmlDocument.DocumentNode.SelectSingleNode("//font[contains(concat(' ', normalize-space(@class), ' '), ' color_downloaded ')]");
+            //if (node != null && node.PreviousSibling != null)
+            //    info.UpSize = node.PreviousSibling.InnerText.Trim().TryPareValue<string>();
+
+            ////下载量
+            //node = htmlDocument.DocumentNode.SelectSingleNode("//font[contains(concat(' ', normalize-space(@class), ' '), ' color_active ')]");
+            //if (node != null && node.PreviousSibling != null)
+            //    info.DownSize = node.PreviousSibling.InnerText.Trim().TryPareValue<string>();
+
+            //做种数
+            var node = htmlDocument.DocumentNode.SelectSingleNode("//img[contains(concat(' ', normalize-space(@alt), ' '), ' Torrents leeching ')]");
+            if (node != null && node.PreviousSibling != null)
+                info.SeedNumber = node.PreviousSibling.InnerText.Trim().TryPareValue<string>(); 
+
+        }
 
         /// <summary>
         /// 设置PersonInfo
@@ -898,7 +934,6 @@ namespace YPT.PT
         /// <param name="info"></param>
         protected virtual void SetPersonInfo(Dictionary<YUEnums.PersonInfoMap, int> infoMaps, HtmlNodeCollection nodes, PTInfo info)
         {
-
             #region Convert
             //注册日期
             var node = nodes[infoMaps[YUEnums.PersonInfoMap.RegisterDate]];

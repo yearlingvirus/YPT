@@ -31,27 +31,22 @@ namespace YPT.Forms
             if (user == null)
                 User = new PTUser();
             else
-                User = user;
+                User = ObjectUtils.CreateCopy<PTUser>(user);
             InitializeComponent();
 
             YUEnums.PTEnum selectSiteId = User.Site != null ? User.Site.Id : 0;
 
             //绑定数据源，必须是属性，不能为字段
             BindingSource bs = new BindingSource();
-            bs.DataSource = Global.Sites.ToDictionary(x => x.Id, x => x.Name);
+            bs.DataSource = ObjectUtils.CreateCopy<Dictionary<YUEnums.PTEnum, string>>(Global.Sites.ToDictionary(x => x.Id, x => x.Name));
             cmbSite.ValueMember = "Key";
             cmbSite.DisplayMember = "Value";
             cmbSite.DataSource = bs;
 
-            txtUserName.DataBindings.Add("Text", User, "UserName");
-            txtPassWord.DataBindings.Add("Text", User, "PassWord");
-            txtMail.DataBindings.Add("Text", User, "Mail");
-            txtAnswer.DataBindings.Add("Text", User, "SecuityAnswer");
-            nudOrder.DataBindings.Add("Value", User, "SecurityQuestionOrder");
-            cbTwo_StepVerification.DataBindings.Add("Checked", User, "isEnableTwo_StepVerification");
-
             if (selectSiteId != 0)
                 cmbSite.SelectedValue = selectSiteId;
+
+            ReBindControl();
 
             var pt = PTFactory.GetPT(User.Site.Id, User) as AbstractPT;
             if (File.Exists(pt.GetCookieFilePath()))
@@ -71,7 +66,7 @@ namespace YPT.Forms
                         OnUserChangeEventArgs el = new OnUserChangeEventArgs();
                         el.User = User;
                         OnUserChanged(el);
-                        FormUtils.ShowInfoMessage("保存成功，你可以选择其他站点继续添加。");
+                        //FormUtils.ShowInfoMessage("保存成功，你可以选择其他站点继续添加。");
                     }
                     else
                         this.DialogResult = DialogResult.OK;
@@ -81,16 +76,40 @@ namespace YPT.Forms
 
         private void cmbSite_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var site = Global.Sites.Where(x => (int)x.Id == (int)cmbSite.SelectedValue).FirstOrDefault();
-            if (site != null)
+            var user = Global.Users.Where(x => (int)x.Site.Id == (int)cmbSite.SelectedValue).FirstOrDefault();
+            if (user != null)
             {
-                User.Site = site;
-                var pt = PTFactory.GetPT(User.Site.Id, User) as AbstractPT;
-                if (File.Exists(pt.GetCookieFilePath()))
-                    rtbInput.Text = File.ReadAllText(pt.GetCookieFilePath());
-                else
-                    rtbInput.Text = string.Empty;
+                User = ObjectUtils.CreateCopy<PTUser>(user);
+                ReBindControl();
             }
+            else
+            {
+                var site = Global.Sites.Where(x => (int)x.Id == (int)cmbSite.SelectedValue).FirstOrDefault();
+                if (site != null)
+                    User.Site = ObjectUtils.CreateCopy<PTSite>(site);
+            }
+
+            var pt = PTFactory.GetPT(User.Site.Id, User) as AbstractPT;
+            if (File.Exists(pt.GetCookieFilePath()))
+                rtbInput.Text = File.ReadAllText(pt.GetCookieFilePath());
+            else
+                rtbInput.Text = string.Empty;
+        }
+
+        private void ReBindControl()
+        {
+            txtUserName.DataBindings.Clear();
+            txtPassWord.DataBindings.Clear();
+            txtMail.DataBindings.Clear();
+            txtAnswer.DataBindings.Clear();
+            nudOrder.DataBindings.Clear();
+            cbTwo_StepVerification.DataBindings.Clear();
+            txtUserName.DataBindings.Add("Text", User, "UserName");
+            txtPassWord.DataBindings.Add("Text", User, "PassWord");
+            txtMail.DataBindings.Add("Text", User, "Mail");
+            txtAnswer.DataBindings.Add("Text", User, "SecuityAnswer");
+            nudOrder.DataBindings.Add("Value", User, "SecurityQuestionOrder");
+            cbTwo_StepVerification.DataBindings.Add("Checked", User, "isEnableTwo_StepVerification");
         }
 
         private void btnGetCookie_Click(object sender, EventArgs e)

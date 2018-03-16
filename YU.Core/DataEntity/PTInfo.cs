@@ -125,14 +125,34 @@ namespace YU.Core.DataEntity
         public PTInfoGridEntity ToGridEntity()
         {
             PTInfoGridEntity entity = new PTInfoGridEntity();
-            entity.Id = this.UserId;
+            entity.Id = this.UserId == 0 ? "--" : this.UserId.TryPareValue<string>();
             entity.Url = this.Url;
             entity.Bonus = this.Bonus;
-            entity.DownSize = this.DownSize.IsNullOrEmptyOrWhiteSpace() ? "--" : this.DownSize;
-            entity.DownTimes = this.DownTimes.IsNullOrEmptyOrWhiteSpace() ? "--" : this.DownTimes;
-            entity.RealDownSize = YUUtils.ParseB(this.DownSize);
+            entity.Bonus_Display = GetPropertyDisplay(this.Bonus);
+
+            entity.DownSize_Display = this.DownSize;
+            entity.DownSize = YUUtils.ParseB(this.DownSize);
+            entity.UpSize_Display = this.UpSize;
+            entity.UpSize = YUUtils.ParseB(this.UpSize);
+
+            entity.DownTimes_Display = GetPropertyDisplay(this.DownTimes);
+            entity.DownTimes = YUUtils.ParseMilliSecond(this.DownTimes);
+
+            entity.SeedTimes_Display = GetPropertyDisplay(this.SeedTimes);
+            entity.SeedTimes = YUUtils.ParseMilliSecond(this.SeedTimes);
+
             entity.LastSyncDate = this.LastSyncDate;
-            entity.Name = this.Name;
+            entity.LastSyncDate_Display = GetPropertyDisplay(this.LastSyncDate);
+
+            entity.RegisterDate = this.RegisterDate;
+            entity.RegisterDate_Display = GetPropertyDisplay(this.RegisterDate);
+
+            int registerDays = DateTime.Now.Subtract(this.RegisterDate).Duration().Days;
+            entity.RegisterWeek = this.RegisterDate;
+            if (this.RegisterDate == DateTime.MinValue)
+                entity.RegisterWeek_Display = "--";
+            else
+                entity.RegisterWeek_Display = string.Format("{0}周", registerDays / 7) + ((registerDays % 7) > 0 ? string.Format("{0}天", registerDays % 7) : string.Empty);
 
             string regEx = "/^[A-Za-z\\s]+$/";
             entity.Rank = Regex.Replace(this.Rank, regEx, "");
@@ -140,27 +160,50 @@ namespace YU.Core.DataEntity
             if (entity.Rank.IsNullOrEmptyOrWhiteSpace())
                 entity.Rank = this.Rank.IsNullOrEmptyOrWhiteSpace() ? "--" : this.Rank;
 
-            entity.RealDownTimes = YUUtils.ParseMilliSecond(this.DownTimes);
-            entity.RealSeedTimes = YUUtils.ParseMilliSecond(this.SeedTimes);
-            entity.RegisterDate = this.RegisterDate;
+            entity.SeedNumber = GetPropertyValue<int>(this.SeedNumber);
+            entity.SeedNumber_Display = GetPropertyDisplay(this.SeedNumber);
 
-            if (this.RegisterDate == DateTime.MinValue)
-                entity.RegisterWeek = "--";
-            else
-            {
-                int registerDays = DateTime.Now.Subtract(this.RegisterDate).Duration().Days;
-                entity.RegisterWeek = string.Format("{0}周", registerDays / 7) + ((registerDays % 7) > 0 ? string.Format("{0}天", registerDays % 7) : string.Empty);
-            }
-            entity.SeedNumber = this.SeedNumber.Trim().TryPareValue<int>();
-            entity.SeedRate = this.SeedRate.Trim().TryPareValue<double>();
-            entity.SeedTimes = this.SeedTimes.IsNullOrEmptyOrWhiteSpace() ? "--" : this.SeedTimes;
-            entity.ShareRate = this.ShareRate.Trim().TryPareValue<double>();
+            entity.SeedRate = GetPropertyValue<double>(this.SeedRate);
+            entity.SeedRate_Display = GetPropertyDisplay(this.SeedRate);
+
+            entity.ShareRate = GetPropertyValue<double>(this.ShareRate);
+            entity.ShareRate_Display = GetPropertyDisplay(this.ShareRate);
+
+            entity.Name = GetPropertyDisplay(this.Name);
             entity.SiteId = (int)this.SiteId;
-            entity.SiteName = this.SiteName.IsNullOrEmptyOrWhiteSpace() ? "--" : this.SiteName;
-            entity.UpSize = this.UpSize.IsNullOrEmptyOrWhiteSpace() ? "--" : this.UpSize;
-            entity.RealUpSize = YUUtils.ParseB(this.UpSize);
+            entity.SiteName = GetPropertyDisplay(this.SiteName);
 
             return entity;
+        }
+
+        public string GetPropertyDisplay<T>(T propertyValue)
+        {
+            string defaultValue = "--";
+            Type t = typeof(T);
+            if (t == typeof(int))
+                return propertyValue.TryPareValue<int>() == 0 ? defaultValue : propertyValue.TryPareValue<string>();
+            else if (t == typeof(float))
+                return propertyValue.TryPareValue<float>() == 0F ? defaultValue : propertyValue.TryPareValue<string>();
+            else if (t == typeof(double))
+                return propertyValue.TryPareValue<double>() == 0D ? defaultValue : propertyValue.TryPareValue<string>();
+            else if (t == typeof(long))
+                return propertyValue.TryPareValue<long>() == 0L ? defaultValue : propertyValue.TryPareValue<string>();
+            else if (t == typeof(decimal))
+                return propertyValue.TryPareValue<decimal>() == 0M ? defaultValue : propertyValue.TryPareValue<string>();
+            else if (t == typeof(string))
+                return propertyValue.TryPareValue<string>().IsNullOrEmptyOrWhiteSpace() ? defaultValue : propertyValue.TryPareValue<string>().Trim();
+            else if (t == typeof(DateTime))
+                return propertyValue.TryPareValue<DateTime>() == DateTime.MinValue ? defaultValue : propertyValue.TryPareValue<string>();
+            return defaultValue;
+        }
+
+        public T GetPropertyValue<T>(string propertyValue)
+        {
+            T defaultValue = default(T);
+            if (propertyValue.IsNullOrEmptyOrWhiteSpace())
+                return defaultValue;
+            else
+                return propertyValue.Trim().TryPareValue<T>();
         }
 
     }

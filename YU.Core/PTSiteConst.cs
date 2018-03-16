@@ -39,6 +39,14 @@ namespace YU.Core
         };
 
         /// <summary>
+        /// HR图片资源
+        /// </summary>
+        public readonly static Dictionary<YUEnums.HRType, string> RESOURCE_HRIMG = new Dictionary<YUEnums.HRType, string>()
+        {
+            { YUEnums.HRType.HR, "Resource/icon/hit_run.gif"},
+        };
+
+        /// <summary>
         /// 等级图片字典
         /// </summary>
         public readonly static Dictionary<string, string> CLASSIMGS = new Dictionary<string, string>()
@@ -59,7 +67,7 @@ namespace YU.Core
             { "Moderator", "Moderator"},
             { "Admin", "Administrator"},
             { "Sysop", "Sysop"},
-            { "Staff", "Staff Leader"},
+            { "StaffLeader", "StaffLeader"},
         };
 
         /// <summary>

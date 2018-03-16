@@ -37,7 +37,7 @@ namespace YPT.PT
         protected override void SetTorrentHR(HtmlNode node, PTTorrent torrent)
         {
             //BTSCHOOL 全站HR
-            torrent.IsHR = true;
+            torrent.IsHR = YUEnums.HRType.HR;
         }
 
         public override string Sign()

@@ -99,7 +99,7 @@ namespace YU.Core.DataEntity
                 { YUEnums.PersonInfoMap.SeedRate, new string[] { "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
                 { YUEnums.PersonInfoMap.SeedTimes, new string[] { "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
                 { YUEnums.PersonInfoMap.DownTimes, new string[] { "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
-                { YUEnums.PersonInfoMap.SeedNumber, new string[] { "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" }},
+                { YUEnums.PersonInfoMap.SeedNumber, new string[] { "当前做种", "當前做種", "Currently Seeding" }},
                 { YUEnums.PersonInfoMap.Rank, new string[] { "Class", "等级", "等級", "등급" }}
             };
         }

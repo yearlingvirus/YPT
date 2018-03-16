@@ -155,6 +155,25 @@ namespace YU.Core
 
         }
 
+
+        /// <summary>
+        /// HR方式
+        /// </summary>
+        public enum HRType
+        {
+            /// <summary>
+            /// HR
+            /// </summary>
+            [Description("HR")]
+            HR,
+
+            /// <summary>
+            /// NONE
+            /// </summary>
+            [Description("NONE")]
+            NONE,
+        }
+
         /// <summary>
         /// 种子Alive
         /// </summary>

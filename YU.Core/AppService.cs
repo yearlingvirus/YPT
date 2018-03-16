@@ -295,18 +295,18 @@ VALUES(@PTSITEID,@SITENAME,@USERID,@URL,@NAME,@DOWNSIZE,@UPSIZE,@SHARERATE,@SEED
         /// <returns></returns>
         public static KeyValuePair<string, SQLiteParameter[]> GetUpdateUserParameter(PTUser user)
         {
-            string sql = "UPDATE USER SET USERID = @USERID,USERNAME = @USERNAME  WHERE PTSITEID = @PTSITEID AND FID = @FID ";
+            //目前一个站点有且只会存在一个用户。
+            //后面如果支持多用户，考虑使用FID，不过感觉不会有那么的一天。
+            string sql = "UPDATE USER SET USERID = @USERID,USERNAME = @USERNAME  WHERE PTSITEID = @PTSITEID ";
             SQLiteParameter[] parms = new SQLiteParameter[]
             {
                     new SQLiteParameter("@USERID", DbType.Int32),
                     new SQLiteParameter("@USERNAME", DbType.String),
                     new SQLiteParameter("@PTSITEID", DbType.Int32),
-                    new SQLiteParameter("@FID", DbType.String),
             };
             parms[0].Value = user.UserId;
             parms[1].Value = user.UserName;
             parms[2].Value = user.Site.Id;
-            parms[3].Value = user.Fid;
             return new KeyValuePair<string, SQLiteParameter[]>(sql, parms);
         }
 

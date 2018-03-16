@@ -181,6 +181,14 @@ namespace YPT.PT
             torrent.UpLoader = "--";
         }
 
+        protected override void PreSetPersonInfo(HtmlDocument htmlDocument, PTInfo info)
+        {
+            //做种数
+            var node = htmlDocument.DocumentNode.SelectSingleNode("//img[contains(concat(' ', normalize-space(@alt), ' '), ' Torrents leeching ')]/preceding-sibling::a[1]");
+            if (node != null)
+                info.SeedNumber = node.InnerText.Trim().TryPareValue<string>();
+        }
+
 
         protected override void SetPersonInfo(Dictionary<YUEnums.PersonInfoMap, int> infoMaps, HtmlNodeCollection nodes, PTInfo info)
         {
@@ -213,7 +221,7 @@ namespace YPT.PT
                 {
                     var index = childNode.InnerText.IndexOf(":");
                     if (index > -1)
-                        info.UpSize = childNode.InnerText.Substring(index + 1).Trim();
+                        info.UpSize = childNode.InnerText.Substring(index + 1).Trim().Replace("i", "");
                 }
             }
 
@@ -226,7 +234,7 @@ namespace YPT.PT
                 {
                     var index = childNode.InnerText.IndexOf(":");
                     if (index > -1)
-                        info.DownSize = childNode.InnerText.Substring(index + 1).Trim();
+                        info.DownSize = childNode.InnerText.Substring(index + 1).Trim().Replace("i", "");
                 }
             }
 
@@ -248,7 +256,7 @@ namespace YPT.PT
                 {
                     var index = childNode.InnerText.IndexOf(":");
                     if (index > -1)
-                        info.SeedTimes = childNode.InnerText.Substring(index + 1).Trim();
+                        info.SeedTimes = HttpUtility.HtmlDecode(childNode.InnerText.Substring(index + 1).Trim().Replace("&shy;", "").Replace("&nbsp;", ""));
                 }
             }
 
@@ -261,7 +269,7 @@ namespace YPT.PT
                 {
                     var index = childNode.InnerText.IndexOf(":");
                     if (index > -1)
-                        info.DownTimes = childNode.InnerText.Substring(index + 1).Trim();
+                        info.DownTimes = HttpUtility.HtmlDecode(childNode.InnerText.Substring(index + 1).Trim().Replace("&shy;", "").Replace("&nbsp;", ""));
                 }
             }
 

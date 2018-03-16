@@ -889,22 +889,11 @@ namespace YPT
 
             string colName = dgv.Columns[e.ColumnIndex].DataPropertyName;
 
-            if (dgv == dgvPersonInfo && colName.EqualIgnoreCase("RegisterWeek"))
-                colName = "RegisterDate";
-            else if (dgv == dgvTorrent && colName.EqualIgnoreCase("Image"))
-                colName = "PromotionType";
-            else
-            {
-                //这里重新获取列名，比如Size，获取到的应该是RealSize
-                foreach (DataGridViewColumn col in dgv.Columns)
-                {
-                    if (col.DataPropertyName.Contains(colName) && !col.DataPropertyName.EqualIgnoreCase(colName))
-                    {
-                        colName = col.DataPropertyName;
-                        break;
-                    }
-                }
-            }
+            //这里重新获取列名，比如Size_Display，获取到的应该是Size
+            var index = colName.IndexOf("_Display");
+            if (index > -1)
+                colName = colName.Substring(0, index);
+
             if (dgv.Columns[e.ColumnIndex].SortMode == DataGridViewColumnSortMode.Programmatic)
             {
                 switch (dgv.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection)
@@ -1027,12 +1016,15 @@ namespace YPT
                         try
                         {
                             var info = pt.GetPersonInfo();
-                            infoDict[user.Site.Id] = new KeyValuePair<bool, PTInfo>(true, info);
-                            if (isNeedUpdate && info != null && info.UserId > 0)
+                            lock (syncInfoObject)
                             {
-                                user.UserId = info.UserId;
-                                user.UserName = info.Name;
-                                sqlList.Add(AppService.GetUpdateUserParameter(user));
+                                infoDict[user.Site.Id] = new KeyValuePair<bool, PTInfo>(true, info);
+                                if (isNeedUpdate && info != null && info.UserId > 0)
+                                {
+                                    user.UserId = info.UserId;
+                                    user.UserName = info.Name;
+                                    sqlList.Add(AppService.GetUpdateUserParameter(user));
+                                }
                             }
                         }
                         catch (Exception ex)
