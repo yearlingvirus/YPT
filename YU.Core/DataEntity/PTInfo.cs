@@ -135,11 +135,11 @@ namespace YU.Core.DataEntity
             entity.UpSize_Display = this.UpSize;
             entity.UpSize = YUUtils.ParseB(this.UpSize);
 
-            entity.DownTimes_Display = GetPropertyDisplay(this.DownTimes);
             entity.DownTimes = YUUtils.ParseMilliSecond(this.DownTimes);
+            entity.DownTimes_Display = YUUtils.RetainNDecimal(TimeSpan.FromMilliseconds(entity.DownTimes).TotalDays);
 
-            entity.SeedTimes_Display = GetPropertyDisplay(this.SeedTimes);
             entity.SeedTimes = YUUtils.ParseMilliSecond(this.SeedTimes);
+            entity.SeedTimes_Display = YUUtils.RetainNDecimal(TimeSpan.FromMilliseconds(entity.SeedTimes).TotalDays);
 
             entity.LastSyncDate = this.LastSyncDate;
             entity.LastSyncDate_Display = GetPropertyDisplay(this.LastSyncDate);

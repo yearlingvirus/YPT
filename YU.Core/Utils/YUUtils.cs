@@ -75,7 +75,7 @@ namespace YU.Core.Utils
             dateString = dateString.Replace("days", "d");
             char[] spiltChars = new char[] { 'd', 'h', 'm', ':', ' ' };
             string[] arr = dateString.Split(spiltChars, StringSplitOptions.RemoveEmptyEntries);
-            if (arr.Length >= 3)
+            if (arr.Length >= 3 && dateString.Contains("d"))
             {
                 dateValue += arr[0].TryPareValue<int>() * 24L * 60L * 60L * 1000L;
                 dateValue += arr[1].TryPareValue<int>() * 60L * 60L * 1000L;
@@ -83,7 +83,27 @@ namespace YU.Core.Utils
                 if (arr.Length > 3)
                     dateValue += arr[3].TryPareValue<int>() * 1000L;
             }
+            //如果不包含天
+            else if (arr.Length >= 2)
+            {
+                dateValue += arr[0].TryPareValue<int>() * 60L * 60L * 1000L;
+                dateValue += arr[1].TryPareValue<int>() * 60L * 1000L;
+                if (arr.Length > 2)
+                    dateValue += arr[2].TryPareValue<int>() * 1000L;
+            }
             return dateValue;
+        }
+
+        /// <summary>
+        /// 保留N位小数
+        /// </summary>
+        /// <param name="decimalValue"></param>
+        /// <param name="n"></param>
+        /// <returns></returns>
+        public static string RetainNDecimal(double decimalValue, int n = 2)
+        {
+            string format = "{0:N" + n + "}";
+            return string.Format(format, decimalValue);
         }
 
         /// <summary>  

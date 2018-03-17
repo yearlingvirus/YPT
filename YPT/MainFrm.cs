@@ -83,6 +83,7 @@ namespace YPT
             FormUtils.CreateDataGridColumns(dgvTorrent, typeof(PTTorrentGridEntity));
             FormUtils.InitDataGridView(dgvPersonInfo);
             FormUtils.CreateDataGridColumns(dgvPersonInfo, typeof(PTInfoGridEntity));
+
             InitSign();
             InitSync();
             InitTorrentForum();

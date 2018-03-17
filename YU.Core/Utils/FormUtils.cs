@@ -81,6 +81,8 @@ namespace YU.Core.Utils
             gridView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             gridView.DefaultCellStyle.Font = new Font("微软雅黑", 9, FontStyle.Regular);
 
+            gridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+
             gridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader;
             gridView.RowTemplate.Height = 36;
 

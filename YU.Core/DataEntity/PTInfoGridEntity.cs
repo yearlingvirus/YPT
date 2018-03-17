@@ -92,7 +92,7 @@ namespace YU.Core.DataEntity
         /// <summary>
         /// 做种时间
         /// </summary>
-        [GridView("做种时间", true , 100)]
+        [GridView("做种(天)", true , 100)]
         public string SeedTimes_Display { get; set; }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace YU.Core.DataEntity
         /// <summary>
         /// 下载时间
         /// </summary>
-        [GridView("下载时间", true, 100)]
+        [GridView("下载(天)", true, 100)]
         public string DownTimes_Display { get; set; }
 
         /// <summary>
