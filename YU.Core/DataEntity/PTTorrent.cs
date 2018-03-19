@@ -143,7 +143,7 @@ namespace YU.Core.DataEntity
                 //缓存处理
                 if (!HRImages.ContainsKey(entity.IsHR))
                 {
-                    var image = FormUtils.GetImage(PTSiteConst.RESOURCE_HRIMG[entity.IsHR]);
+                    var image = ImageUtils.GetImage(PTSiteConst.RESOURCE_HRIMG[entity.IsHR]);
                     HRImages[entity.IsHR] = image;
                 }
                 entity.IsHR_Display = HRImages[entity.IsHR];
@@ -155,7 +155,7 @@ namespace YU.Core.DataEntity
                 //缓存处理
                 if (!PromotionImages.ContainsKey(entity.PromotionType))
                 {
-                    var image = FormUtils.GetImage(PTSiteConst.RESOURCE_PROMOTIONIMG[entity.PromotionType]);
+                    var image = ImageUtils.GetImage(PTSiteConst.RESOURCE_PROMOTIONIMG[entity.PromotionType]);
                     PromotionImages[entity.PromotionType] = image;
                 }
                 entity.PromotionType_Display = PromotionImages[entity.PromotionType];

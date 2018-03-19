@@ -12,6 +12,8 @@ using YU.Core.Event;
 using YU.Core.Log;
 using YU.Core.Utils;
 using System.Web;
+using System.Drawing;
+using System.Text.RegularExpressions;
 
 namespace YPT.PT
 {
@@ -128,7 +130,7 @@ namespace YPT.PT
                 result = HttpUtils.GetData(Site.Url, _cookie);
                 if (HttpUtils.IsErrorRequest(result.Item1))
                     return result.Item1;
-                if (IsLoginSuccess(result.Item1))
+                if (IsLoginSuccess(result.Item3))
                 {
                     UpdateUserWhileChange(result.Item1, User);
                     return "登录成功。";
@@ -140,10 +142,10 @@ namespace YPT.PT
                 return result.Item1;
 
             string htmlResult = result.Item1;
-            if (IsLoginSuccess(htmlResult))
+            if (IsLoginSuccess(result.Item3))
             {
                 _cookie = result.Item2.CookieContainer;
-                UpdateUserWhileChange(result.Item1, User);
+                UpdateUserWhileChange(htmlResult, User);
                 SetLocalCookie(_cookie);
                 return "登录成功。";
             }
@@ -222,7 +224,7 @@ namespace YPT.PT
         /// <param name="cookieResult"></param>
         /// <param name="otpCode"></param>
         /// <returns></returns>
-        protected virtual Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginWhenEnableVerificationCode(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult)
+        protected virtual Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginWhenEnableVerificationCode(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult, bool isAutoOrc = true)
         {
             string htmlResult = string.Empty;
             //这里先看有没有前面是不是有过请求了，如果有的话，那么直接在这里获取验证码，如果没有，则自己获取。
@@ -243,10 +245,39 @@ namespace YPT.PT
                     return new Tuple<string, HttpWebRequest, HttpWebResponse>("无法获取到验证码，登录失败，请稍后重试。", null, null);
 
                 imgUrl = UrlUtils.CombileUrl(Site.Url, imgUrl);
-                OnVerificationCodeEventArgs args = new OnVerificationCodeEventArgs();
-                args.VerificationCodeUrl = imgUrl;
-                args.Site = Site;
-                checkCodeKey = OnVerificationCode(args);
+
+                Bitmap bmp = null;
+                if (isAutoOrc)
+                {
+                    try
+                    {
+                        bmp = ImageUtils.GetOrcImage((Bitmap)ImageUtils.ImageFromWebTest(imgUrl, _cookie));
+                        if (bmp != null)
+                        {
+                            var orcResults = BaiDuApiUtil.WebImage(bmp);
+                            if (orcResults.Any())
+                            {
+                                checkCodeKey = orcResults.FirstOrDefault();
+                                string regEx = @"[^a-z0-9]";
+                                checkCodeKey = Regex.Replace(checkCodeKey, regEx, "", RegexOptions.IgnoreCase);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(string.Format("{0} 验证码识别异常。异常原因：{1}", Site.Name, ex.GetInnerExceptionMessage()), ex);
+                    }
+                }
+                if (!isAutoOrc || checkCodeKey.Length != 6)
+                {
+                    //目前Frds模板的验证码都是6位
+                    OnVerificationCodeEventArgs args = new OnVerificationCodeEventArgs();
+                    args.VerificationCodeUrl = imgUrl;
+                    args.Site = Site;
+                    checkCodeKey = OnVerificationCode(args);
+                }
+
+
                 checkCodeHash = imgUrl.UrlSearchKey("imagehash");
                 if (checkCodeKey.IsNullOrEmptyOrWhiteSpace() || checkCodeHash.IsNullOrEmptyOrWhiteSpace())
                     return new Tuple<string, HttpWebRequest, HttpWebResponse>("无法获取到验证码，登录失败，请稍后重试。", null, null);
@@ -264,7 +295,18 @@ namespace YPT.PT
                         postData = string.Format("xss={0}&", xssValue) + postData;
                 }
 
-                return HttpUtils.PostData(Site.LoginUrl, postData, _cookie);
+                var result = HttpUtils.PostData(Site.LoginUrl, postData, _cookie);
+                if (HttpUtils.IsErrorRequest(result.Item1))
+                    return result;
+
+                //如果登录失败且之前是自动验证码识别，则重新登录。
+                if (isAutoOrc && !IsLoginSuccess(result.Item3))
+                {
+                    Logger.Info(string.Format("{0} 验证码识别登录没有成功，识别到的验证码为{1}。", Site.Name, checkCodeKey));
+                    return DoLoginWhenEnableVerificationCode(cookieResult, false);
+                }
+                else
+                    return result;
             }
             else
             {
@@ -272,9 +314,11 @@ namespace YPT.PT
             }
         }
 
-        protected bool IsLoginSuccess(string htmlResult)
+
+
+        protected bool IsLoginSuccess(HttpWebResponse httpResponse)
         {
-            if (!htmlResult.Contains("登录失败") && (htmlResult.Contains("欢迎回来") || htmlResult.Contains("Welcome") || htmlResult.Contains("歡迎回來")))
+            if (httpResponse != null && (httpResponse.ResponseUri.AbsoluteUri.EndsWith("index.php") || httpResponse.ResponseUri.AbsoluteUri.EndsWith("my.php") || httpResponse.ResponseUri.OriginalString.Equals(Site.Url)))
                 return true;
             else
                 return false;
@@ -321,8 +365,8 @@ namespace YPT.PT
             htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
 
             HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"info_block\"]/tr/td/table/tr/td//a");//跟Xpath一样
-            //这里不用User_Name判断，因为不同等级的User，Class也会不一样。
-            //HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//a[contains(concat(' ', normalize-space(@class), ' '), ' User_Name ')]");
+                                                                                                                       //这里不用User_Name判断，因为不同等级的User，Class也会不一样。
+                                                                                                                       //HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//a[contains(concat(' ', normalize-space(@class), ' '), ' User_Name ')]");
             return node;
         }
 
@@ -922,7 +966,7 @@ namespace YPT.PT
             //做种数
             var node = htmlDocument.DocumentNode.SelectSingleNode("//img[contains(concat(' ', normalize-space(@alt), ' '), ' Torrents leeching ')]");
             if (node != null && node.PreviousSibling != null)
-                info.SeedNumber = node.PreviousSibling.InnerText.Trim().TryPareValue<string>(); 
+                info.SeedNumber = node.PreviousSibling.InnerText.Trim().TryPareValue<string>();
 
         }
 

@@ -20,6 +20,21 @@ namespace YU.Core
         public const string SETTING_SQLLITEDBPASSWORD = "SQLLiteDBPassWord";
 
         /// <summary>
+        /// 百度ORC识别Api Key
+        /// </summary>
+        public const string SETTING_BAIDUAPIORCKEY = "BaiDuApiOrcKey";
+
+        /// <summary>
+        /// 百度ORC识别Secret Key
+        /// </summary>
+        public const string SETTING_BAIDUORCSECRETKEY = "BaiDuOrcSecretKey";
+
+        /// <summary>
+        /// 百度ORC识别AppId
+        /// </summary>
+        public const string SETTING_BAIDUORCAPPID = "BaiDuOrcAppId";
+
+        /// <summary>
         /// 日志Logger
         /// </summary>
         public const string LOGGER = "application-log";
@@ -99,6 +114,7 @@ namespace YU.Core
         /// IE9
         /// </summary>
         public const string HTTP_IE9_UA = "Mozilla/5.0(compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident / 5.0)";
+
 
     }
 }

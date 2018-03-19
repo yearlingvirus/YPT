@@ -37,7 +37,7 @@ namespace YPT.PT
                 result = HttpUtils.GetData(Site.Url, _cookie);
                 if (HttpUtils.IsErrorRequest(result.Item1))
                     return result.Item1;
-                if (IsLoginSuccess(result.Item1))
+                if (IsLoginSuccess(result.Item3))
                 {
                     UpdateUserWhileChange(result.Item1, User);
                     return "登录成功。";
@@ -56,7 +56,7 @@ namespace YPT.PT
                     string url = o["redirect"].TryPareValue<string>();
                     result = HttpUtils.GetData(url, result.Item2.CookieContainer);
                     string htmlResult = result.Item1;
-                    if (IsLoginSuccess(htmlResult))
+                    if (IsLoginSuccess(result.Item3))
                     {
                         _cookie = result.Item2.CookieContainer;
                         UpdateUserWhileChange(result.Item1, User);
@@ -83,9 +83,7 @@ namespace YPT.PT
                 return string.Format("登录失败，失败原因：{0}", result.Item1);
         }
 
-
-
-        protected override Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginWhenEnableVerificationCode(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult)
+        protected override Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginWhenEnableVerificationCode(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult, bool isAutoOrc = true)
         {
             if (cookieResult == null)
                 cookieResult = HttpUtils.GetData(Site.Url, _cookie);
@@ -97,9 +95,12 @@ namespace YPT.PT
             args.VerificationCodeUrl = imgUrl;
             args.Cookie = _cookie;
             args.Site = Site;
+
+
             string checkCodeKey = OnVerificationCode(args);
             if (checkCodeKey.IsNullOrEmptyOrWhiteSpace())
                 return new Tuple<string, HttpWebRequest, HttpWebResponse>("无法获取到验证码，登录失败，请稍后重试。", null, null);
+
 
             //if (Site.IsLoginByMail)
             //U2是否有使用用户名登录的接口?

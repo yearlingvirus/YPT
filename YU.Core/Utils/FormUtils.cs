@@ -36,39 +36,6 @@ namespace YU.Core.Utils
         }
 
         /// <summary>
-        /// 获取Url中的Image
-        /// </summary>
-        /// <param name="imgUrl"></param>
-        /// <returns></returns>
-        public static Image ImageFromWebTest(string imgUrl, CookieContainer cookie = null)
-        {
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(imgUrl);
-                if (cookie != null)
-                    request.CookieContainer = cookie;
-                using (WebResponse response = request.GetResponse())
-                {
-                    Image img = Image.FromStream(response.GetResponseStream());
-                    return img;
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(string.Format("远程获取图片失败，失败Url：{0}", imgUrl), ex);
-                return null;
-            }
-        }
-
-        public static Image GetImage(string path)
-        {
-            FileStream fs = new FileStream(path, System.IO.FileMode.Open);
-            Image result = Image.FromStream(fs);
-            fs.Close();
-            return result;
-        }
-
-        /// <summary>
         /// 初始化DataGridView
         /// </summary>
         /// <param name="gridView"></param>

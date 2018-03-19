@@ -45,7 +45,7 @@ namespace YPT
         YUTransparentPanel progressPanel;
 
         /// <summary>
-        /// 上一次排序的列
+        /// 上一次搜索排序的列
         /// </summary>
         private KeyValuePair<string, YUEnums.SortOrderType> LastSearchColKvr { get; set; }
 
@@ -68,27 +68,6 @@ namespace YPT
         {
             InitializeComponent();
             this.Text = string.Format("YPT {0}", YUUtils.GetVersion());
-
-            SettingDict.Add(cbIsPostSiteOrder, new KeyValuePair<string, string>(YUConst.CONFIG_SEARCH_POSTSITEORDER, "IsPostSiteOrder"));
-            SettingDict.Add(cbIsIngoreTop, new KeyValuePair<string, string>(YUConst.CONFIG_SEARCH_INGORETOP, "IsIngoreTop"));
-            SettingDict.Add(cbIsLastSort, new KeyValuePair<string, string>(YUConst.CONFIG_SEARCH_ISLASTSORT, "IsLastSort"));
-            SettingDict.Add(cbIsSearchTiming, new KeyValuePair<string, string>(string.Empty, "IsSearchTiming"));
-            FormUtils.BindControlValue(Global.Config, SettingDict.Select(x => new KeyValuePair<Control, string>(x.Key, x.Value.Value)));
-            FormUtils.BindControlDataChanged(SettingDict.Select(x => x.Key), Control_DataChanged);
-            cbIsSearchTiming.CheckedChanged += CbIsSearchTiming_CheckedChanged;
-            cbIsPostSiteOrder.CheckedChanged += CbIsPostSiteOrder_CheckedChanged;
-            cbIsLastSort.CheckedChanged += CbIsLastSort_CheckedChanged;
-
-            FormUtils.InitDataGridView(dgvTorrent);
-            FormUtils.CreateDataGridColumns(dgvTorrent, typeof(PTTorrentGridEntity));
-            FormUtils.InitDataGridView(dgvPersonInfo);
-            FormUtils.CreateDataGridColumns(dgvPersonInfo, typeof(PTInfoGridEntity));
-
-            InitSign();
-            InitSync();
-            InitTorrentForum();
-            InitTorrentCmb();
-            RefreshPersonInfo();
         }
 
         #region 签到，登录
@@ -258,6 +237,27 @@ namespace YPT
 
         private void MainFrm_Load(object sender, EventArgs e)
         {
+            SettingDict.Add(cbIsPostSiteOrder, new KeyValuePair<string, string>(YUConst.CONFIG_SEARCH_POSTSITEORDER, "IsPostSiteOrder"));
+            SettingDict.Add(cbIsIngoreTop, new KeyValuePair<string, string>(YUConst.CONFIG_SEARCH_INGORETOP, "IsIngoreTop"));
+            SettingDict.Add(cbIsLastSort, new KeyValuePair<string, string>(YUConst.CONFIG_SEARCH_ISLASTSORT, "IsLastSort"));
+            SettingDict.Add(cbIsSearchTiming, new KeyValuePair<string, string>(string.Empty, "IsSearchTiming"));
+            FormUtils.BindControlValue(Global.Config, SettingDict.Select(x => new KeyValuePair<Control, string>(x.Key, x.Value.Value)));
+            FormUtils.BindControlDataChanged(SettingDict.Select(x => x.Key), Control_DataChanged);
+            cbIsSearchTiming.CheckedChanged += CbIsSearchTiming_CheckedChanged;
+            cbIsPostSiteOrder.CheckedChanged += CbIsPostSiteOrder_CheckedChanged;
+            cbIsLastSort.CheckedChanged += CbIsLastSort_CheckedChanged;
+
+            FormUtils.InitDataGridView(dgvTorrent);
+            FormUtils.CreateDataGridColumns(dgvTorrent, typeof(PTTorrentGridEntity));
+            FormUtils.InitDataGridView(dgvPersonInfo);
+            FormUtils.CreateDataGridColumns(dgvPersonInfo, typeof(PTInfoGridEntity));
+
+            InitSign();
+            InitSync();
+            InitTorrentForum();
+            InitTorrentCmb();
+            RefreshPersonInfo();
+
             progressPanel = new YUTransparentPanel(this);
             this.Controls.Add(progressPanel);
         }
@@ -710,7 +710,7 @@ namespace YPT
                 {
                     if (!isFill)
                     {
-                        FillTorrent(searchTorrents, ref isFill);
+                        FillTorrent(searchTorrents, ref isFill, searchKey.IsNullOrEmptyOrWhiteSpace());
                         bool isOpen = searchTorrents.Count <= 0;
                         if (cts.Token.IsCancellationRequested)
                             LogMessage(null, "搜索过程出现错误，错误原因：超时。", isOpen);
@@ -719,7 +719,7 @@ namespace YPT
                 task.ContinueWith(result =>
                 {
                     if (!cts.Token.IsCancellationRequested && !isFill)
-                        FillTorrent(searchTorrents, ref isFill);
+                        FillTorrent(searchTorrents, ref isFill, searchKey.IsNullOrEmptyOrWhiteSpace());
                     string errMsg = sb.ToString();
                     if (!errMsg.IsNullOrEmptyOrWhiteSpace())
                     {
@@ -731,7 +731,7 @@ namespace YPT
             }
         }
 
-        private void FillTorrent(List<PTTorrent> searchTorrents, ref bool isFill)
+        private void FillTorrent(List<PTTorrent> searchTorrents, ref bool isFill, bool isEmptySearch)
         {
             isFill = true;
             progressPanel.StopLoading();
@@ -753,8 +753,10 @@ namespace YPT
                 {
                     this.Invoke(new Action(() =>
                     {
-                        dgvTorrent.DataSource = entitys;
-                        //ReSort(dgvTorrent, "UpLoadTime", SortOrder.Descending, entitys);
+                        if (isEmptySearch)
+                            dgvTorrent.DataSource = entitys;
+                        else
+                            ReSort(dgvTorrent, "UpLoadTime", SortOrder.Descending, entitys);
                         dgvTorrent.Tag = searchTorrents;
                     }));
                 }
@@ -892,7 +894,7 @@ namespace YPT
 
             //这里重新获取列名，比如Size_Display，获取到的应该是Size
             var index = colName.IndexOf("_Display");
-            if (index > -1)
+            if (index > -1 && dgv.Columns[colName.Substring(0, index)] != null)
                 colName = colName.Substring(0, index);
 
             if (dgv.Columns[e.ColumnIndex].SortMode == DataGridViewColumnSortMode.Programmatic)
@@ -908,6 +910,7 @@ namespace YPT
                                 ReSort(dgv, colName, SortOrder.Descending, dgv.DataSource as IEnumerable<PTInfoGridEntity>);
                         }
                         dgv.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection = SortOrder.Descending;
+                        dgv.Columns[colName].HeaderCell.SortGlyphDirection = SortOrder.Descending;
                         break;
                     case SortOrder.Descending:
                         {
@@ -917,11 +920,12 @@ namespace YPT
                                 ReSort(dgv, colName, SortOrder.Ascending, dgv.DataSource as IEnumerable<PTInfoGridEntity>);
                         }
                         dgv.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection = SortOrder.Ascending;
+                        dgv.Columns[colName].HeaderCell.SortGlyphDirection = SortOrder.Ascending;
                         break;
                 }
             }
             if (dgv.Name == "dgvTorrent")
-                LastSearchColKvr = new KeyValuePair<string, YUEnums.SortOrderType>(dgv.Columns[e.ColumnIndex].DataPropertyName, (YUEnums.SortOrderType)(int)dgv.Columns[e.ColumnIndex].HeaderCell.SortGlyphDirection);
+                LastSearchColKvr = new KeyValuePair<string, YUEnums.SortOrderType>(colName, (YUEnums.SortOrderType)(int)dgv.Columns[colName].HeaderCell.SortGlyphDirection);
         }
 
         /// <summary>
@@ -1100,7 +1104,6 @@ namespace YPT
                 }
             }
 
-
             Dictionary<YUEnums.PTEnum, KeyValuePair<bool, PTInfo>> infoDict = new Dictionary<YUEnums.PTEnum, KeyValuePair<bool, PTInfo>>();
             foreach (var info in infos)
             {
@@ -1128,8 +1131,21 @@ namespace YPT
                         LogMessage(null, string.Format("{0} {1} 请检查用户信息映射。", info.SiteName, ex.GetInnerExceptionMessage()));
                     }
                 }
-                entitys = entitys.OrderBy(x => x.SiteId).ToList();
-                dgvPersonInfo.DataSource = entitys;
+
+                KeyValuePair<string, SortOrder> lastSortKvr = new KeyValuePair<string, SortOrder>();
+                foreach (DataGridViewColumn col in dgvPersonInfo.Columns)
+                {
+                    if (col != null && col.HeaderCell != null && col.HeaderCell.SortGlyphDirection != SortOrder.None && !col.Name.EndsWith("_Display"))
+                    {
+                        lastSortKvr = new KeyValuePair<string, SortOrder>(col.Name, col.HeaderCell.SortGlyphDirection);
+                        break;
+                    }
+                }
+
+                if (lastSortKvr.Key.IsNullOrEmptyOrWhiteSpace())
+                    ReSort(dgvPersonInfo, "UpSize", SortOrder.Descending, entitys);
+                else
+                    ReSort(dgvPersonInfo, lastSortKvr.Key, lastSortKvr.Value, entitys);
                 dgvPersonInfo.Tag = infoDict;
                 isFill = true;
             }

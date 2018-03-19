@@ -89,7 +89,7 @@ namespace YPT.Forms
             this.picPanel.Size = new System.Drawing.Size(213, 85);
             this.picPanel.TabIndex = 3;
             // 
-            // TwoStepVerification
+            // VerificationCodeFrm
             // 
             this.AcceptButton = this.btnConfirm;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -104,7 +104,7 @@ namespace YPT.Forms
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "TwoStepVerification";
+            this.Name = "VerificationCodeFrm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "验证码";
             this.TopMost = true;

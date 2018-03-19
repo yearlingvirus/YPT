@@ -147,8 +147,7 @@ namespace YU.Core.DataEntity
                 Forums = new List<PTForum>()
                 {
                     new PTForum() { SiteId = YUEnums.PTEnum.MTeam, Name = "MTeam", SearchUrl = "https://tp.m-team.cc/torrents.php", Visable = true, Order = 1 },
-                    new PTForum() { SiteId = YUEnums.PTEnum.MTeam, Name = "MTeam_4k", SearchUrl = "https://tp.m-team.cc/torrents.php?standard6=1", Visable = true, Order = 2 },
-                    new PTForum() { SiteId = YUEnums.PTEnum.MTeam, Name = "MTeam_Adult", SearchUrl = "https://tp.m-team.cc/adult.php", Visable = true, Order = 3 },
+                    new PTForum() { SiteId = YUEnums.PTEnum.MTeam, Name = "MTeam_Adult", SearchUrl = "https://tp.m-team.cc/adult.php", Visable = true, Order = 2 },
                 },
                 Order = (int)YUEnums.PTEnum.MTeam,
             },

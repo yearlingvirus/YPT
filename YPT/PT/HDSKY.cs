@@ -1,13 +1,16 @@
 ﻿using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using YU.Core;
 using YU.Core.DataEntity;
 using YU.Core.Event;
+using YU.Core.Log;
 using YU.Core.Utils;
 
 namespace YPT.PT
@@ -37,6 +40,11 @@ namespace YPT.PT
 
         protected override Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginPostWithOutCookie(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult)
         {
+            return DoLoginPostWithOutCookie(cookieResult);
+        }
+
+        private Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginPostWithOutCookie(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult, bool isRetry = true)
+        {
             //如果前面Cookie登录没有成功，则下面尝试没有Cookie的情况。
             string postData = "username={0}&password={1}&oneCode={2}&imagestring={3}&imagehash={4}";
             if (new Uri(Site.LoginUrl).Scheme == "https")
@@ -64,12 +72,8 @@ namespace YPT.PT
                     string imgUrl = HttpUtility.HtmlDecode(node.Attributes["src"].Value);
                     if (imgUrl.IsNullOrEmptyOrWhiteSpace())
                         return new Tuple<string, HttpWebRequest, HttpWebResponse>("无法获取到验证码，登录失败，请稍后重试。", null, null);
-
                     imgUrl = UrlUtils.CombileUrl(Site.Url, imgUrl);
-                    OnVerificationCodeEventArgs args = new OnVerificationCodeEventArgs();
-                    args.VerificationCodeUrl = imgUrl;
-                    args.Site = Site;
-                    checkCodeKey = OnVerificationCode(args);
+                    checkCodeKey = GetVerificationCode(imgUrl, isRetry);
                     checkCodeHash = imgUrl.UrlSearchKey("imagehash");
                     if (checkCodeKey.IsNullOrEmptyOrWhiteSpace() || checkCodeHash.IsNullOrEmptyOrWhiteSpace())
                         return new Tuple<string, HttpWebRequest, HttpWebResponse>("无法获取到验证码，登录失败，请稍后重试。", null, null);
@@ -87,10 +91,57 @@ namespace YPT.PT
                 otpCode = OnTwoStepVerification(e);
             }
 
-            //username=1&password=1&oneCode=1&imagestring=1&imagehash=ef2cc5be40c27a62760d0a3bd1565009
             postData = string.Format(postData, User.UserName, User.PassWord, otpCode, checkCodeKey, checkCodeHash);
-            return HttpUtils.PostData(Site.LoginUrl, postData, _cookie);
 
+            var result = HttpUtils.PostData(Site.LoginUrl, postData, _cookie);
+            if (HttpUtils.IsErrorRequest(result.Item1))
+                return result;
+
+            //如果登录失败且不是二次尝试的，则重新登录。
+            if (!isRetry && !IsLoginSuccess(result.Item3))
+            {
+                Logger.Info(string.Format("{0} 登录没有成功，识别到的验证码为{1}。", Site.Name, checkCodeKey));
+                return DoLoginPostWithOutCookie(cookieResult, false);
+            }
+            else
+                return result;
+
+        }
+
+        private string GetVerificationCode(string imgUrl, bool isAutoOrc = true)
+        {
+            string checkCodeKey = string.Empty;
+            Bitmap bmp = null;
+            if (isAutoOrc)
+            {
+                try
+                {
+                    bmp = ImageUtils.GetOrcImage((Bitmap)ImageUtils.ImageFromWebTest(imgUrl, _cookie));
+                    if (bmp != null)
+                    {
+                        var orcResults = BaiDuApiUtil.WebImage(bmp);
+                        if (orcResults.Any())
+                        {
+                            checkCodeKey = orcResults.FirstOrDefault();
+                            string regEx = @"[^a-z0-9]";
+                            checkCodeKey = Regex.Replace(checkCodeKey, regEx, "", RegexOptions.IgnoreCase);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(string.Format("{0} 验证码识别异常。异常原因：{1}", Site.Name, ex.GetInnerExceptionMessage()), ex);
+                }
+            }
+            if (!isAutoOrc || checkCodeKey.Length < 6)
+            {
+                //目前Frds模板的验证码都是6位
+                OnVerificationCodeEventArgs args = new OnVerificationCodeEventArgs();
+                args.VerificationCodeUrl = imgUrl;
+                args.Site = Site;
+                checkCodeKey = OnVerificationCode(args);
+            }
+            return checkCodeKey;
         }
     }
 }

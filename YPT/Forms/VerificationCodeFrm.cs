@@ -28,10 +28,14 @@ namespace YPT.Forms
                  InitializeComponent();
             if (El != null)
             {
-                if (!El.VerificationCodeUrl.IsNullOrEmptyOrWhiteSpace())
-                    picCode.Image = FormUtils.ImageFromWebTest(El.VerificationCodeUrl, El.Cookie);
+                if (El.Image != null)
+                    picCode.Image = El.Image;
+                else if (!El.VerificationCodeUrl.IsNullOrEmptyOrWhiteSpace())
+                    picCode.Image = ImageUtils.ImageFromWebTest(El.VerificationCodeUrl, El.Cookie);
                 if (El.Site != null)
                     this.Text = El.Site.Name + "验证码";
+                if (!El.Code.IsNullOrEmptyOrWhiteSpace())
+                    this.txtCode.Text = El.Code;
             }
 
         }
@@ -49,5 +53,6 @@ namespace YPT.Forms
                 this.Close();
             }
         }
+
     }
 }

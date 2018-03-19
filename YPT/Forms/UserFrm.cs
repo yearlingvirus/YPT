@@ -62,14 +62,12 @@ namespace YPT.Forms
                 if (result)
                 {
                     if (cbIsContinue.Checked)
-                    {
-                        OnUserChangeEventArgs el = new OnUserChangeEventArgs();
-                        el.User = User;
-                        OnUserChanged(el);
-                        //FormUtils.ShowInfoMessage("保存成功，你可以选择其他站点继续添加。");
-                    }
+                        FormUtils.ShowInfoMessage("保存成功，你可以选择其他站点继续添加。");
                     else
                         this.DialogResult = DialogResult.OK;
+                    OnUserChangeEventArgs el = new OnUserChangeEventArgs();
+                    el.User = User;
+                    OnUserChanged(el);
                 }
             }
         }

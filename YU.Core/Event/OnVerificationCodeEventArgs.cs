@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -25,5 +26,15 @@ namespace YU.Core.Event
         /// 站点
         /// </summary>
         public PTSite Site { get; set; }
+
+        /// <summary>
+        /// 图像（如果传入此参数，则忽略URL）
+        /// </summary>
+       public Image Image { get; set; }
+
+        /// <summary>
+        /// 默认验证阿妈
+        /// </summary>
+        public string Code { get; set; }
     }
 }

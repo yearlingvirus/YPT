@@ -83,12 +83,7 @@ namespace YPT.Forms
         {
             UserFrm frm = new UserFrm(null);
             frm.UserChanged += Frm_UserChanged;
-            if (frm.ShowDialog() == DialogResult.OK)
-            {
-                OnUserChangeEventArgs el = new OnUserChangeEventArgs();
-                el.User = frm.User;
-                OnUserChanged(el);
-            }
+            frm.ShowDialog();
         }
 
         private void BtnDel_Click(object sender, EventArgs e)
@@ -100,6 +95,8 @@ namespace YPT.Forms
             {
                 if (AppService.DeleteUser(user.Site.Id) > 0)
                 {
+                    var pt = PTFactory.GetPT(user.Site.Id, user) as AbstractPT;
+                    pt.DelLocalCookie();
                     OnUserChangeEventArgs el = new OnUserChangeEventArgs();
                     el.User = user;
                     OnUserChanged(el);
@@ -116,12 +113,7 @@ namespace YPT.Forms
             {
                 UserFrm frm = new UserFrm(user);
                 frm.UserChanged += Frm_UserChanged;
-                if (frm.ShowDialog() == DialogResult.OK)
-                {
-                    OnUserChangeEventArgs el = new OnUserChangeEventArgs();
-                    el.User = user;
-                    OnUserChanged(el);
-                }
+                frm.ShowDialog();
             }
         }
 
@@ -204,8 +196,8 @@ namespace YPT.Forms
 
                 int defaultHeight = mainPanel.Controls.Count * 150;
 
-                this.Size = new Size(this.Size.Width, defaultHeight > this.Owner.Size.Height ? this.Owner.Size.Height : defaultHeight);
-                this.Location = new Point(this.Location.X, defaultHeight > this.Owner.Size.Height ? this.Owner.Location.Y : this.Location.Y);
+                this.Size = new Size(this.Size.Width, this.Owner.Size.Height);
+                this.Location = new Point(this.Location.X, this.Owner.Location.Y);
             }
         }
 
