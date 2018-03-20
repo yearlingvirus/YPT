@@ -28,7 +28,7 @@ HDHome
 GZTown   
 BTSchool      
 HDU  
-NYPT 
+NYPT  
 U2
 
 #### Basic
