@@ -50,7 +50,6 @@ namespace YPT.Forms
             {
                 VerificationCodeKey = txtCode.Text;
                 this.DialogResult = DialogResult.OK;
-                this.Close();
             }
         }
 

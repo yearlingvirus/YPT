@@ -130,16 +130,16 @@ namespace YU.Core.DataEntity
             entity.Bonus = this.Bonus;
             entity.Bonus_Display = GetPropertyDisplay(this.Bonus);
 
-            entity.DownSize_Display = this.DownSize;
+            entity.DownSize_Display = GetPropertyDisplay(this.DownSize);
             entity.DownSize = YUUtils.ParseB(this.DownSize);
-            entity.UpSize_Display = this.UpSize;
+            entity.UpSize_Display = GetPropertyDisplay(this.UpSize);
             entity.UpSize = YUUtils.ParseB(this.UpSize);
 
             entity.DownTimes = YUUtils.ParseMilliSecond(this.DownTimes);
-            entity.DownTimes_Display = YUUtils.RetainNDecimal(TimeSpan.FromMilliseconds(entity.DownTimes).TotalDays);
+            entity.DownTimes_Display = entity.DownTimes <= 0 ? "--" : YUUtils.RetainNDecimal(TimeSpan.FromMilliseconds(entity.DownTimes).TotalDays);
 
             entity.SeedTimes = YUUtils.ParseMilliSecond(this.SeedTimes);
-            entity.SeedTimes_Display = YUUtils.RetainNDecimal(TimeSpan.FromMilliseconds(entity.SeedTimes).TotalDays);
+            entity.SeedTimes_Display = entity.SeedTimes <= 0 ? "--" : YUUtils.RetainNDecimal(TimeSpan.FromMilliseconds(entity.SeedTimes).TotalDays);
 
             entity.LastSyncDate = this.LastSyncDate;
             entity.LastSyncDate_Display = GetPropertyDisplay(this.LastSyncDate);

@@ -1148,18 +1148,25 @@ namespace YPT
                     ReSort(dgvPersonInfo, lastSortKvr.Key, lastSortKvr.Value, entitys);
                 dgvPersonInfo.Tag = infoDict;
                 isFill = true;
-            }
-            var errInfos = infoDict.Where(x => x.Value.Key == false);
-            foreach (var errInfo in errInfos)
-            {
-                foreach (DataGridViewRow row in dgvPersonInfo.Rows)
+                var errInfos = infoDict.Where(x => x.Value.Key == false);
+                foreach (var errInfo in errInfos)
                 {
-                    if (row.Cells["SiteId"].Value.TryPareValue<int>() == (int)errInfo.Key)
+                    foreach (DataGridViewRow row in dgvPersonInfo.Rows)
                     {
-                        row.DefaultCellStyle.ForeColor = Color.Red;
+                        if (row.Cells["SiteId"].Value.TryPareValue<int>() == (int)errInfo.Key)
+                        {
+                            row.DefaultCellStyle.ForeColor = Color.Red;
+                        }
                     }
                 }
             }
+            else
+            {
+                dgvPersonInfo.DataSource = null;
+                dgvPersonInfo.Tag = null;
+            }
+
+
             return isFill;
         }
 
