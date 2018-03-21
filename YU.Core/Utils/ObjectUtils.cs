@@ -146,8 +146,8 @@ namespace YU.Core.Utils
                 {
                     if (property.CanRead && property.CanWrite)
                     {
-                        var pValue = property.GetValue(obj, null);
-                        property.SetValue(result, pValue, null);
+                        var pValue = property.GetValue(obj);
+                        property.SetValue(result, pValue);
                     }
                 }
             }

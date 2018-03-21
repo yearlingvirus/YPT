@@ -127,7 +127,7 @@ namespace YU.Core.Utils
                 foreach (var kvr in controlKvr)
                 {
                     PropertyInfo info = t.GetProperty(kvr.Value);
-                    var o = info.GetValue(instance, null);
+                    var o = info.GetValue(instance);
                     if (kvr.Key is CheckBox)
                         (kvr.Key as CheckBox).Checked = o.TryPareValue<bool>();
                     else if (kvr.Key is DateTimePicker)

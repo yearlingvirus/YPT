@@ -31,12 +31,24 @@ namespace YPT
 
         #region 变量
 
+        /// <summary>
+        /// 定时签到
+        /// </summary>
         private System.Timers.Timer SignTimer { get; set; }
 
+        /// <summary>
+        /// 定时同步
+        /// </summary>
         private System.Timers.Timer SyncTimer { get; set; }
 
+        /// <summary>
+        /// 写入数据库
+        /// </summary>
         private System.Timers.Timer WriteDBTimer { get; set; }
 
+        /// <summary>
+        /// 定时搜索
+        /// </summary>
         private System.Timers.Timer SearchTimer { get; set; }
 
         /// <summary>
@@ -419,7 +431,7 @@ namespace YPT
                     AppService.SetConfig(SettingDict[control].Key, value);
                 Type t = Global.Config.GetType();
                 var info = t.GetProperty(SettingDict[control].Value);
-                info.SetValue(Global.Config, value, null);
+                info.SetValue(Global.Config, value);
             }
         }
 
@@ -701,11 +713,8 @@ namespace YPT
                     });
                 }, cts.Token);
                 progressPanel.BeginLoading(20000);
-                System.Timers.Timer canelTimer = new System.Timers.Timer(20000);
-                canelTimer.Elapsed += new System.Timers.ElapsedEventHandler((s, e) => OnTimedEvent(s, e, cts));
-                canelTimer.AutoReset = false;
-                canelTimer.Start();
                 task.Start();
+                cts.CancelAfter(20000);
                 cts.Token.Register(new Action(() =>
                 {
                     if (!isFill)
@@ -812,8 +821,6 @@ namespace YPT
                 var searchTorrents = dgvTorrent.Tag as List<PTTorrent>;
                 DataGridViewCellCollection cells = dgvTorrent.SelectedRows[0].Cells;
                 string torrentId = cells["Id"].Value.TryPareValue<string>();
-
-                //YUEnums.PTEnum siteId = (YUEnums.PTEnum)EnumUtils.GetKeyByValue<YUEnums.PTEnum>(cells["SiteId"].Value.TryPareValue<string>());
                 int siteId = cells["SiteId"].Value.TryPareValue<int>();
                 if (searchTorrents != null && searchTorrents.Count > 0)
                 {
@@ -947,10 +954,10 @@ namespace YPT
                 switch (sortMode)
                 {
                     case SortOrder.Ascending:
-                        dgv.DataSource = dataSource.OrderBy(x => Convert.ChangeType(propertyInfo.GetValue(x, null), propertyInfo.PropertyType)).ToList();
+                        dgv.DataSource = dataSource.OrderBy(x => Convert.ChangeType(propertyInfo.GetValue(x), propertyInfo.PropertyType)).ToList();
                         break;
                     case SortOrder.Descending:
-                        dgv.DataSource = dataSource.OrderByDescending(x => Convert.ChangeType(propertyInfo.GetValue(x, null),
+                        dgv.DataSource = dataSource.OrderByDescending(x => Convert.ChangeType(propertyInfo.GetValue(x),
                             propertyInfo.PropertyType)).ToList();
                         break;
                 }
@@ -1011,7 +1018,6 @@ namespace YPT
                 if (infoDict == null)
                     infoDict = new Dictionary<YUEnums.PTEnum, KeyValuePair<bool, PTInfo>>();
                 List<KeyValuePair<string, SQLiteParameter[]>> sqlList = new List<KeyValuePair<string, SQLiteParameter[]>>();
-                //Global.Users = Global.Users.Where(x => x.Site.Id == YUEnums.PTEnum.MTeam).ToList();
                 Task task = new Task(() =>
                 {
                     Parallel.ForEach(Global.Users, (user, state, i) =>
@@ -1046,11 +1052,8 @@ namespace YPT
                 if (!isBack)
                     progressPanel.BeginLoading(20000);
                 LogMessage(null, "正在同步个人信息。");
-                System.Timers.Timer canelTimer = new System.Timers.Timer(20000);
-                canelTimer.Elapsed += new System.Timers.ElapsedEventHandler((s, e) => OnTimedEvent(s, e, cts));
-                canelTimer.AutoReset = false;
-                canelTimer.Start();
                 task.Start();
+                cts.CancelAfter(20000);
                 task.ContinueWith(result =>
                 {
                     this.Invoke(new Action(() =>
@@ -1170,11 +1173,6 @@ namespace YPT
             return isFill;
         }
 
-
-        private void OnTimedEvent(object source, System.Timers.ElapsedEventArgs e, CancellationTokenSource cts)
-        {
-            cts.Cancel();
-        }
 
         private void dgvPersonInfo_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
         {

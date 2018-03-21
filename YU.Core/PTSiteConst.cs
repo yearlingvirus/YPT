@@ -63,6 +63,7 @@ namespace YU.Core
             { "Nexus", "Nexus User"},
             { "VIP", "VIP"},
             { "Retiree", "Retiree"},
+            { "Assistant", "Assistant"},
             { "Uploader", "Uploader"},
             { "Moderator", "Moderator"},
             { "Admin", "Administrator"},

@@ -75,7 +75,7 @@ namespace YPT.Forms
                     AppService.SetConfig(SettingDict[control].Key, value);
                 Type t = Global.Config.GetType();
                 var info = t.GetProperty(SettingDict[control].Value);
-                info.SetValue(Global.Config, value, null);
+                info.SetValue(Global.Config, value);
             }
         }
 
