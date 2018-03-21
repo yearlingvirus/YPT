@@ -5,7 +5,7 @@ using System.Text;
 using YU.Core;
 using YU.Core.DataEntity;
 
-namespace YPT.PT
+namespace YU.PT
 {
     /// <summary>
     /// 用户自行扩展的PT站点
@@ -16,9 +16,18 @@ namespace YPT.PT
 
         public ExtendPT(PTUser user, int siteId)
         {
+            if (siteId == 0)
+                throw new Exception("siteId cannot be zero");
             _siteId = siteId;
-            Site = Global.Sites.Where(x => x.Id == SiteId).FirstOrDefault();
+
+            if (user == null)
+                throw new Exception("User is null");
+            if (user.Site == null)
+                throw new Exception("Site is null");
+            if (user.Site.Id != SiteId)
+                throw new Exception("SiteId not correct");
             _user = user;
+            _site = user.Site;
             _cookie = GetLocalCookie();
         }
 

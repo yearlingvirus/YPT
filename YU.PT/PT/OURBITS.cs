@@ -11,7 +11,7 @@ using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 using HtmlAgilityPack;
 using System.Web;
 
-namespace YPT.PT
+namespace YU.PT
 {
     public class OURBITS : AbstractPT
     {
@@ -42,10 +42,20 @@ namespace YPT.PT
             }
             else if (subNode.NextSibling != null)
             {
-                torrent.Subtitle = string.Format("{0} {1}", subNode.InnerText, HttpUtility.HtmlDecode(subNode.NextSibling.InnerText));
-                return true;
+                string tagTitle = string.Empty;
+                var tagNodes = subNode.SelectNodes("./div[contains(concat(' ', normalize-space(@class), ' '), ' tag ')]");
+                if (tagNodes != null && tagNodes.Any())
+                {
+                    foreach (var tagNode in tagNodes)
+                    {
+                        if (!tagNode.InnerText.IsNullOrEmptyOrWhiteSpace())
+                            tagTitle += string.Format("[{0}]", tagNode.InnerText);
+                    }
+                }
+
+                torrent.Subtitle = string.Format("{0} {1}", tagTitle, HttpUtility.HtmlDecode(subNode.NextSibling.InnerText));
             }
-            return false;
+            return !torrent.Subtitle.IsNullOrEmptyOrWhiteSpace();
         }
 
 

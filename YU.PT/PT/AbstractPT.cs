@@ -15,7 +15,7 @@ using System.Web;
 using System.Drawing;
 using System.Text.RegularExpressions;
 
-namespace YPT.PT
+namespace YU.PT
 {
     /// <summary>
     /// PT抽象类
@@ -33,7 +33,12 @@ namespace YPT.PT
         /// <summary>
         /// PT站点
         /// </summary>
-        protected PTSite Site { get; set; }
+        public PTSite Site { get { return _site; } }
+
+        /// <summary>
+        /// Site
+        /// </summary>
+        protected PTSite _site;
 
         /// <summary>
         /// _cookie
@@ -56,7 +61,7 @@ namespace YPT.PT
         }
 
         /// <summary>
-        /// _cookie
+        /// User
         /// </summary>
         protected PTUser _user;
 
@@ -115,8 +120,14 @@ namespace YPT.PT
 
         public AbstractPT(PTUser user)
         {
-            Site = Global.Sites.Where(x => x.Id == SiteId).FirstOrDefault();
+            if (user == null)
+                throw new Exception("User is null");
+            if (user.Site == null)
+                throw new Exception("Site is null");
+            if (user.Site.Id != SiteId)
+                throw new Exception("SiteId not correct");
             _user = user;
+            _site = user.Site;
             _cookie = GetLocalCookie();
         }
 
@@ -553,7 +564,24 @@ namespace YPT.PT
             var subNode = node.SelectSingleNode(".//td/font[contains(concat(' ', normalize-space(@class), ' '), ' subtitle ')]");
             if (subNode != null)
             {
-                torrent.Subtitle = HttpUtility.HtmlDecode(subNode.InnerText);
+                string tagTitle = string.Empty;
+                var tagNodes = subNode.SelectNodes(".//div[contains(concat(' ', normalize-space(@class), ' '), ' tag ')]");
+                if (tagNodes != null && tagNodes.Any())
+                {
+                    foreach (var tagNode in tagNodes)
+                    {
+                        if (!tagNode.InnerText.IsNullOrEmptyOrWhiteSpace())
+                            tagTitle += string.Format("[{0}]", tagNode.InnerText);
+                    }
+                }
+                if (!tagTitle.IsNullOrEmptyOrWhiteSpace())
+                {
+                    subNode = subNode.SelectSingleNode("./text()[last()]");
+                    if (subNode != null && !subNode.InnerText.IsNullOrEmptyOrWhiteSpace())
+                        torrent.Subtitle = string.Format("{0} {1}", tagTitle, HttpUtility.HtmlDecode(subNode.InnerText));
+                }
+                if (torrent.Subtitle.IsNullOrEmptyOrWhiteSpace())
+                    torrent.Subtitle = HttpUtility.HtmlDecode(subNode.InnerText);
             }
             if (torrent.Subtitle.IsNullOrEmptyOrWhiteSpace())
             {

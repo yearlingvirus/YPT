@@ -10,7 +10,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using YPT.PT;
+using YU.PT;
 using YU.Core;
 using YU.Core.DataEntity;
 using YU.Core.Log;
@@ -83,6 +83,7 @@ namespace YPT
                     {
                         //如果扩展站点中是预置站点中的内容，则删除预置站点，以扩展站点为准。
                         _sites.RemoveAll(x => extendSites.Select(g => g.Id).Contains(x.Id));
+                        _sites.RemoveAll(x => extendSites.Select(g => g.Name).Contains(x.Name));
                         foreach (var extendSite in extendSites)
                         {
                             _sites.Add(extendSite);

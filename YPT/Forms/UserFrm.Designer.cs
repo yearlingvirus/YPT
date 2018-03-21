@@ -1,5 +1,4 @@
 ﻿using YU.Core.YUComponent;
-
 namespace YPT.Forms
 {
     partial class UserFrm

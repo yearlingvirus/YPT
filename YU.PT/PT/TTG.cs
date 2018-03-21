@@ -15,7 +15,7 @@ using YU.Core.Event;
 using YU.Core.Log;
 using YU.Core.Utils;
 
-namespace YPT.PT
+namespace YU.PT
 {
     public class TTG : AbstractPT
     {
@@ -168,12 +168,15 @@ namespace YPT.PT
                 var subNode = linkUrlNode.SelectSingleNode("./b//span[last()]");
                 if (subNode != null)
                 {
-                    string subTtile = subNode.InnerText;
+                    string subTitle = string.Empty;
+                    if (linkUrlNode.PreviousSibling != null && linkUrlNode.PreviousSibling.Name == "span" && !linkUrlNode.PreviousSibling.InnerText.IsNullOrEmptyOrWhiteSpace())
+                        subTitle = "[" + linkUrlNode.PreviousSibling.InnerText + "] ";
+                    subTitle += subNode.InnerText;
                     if (subNode.NextSibling != null)
                     {
-                        subTtile += subNode.NextSibling.InnerText;
+                        subTitle += subNode.NextSibling.InnerText;
                     }
-                    torrent.Subtitle = HttpUtility.HtmlDecode(subTtile);
+                    torrent.Subtitle = HttpUtility.HtmlDecode(subTitle);
                 }
 
             }
@@ -234,8 +237,7 @@ namespace YPT.PT
 
         protected override void SetTorrentFreeTime(HtmlNode node, PTTorrent torrent)
         {
-            var freeNode = node.SelectSingleNode("./div[contains(concat(' ', normalize-space(@class), ' '), ' name_left ')]/span");
-
+            var freeNode = node.SelectSingleNode("./div[contains(concat(' ', normalize-space(@class), ' '), ' name_left ')]/span[not(@class)][not(@id)]");
             if (freeNode != null && !freeNode.InnerText.IsNullOrEmptyOrWhiteSpace())
             {
                 torrent.FreeTime = HttpUtility.HtmlDecode(freeNode.InnerText);

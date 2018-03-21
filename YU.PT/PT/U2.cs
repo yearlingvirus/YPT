@@ -11,7 +11,7 @@ using System.Net;
 using YU.Core.Event;
 using Newtonsoft.Json;
 
-namespace YPT.PT
+namespace YU.PT
 {
     public class U2 : AbstractPT
     {

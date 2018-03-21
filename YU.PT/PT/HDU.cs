@@ -7,7 +7,7 @@ using YU.Core;
 using YU.Core.DataEntity;
 using YU.Core.Utils;
 
-namespace YPT.PT
+namespace YU.PT
 {
     public class HDU : AbstractPT
     {

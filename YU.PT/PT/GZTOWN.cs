@@ -1,27 +1,35 @@
-﻿using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using YU.Core;
 using YU.Core.DataEntity;
 using YU.Core.Utils;
+using HtmlDocument = HtmlAgilityPack.HtmlDocument;
+using HtmlAgilityPack;
+using System.Web;
 
-namespace YPT.PT
+namespace YU.PT
 {
-    public class HDHOME : AbstractPT
+    public class GZTOWN : AbstractPT
     {
-        public HDHOME(PTUser user) : base(user)
+        public GZTOWN(PTUser user)
+            : base(user)
         {
+
         }
 
         protected override YUEnums.PTEnum SiteId
         {
             get
             {
-                return YUEnums.PTEnum.HDHome;
+                return YUEnums.PTEnum.GZTown;
             }
         }
+
+
 
         public override string Sign()
         {

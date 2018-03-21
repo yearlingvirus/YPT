@@ -8,7 +8,7 @@ using YU.Core;
 using YU.Core.DataEntity;
 using YU.Core.Event;
 
-namespace YPT.PT
+namespace YU.PT
 {
     /// <summary>
     /// PT

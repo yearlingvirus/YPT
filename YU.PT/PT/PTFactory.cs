@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YU.Core;
 
-namespace YPT.PT
+namespace YU.PT
 {
     public class PTFactory
     {
@@ -22,18 +22,18 @@ namespace YPT.PT
 
             if (notRegistered)
             {
-                _mapServer.Add(YUEnums.PTEnum.CHDBits, "YPT.PT.CHDBITS,YPT");
-                _mapServer.Add(YUEnums.PTEnum.KeepFrds, "YPT.PT.KEEPFRDS,YPT");
-                _mapServer.Add(YUEnums.PTEnum.MTeam, "YPT.PT.MTEAM,YPT");
-                _mapServer.Add(YUEnums.PTEnum.OurBits, "YPT.PT.OURBITS,YPT");
-                _mapServer.Add(YUEnums.PTEnum.TTG, "YPT.PT.TTG,YPT");
-                _mapServer.Add(YUEnums.PTEnum.BTSchool, "YPT.PT.BTSCHOOL,YPT");
-                _mapServer.Add(YUEnums.PTEnum.GZTown, "YPT.PT.GZTOWN,YPT");
-                _mapServer.Add(YUEnums.PTEnum.HDU, "YPT.PT.HDU,YPT");
-                _mapServer.Add(YUEnums.PTEnum.NYPT, "YPT.PT.NY,YPT");
-                _mapServer.Add(YUEnums.PTEnum.HDHome, "YPT.PT.HDHOME,YPT");
-                _mapServer.Add(YUEnums.PTEnum.HDSky, "YPT.PT.HDSKY,YPT");
-                _mapServer.Add(YUEnums.PTEnum.U2, "YPT.PT.U2,YPT");
+                _mapServer.Add(YUEnums.PTEnum.CHDBits, "YU.PT.CHDBITS,YU.PT");
+                _mapServer.Add(YUEnums.PTEnum.KeepFrds, "YU.PT.KEEPFRDS,YU.PT");
+                _mapServer.Add(YUEnums.PTEnum.MTeam, "YU.PT.MTEAM,YU.PT");
+                _mapServer.Add(YUEnums.PTEnum.OurBits, "YU.PT.OURBITS,YU.PT");
+                _mapServer.Add(YUEnums.PTEnum.TTG, "YU.PT.TTG,YU.PT");
+                _mapServer.Add(YUEnums.PTEnum.BTSchool, "YU.PT.BTSCHOOL,YU.PT");
+                _mapServer.Add(YUEnums.PTEnum.GZTown, "YU.PT.GZTOWN,YU.PT");
+                _mapServer.Add(YUEnums.PTEnum.HDU, "YU.PT.HDU,YU.PT");
+                _mapServer.Add(YUEnums.PTEnum.NYPT, "YU.PT.NY,YU.PT");
+                _mapServer.Add(YUEnums.PTEnum.HDHome, "YU.PT.HDHOME,YU.PT");
+                _mapServer.Add(YUEnums.PTEnum.HDSky, "YU.PT.HDSKY,YU.PT");
+                _mapServer.Add(YUEnums.PTEnum.U2, "YU.PT.U2,YU.PT");
                 notRegistered = false;
             }
 
@@ -57,7 +57,7 @@ namespace YPT.PT
             {
                 var argList = args.ToList();
                 argList.Add(type);
-                instance = TypesContainer.CreateInstance<IPT>("YPT.PT.ExtendPT,YPT", argList.ToArray());
+                instance = TypesContainer.CreateInstance<IPT>("YU.PT.ExtendPT,YU.PT", argList.ToArray());
             }
             if (instance == null)
                 throw new Exception("instance==null");

@@ -172,13 +172,13 @@ namespace YU.Core.DataEntity
             }
 
             if (!this.Title.IsNullOrEmptyOrWhiteSpace())
-                sb.AppendLine(this.Subtitle);
+                sb.AppendLine(this.Subtitle.Trim());
 
             string title = sb.ToString();
             int lastIndex = title.LastIndexOf("\r\n");
             if (lastIndex > -1)
                 title = title.Substring(0, lastIndex);
-            entity.Title = title;
+            entity.Title = title.Trim();
             return entity;
         }
     }

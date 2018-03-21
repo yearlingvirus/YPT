@@ -9,7 +9,7 @@ using System.Web;
 using YU.Core.Utils;
 using System.IO;
 
-namespace YPT.PT
+namespace YU.PT
 {
     public class NY : AbstractPT
     {
