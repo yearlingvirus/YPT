@@ -426,7 +426,7 @@ namespace YU.PT
             string htmlResult = HttpUtils.GetDataGetHtml(searchUrl, _cookie);
 
             HtmlDocument htmlDocument = new HtmlDocument();
-
+            
             htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
             var trNodes = GetTorrentNodes(htmlDocument);
             //如果只有一个节点，那么应该是Table的标题，这里忽略，从第二个节点开始算。
@@ -455,24 +455,31 @@ namespace YU.PT
                         torrent.SiteName = Site.Name;
                         torrent.ForumName = args.Forum.Name;
 
-                        //tdNodes[1]为种子信息
-                        //种子链接和标题是最重要的，如果这里拿不到，直接跳过了
-                        if (!SetTorrentTitleAndLink(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent))
-                            continue;
+                        try
+                        {
+                            //tdNodes[1]为种子信息
+                            //种子链接和标题是最重要的，如果这里拿不到，直接跳过了
+                            if (!SetTorrentTitleAndLink(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent))
+                                continue;
 
-                        //这里的副标题如果没有的话，是否需要跳过?暂时先保留把。
-                        SetTorrentSubTitle(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
+                            //这里的副标题如果没有的话，是否需要跳过?暂时先保留把。
+                            SetTorrentSubTitle(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
 
-                        SetTorrentPromotionType(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
+                            SetTorrentPromotionType(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
 
-                        if (torrent.PromotionType == YUEnums.PromotionType.FREE || torrent.PromotionType == YUEnums.PromotionType.FREE2UP || torrent.PromotionType == YUEnums.PromotionType.OTHER)
-                            SetTorrentFreeTime(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
+                            if (torrent.PromotionType == YUEnums.PromotionType.FREE || torrent.PromotionType == YUEnums.PromotionType.FREE2UP || torrent.PromotionType == YUEnums.PromotionType.OTHER)
+                                SetTorrentFreeTime(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
 
-                        SetTorrentHR(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
+                            SetTorrentHR(tdNodes[torrentMaps[YUEnums.TorrentMap.Detail]], torrent);
 
-                        SetTorrentOtherInfo(torrentMaps, tdNodes, torrent);
+                            SetTorrentOtherInfo(torrentMaps, tdNodes, torrent);
 
-                        torrents.Add(torrent);
+                            torrents.Add(torrent);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error(string.Format("{0} 处理种子行失败，失败原因：{1}", Site.Name, ex.GetInnerExceptionMessage()), ex);
+                        }
                     }
                 }
                 return torrents;
@@ -483,9 +490,9 @@ namespace YU.PT
         {
             //https://ourbits.club/torrents.php?incldead=2&spstate=2&inclbookmarked=1&search=&search_area=0&search_mode=0
             //incldead->活种/断种 | spstate->促销 | inclbookmarked->收藏 | search->关键字 | search_area->范围 | search_mode->匹配模式
-            string queryString = string.Format("?incldead={0}&spstate={1}&inclbookmarked={2}&search={3}&search_area={4}&search_mode={5}", (int)args.AliveType, (int)args.PromotionType, (int)args.FavType, Uri.EscapeDataString(args.SearchKey), 0, 0);
-            if (args.IsPostSiteOrder && !args.SortKvr.Key.IsNullOrEmptyOrWhiteSpace() && Site.SearchColUrlMaps.ContainsKey(args.SortKvr.Key))
-                queryString += string.Format("&sort={0}&type={1}", Site.SearchColUrlMaps[args.SortKvr.Key], Convert.ToString(args.SortKvr.Value).ToLowerInvariant());
+            string queryString = string.Format("?incldead={0}&spstate={1}&inclbookmarked={2}&search={3}&search_area={4}&search_mode={5}", (int)args.AliveType, Site.PromotionSearchUrlMaps.ContainsKey(args.PromotionType) ? Site.PromotionSearchUrlMaps[args.PromotionType] : "0", (int)args.FavType, Uri.EscapeDataString(args.SearchKey), 0, 0);
+            if (args.IsPostSiteOrder && !args.SortKvr.Key.IsNullOrEmptyOrWhiteSpace() && Site.SearchColOrderUrlMaps.ContainsKey(args.SortKvr.Key))
+                queryString += string.Format("&sort={0}&type={1}", Site.SearchColOrderUrlMaps[args.SortKvr.Key], Convert.ToString(args.SortKvr.Value).ToLowerInvariant());
             return args.Forum.SearchUrl + queryString;
         }
 

@@ -36,6 +36,7 @@ namespace YPT
             this.设置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.同步StripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.登录ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.签到ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.关于ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.清空CookieToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,7 +82,6 @@ namespace YPT
             this.toolStripMenuItemCopy = new System.Windows.Forms.ToolStripMenuItem();
             this.dgvInfoContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuOpenInfo = new System.Windows.Forms.ToolStripMenuItem();
-            this.签到ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenuStrip.SuspendLayout();
             this.tabMain.SuspendLayout();
             this.tabSearch.SuspendLayout();
@@ -116,7 +116,7 @@ namespace YPT
             this.mainMenuStrip.Location = new System.Drawing.Point(0, 0);
             this.mainMenuStrip.Name = "mainMenuStrip";
             this.mainMenuStrip.Padding = new System.Windows.Forms.Padding(7, 3, 0, 3);
-            this.mainMenuStrip.Size = new System.Drawing.Size(1172, 27);
+            this.mainMenuStrip.Size = new System.Drawing.Size(1360, 27);
             this.mainMenuStrip.TabIndex = 0;
             this.mainMenuStrip.Text = "menuStrip1";
             // 
@@ -141,6 +141,13 @@ namespace YPT
             this.登录ToolStripMenuItem.Text = "登录";
             this.登录ToolStripMenuItem.Click += new System.EventHandler(this.登录ToolStripMenuItem_Click);
             // 
+            // 签到ToolStripMenuItem
+            // 
+            this.签到ToolStripMenuItem.Name = "签到ToolStripMenuItem";
+            this.签到ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.签到ToolStripMenuItem.Text = "签到";
+            this.签到ToolStripMenuItem.Click += new System.EventHandler(this.签到ToolStripMenuItem_Click);
+            // 
             // 帮助ToolStripMenuItem
             // 
             this.帮助ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -153,14 +160,14 @@ namespace YPT
             // 关于ToolStripMenuItem
             // 
             this.关于ToolStripMenuItem.Name = "关于ToolStripMenuItem";
-            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.关于ToolStripMenuItem.Text = "关于";
             this.关于ToolStripMenuItem.Click += new System.EventHandler(this.关于ToolStripMenuItem_Click);
             // 
             // 清空CookieToolStripMenuItem
             // 
             this.清空CookieToolStripMenuItem.Name = "清空CookieToolStripMenuItem";
-            this.清空CookieToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.清空CookieToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.清空CookieToolStripMenuItem.Text = "清空Cookie";
             this.清空CookieToolStripMenuItem.Click += new System.EventHandler(this.清空CookieToolStripMenuItem_Click);
             // 
@@ -175,7 +182,7 @@ namespace YPT
             this.tabMain.Margin = new System.Windows.Forms.Padding(4);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
-            this.tabMain.Size = new System.Drawing.Size(1172, 627);
+            this.tabMain.Size = new System.Drawing.Size(1360, 627);
             this.tabMain.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabMain.TabIndex = 1;
             this.tabMain.TabStop = false;
@@ -188,7 +195,7 @@ namespace YPT
             this.tabSearch.Location = new System.Drawing.Point(4, 29);
             this.tabSearch.Name = "tabSearch";
             this.tabSearch.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSearch.Size = new System.Drawing.Size(1164, 594);
+            this.tabSearch.Size = new System.Drawing.Size(1352, 594);
             this.tabSearch.TabIndex = 1;
             this.tabSearch.Text = "种子搜索";
             this.tabSearch.UseVisualStyleBackColor = true;
@@ -200,7 +207,7 @@ namespace YPT
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMain.Location = new System.Drawing.Point(164, 3);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(997, 588);
+            this.panelMain.Size = new System.Drawing.Size(1185, 588);
             this.panelMain.TabIndex = 1;
             // 
             // panelTorrent
@@ -209,7 +216,7 @@ namespace YPT
             this.panelTorrent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelTorrent.Location = new System.Drawing.Point(0, 117);
             this.panelTorrent.Name = "panelTorrent";
-            this.panelTorrent.Size = new System.Drawing.Size(997, 471);
+            this.panelTorrent.Size = new System.Drawing.Size(1185, 471);
             this.panelTorrent.TabIndex = 1;
             // 
             // dgvTorrent
@@ -223,7 +230,7 @@ namespace YPT
             this.dgvTorrent.Name = "dgvTorrent";
             this.dgvTorrent.RowTemplate.Height = 23;
             this.dgvTorrent.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTorrent.Size = new System.Drawing.Size(997, 471);
+            this.dgvTorrent.Size = new System.Drawing.Size(1185, 471);
             this.dgvTorrent.TabIndex = 0;
             this.dgvTorrent.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTorrent_CellMouseDown);
             this.dgvTorrent.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgv_ColumnHeaderMouseClick);
@@ -237,7 +244,7 @@ namespace YPT
             this.panelSearch.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelSearch.Location = new System.Drawing.Point(0, 0);
             this.panelSearch.Name = "panelSearch";
-            this.panelSearch.Size = new System.Drawing.Size(997, 117);
+            this.panelSearch.Size = new System.Drawing.Size(1185, 117);
             this.panelSearch.TabIndex = 0;
             this.panelSearch.Paint += new System.Windows.Forms.PaintEventHandler(this.panelSearch_Paint);
             // 
@@ -254,7 +261,7 @@ namespace YPT
             this.toolSearchPanel.Controls.Add(this.innerPanel5);
             this.toolSearchPanel.Location = new System.Drawing.Point(31, 43);
             this.toolSearchPanel.Name = "toolSearchPanel";
-            this.toolSearchPanel.Size = new System.Drawing.Size(890, 71);
+            this.toolSearchPanel.Size = new System.Drawing.Size(1070, 71);
             this.toolSearchPanel.TabIndex = 8;
             // 
             // innerPanel1
@@ -263,7 +270,7 @@ namespace YPT
             this.innerPanel1.Controls.Add(this.cmbPromotion);
             this.innerPanel1.Location = new System.Drawing.Point(3, 3);
             this.innerPanel1.Name = "innerPanel1";
-            this.innerPanel1.Size = new System.Drawing.Size(142, 65);
+            this.innerPanel1.Size = new System.Drawing.Size(160, 65);
             this.innerPanel1.TabIndex = 8;
             // 
             // lblPromotion
@@ -288,9 +295,9 @@ namespace YPT
             // 
             this.innerPanel2.Controls.Add(this.lblAlive);
             this.innerPanel2.Controls.Add(this.cmbAlive);
-            this.innerPanel2.Location = new System.Drawing.Point(151, 3);
+            this.innerPanel2.Location = new System.Drawing.Point(169, 3);
             this.innerPanel2.Name = "innerPanel2";
-            this.innerPanel2.Size = new System.Drawing.Size(142, 65);
+            this.innerPanel2.Size = new System.Drawing.Size(160, 65);
             this.innerPanel2.TabIndex = 9;
             // 
             // lblAlive
@@ -315,9 +322,9 @@ namespace YPT
             // 
             this.innerPanel3.Controls.Add(this.lblFav);
             this.innerPanel3.Controls.Add(this.cmbFav);
-            this.innerPanel3.Location = new System.Drawing.Point(299, 3);
+            this.innerPanel3.Location = new System.Drawing.Point(335, 3);
             this.innerPanel3.Name = "innerPanel3";
-            this.innerPanel3.Size = new System.Drawing.Size(142, 65);
+            this.innerPanel3.Size = new System.Drawing.Size(160, 65);
             this.innerPanel3.TabIndex = 10;
             // 
             // lblFav
@@ -342,9 +349,9 @@ namespace YPT
             // 
             this.innerPanel4.Controls.Add(this.cbIsLastSort);
             this.innerPanel4.Controls.Add(this.cbIsPostSiteOrder);
-            this.innerPanel4.Location = new System.Drawing.Point(447, 3);
+            this.innerPanel4.Location = new System.Drawing.Point(501, 3);
             this.innerPanel4.Name = "innerPanel4";
-            this.innerPanel4.Size = new System.Drawing.Size(130, 65);
+            this.innerPanel4.Size = new System.Drawing.Size(119, 65);
             this.innerPanel4.TabIndex = 9;
             // 
             // cbIsLastSort
@@ -371,15 +378,15 @@ namespace YPT
             // 
             this.panel1.Controls.Add(this.cbIsSearchTiming);
             this.panel1.Controls.Add(this.cbIsIngoreTop);
-            this.panel1.Location = new System.Drawing.Point(583, 3);
+            this.panel1.Location = new System.Drawing.Point(626, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(130, 65);
+            this.panel1.Size = new System.Drawing.Size(119, 65);
             this.panel1.TabIndex = 10;
             // 
             // cbIsSearchTiming
             // 
             this.cbIsSearchTiming.AutoSize = true;
-            this.cbIsSearchTiming.Location = new System.Drawing.Point(3, 33);
+            this.cbIsSearchTiming.Location = new System.Drawing.Point(6, 33);
             this.cbIsSearchTiming.Name = "cbIsSearchTiming";
             this.cbIsSearchTiming.Size = new System.Drawing.Size(84, 24);
             this.cbIsSearchTiming.TabIndex = 1;
@@ -389,7 +396,7 @@ namespace YPT
             // cbIsIngoreTop
             // 
             this.cbIsIngoreTop.AutoSize = true;
-            this.cbIsIngoreTop.Location = new System.Drawing.Point(3, 3);
+            this.cbIsIngoreTop.Location = new System.Drawing.Point(6, 3);
             this.cbIsIngoreTop.Name = "cbIsIngoreTop";
             this.cbIsIngoreTop.Size = new System.Drawing.Size(84, 24);
             this.cbIsIngoreTop.TabIndex = 0;
@@ -399,9 +406,9 @@ namespace YPT
             // innerPanel5
             // 
             this.innerPanel5.Controls.Add(this.btnSearch);
-            this.innerPanel5.Location = new System.Drawing.Point(719, 3);
+            this.innerPanel5.Location = new System.Drawing.Point(751, 3);
             this.innerPanel5.Name = "innerPanel5";
-            this.innerPanel5.Size = new System.Drawing.Size(130, 65);
+            this.innerPanel5.Size = new System.Drawing.Size(119, 65);
             this.innerPanel5.TabIndex = 11;
             // 
             // btnSearch
@@ -409,7 +416,7 @@ namespace YPT
             this.btnSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSearch.FlatAppearance.BorderSize = 0;
             this.btnSearch.ForeColor = System.Drawing.Color.Black;
-            this.btnSearch.Location = new System.Drawing.Point(19, 8);
+            this.btnSearch.Location = new System.Drawing.Point(8, 8);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(108, 49);
             this.btnSearch.TabIndex = 1;
@@ -426,7 +433,7 @@ namespace YPT
             this.txtSearch.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.txtSearch.Location = new System.Drawing.Point(43, 15);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(870, 26);
+            this.txtSearch.Size = new System.Drawing.Size(1058, 26);
             this.txtSearch.TabIndex = 0;
             // 
             // panelSite
@@ -592,19 +599,12 @@ namespace YPT
             this.toolStripMenuOpenInfo.Text = "打开链接";
             this.toolStripMenuOpenInfo.Click += new System.EventHandler(this.toolStripMenuOpenInfo_Click);
             // 
-            // 签到ToolStripMenuItem
-            // 
-            this.签到ToolStripMenuItem.Name = "签到ToolStripMenuItem";
-            this.签到ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
-            this.签到ToolStripMenuItem.Text = "签到";
-            this.签到ToolStripMenuItem.Click += new System.EventHandler(this.签到ToolStripMenuItem_Click);
-            // 
             // MainFrm
             // 
             this.AcceptButton = this.btnSearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1172, 654);
+            this.ClientSize = new System.Drawing.Size(1360, 654);
             this.Controls.Add(this.tabMain);
             this.Controls.Add(this.mainMenuStrip);
             this.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));

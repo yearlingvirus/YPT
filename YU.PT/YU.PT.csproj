@@ -55,6 +55,7 @@
     <Compile Include="PT\AbstractPT.cs" />
     <Compile Include="PT\BTSCHOOL.cs" />
     <Compile Include="PT\CHDBITS.cs" />
+    <Compile Include="PT\CMCT.cs" />
     <Compile Include="PT\ExtendPT.cs" />
     <Compile Include="PT\GZTOWN.cs" />
     <Compile Include="PT\HDHOME.cs" />

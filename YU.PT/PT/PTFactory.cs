@@ -22,6 +22,7 @@ namespace YU.PT
 
             if (notRegistered)
             {
+                _mapServer.Add(YUEnums.PTEnum.CMCT, "YU.PT.CMCT,YU.PT");
                 _mapServer.Add(YUEnums.PTEnum.CHDBits, "YU.PT.CHDBITS,YU.PT");
                 _mapServer.Add(YUEnums.PTEnum.KeepFrds, "YU.PT.KEEPFRDS,YU.PT");
                 _mapServer.Add(YUEnums.PTEnum.MTeam, "YU.PT.MTEAM,YU.PT");

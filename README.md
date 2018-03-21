@@ -14,7 +14,7 @@ Download the [latest release].
 
 #### Requirements
 
-Microsoft [.NET Framework 4] or higher.
+Microsoft [.NET Framework 4.6.1] or higher.
 
 #### Support
 
@@ -22,6 +22,7 @@ MTeam
 HDSky  
 TTG  
 CHDBits  
+CMCT  
 KeepFrds   
 OurBits  
 HDHome  
@@ -69,4 +70,4 @@ GPLv3
 
 [中文说明]:       https://github.com/yearlingvirus/ypt/wiki/YPT%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E
 [latest release]: https://github.com/yearlingvirus/ypt/releases
-[.NET Framework 4]: https://www.microsoft.com/en-us/download/details.aspx?id=17851
+[.NET Framework 4.6.1]: https://www.microsoft.com/en-us/download/details.aspx?id=49981

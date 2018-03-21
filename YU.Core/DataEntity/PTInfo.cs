@@ -124,8 +124,10 @@ namespace YU.Core.DataEntity
         /// <returns></returns>
         public PTInfoGridEntity ToGridEntity()
         {
+            string defaultValue = "--";
+
             PTInfoGridEntity entity = new PTInfoGridEntity();
-            entity.Id = this.UserId == 0 ? "--" : this.UserId.TryPareValue<string>();
+            entity.Id = this.UserId == 0 ? defaultValue : this.UserId.TryPareValue<string>();
             entity.Url = this.Url;
             entity.Bonus = this.Bonus;
             entity.Bonus_Display = GetPropertyDisplay(this.Bonus);
@@ -136,10 +138,10 @@ namespace YU.Core.DataEntity
             entity.UpSize = YUUtils.ParseB(this.UpSize);
 
             entity.DownTimes = YUUtils.ParseMilliSecond(this.DownTimes);
-            entity.DownTimes_Display = entity.DownTimes <= 0 ? "--" : YUUtils.RetainNDecimal(TimeSpan.FromMilliseconds(entity.DownTimes).TotalDays);
+            entity.DownTimes_Display = entity.DownTimes <= 0 ? defaultValue : YUUtils.RetainNDecimal(TimeSpan.FromMilliseconds(entity.DownTimes).TotalDays);
 
             entity.SeedTimes = YUUtils.ParseMilliSecond(this.SeedTimes);
-            entity.SeedTimes_Display = entity.SeedTimes <= 0 ? "--" : YUUtils.RetainNDecimal(TimeSpan.FromMilliseconds(entity.SeedTimes).TotalDays);
+            entity.SeedTimes_Display = entity.SeedTimes <= 0 ? defaultValue : YUUtils.RetainNDecimal(TimeSpan.FromMilliseconds(entity.SeedTimes).TotalDays);
 
             entity.LastSyncDate = this.LastSyncDate;
             entity.LastSyncDate_Display = GetPropertyDisplay(this.LastSyncDate);
@@ -150,15 +152,15 @@ namespace YU.Core.DataEntity
             int registerDays = DateTime.Now.Subtract(this.RegisterDate).Duration().Days;
             entity.RegisterWeek = this.RegisterDate;
             if (this.RegisterDate == DateTime.MinValue)
-                entity.RegisterWeek_Display = "--";
+                entity.RegisterWeek_Display = defaultValue;
             else
-                entity.RegisterWeek_Display = string.Format("{0}周", registerDays / 7) + ((registerDays % 7) > 0 ? string.Format("{0}天", registerDays % 7) : string.Empty);
+                entity.RegisterWeek_Display = registerDays == 0 ? "0天" : string.Format("{0}周", registerDays / 7) + ((registerDays % 7) > 0 ? string.Format("{0}天", registerDays % 7) : string.Empty);
 
             string regEx = "/^[A-Za-z\\s]+$/";
             entity.Rank = Regex.Replace(this.Rank, regEx, "");
             //如果过滤之后为空字符串，则直接用站点的。
             if (entity.Rank.IsNullOrEmptyOrWhiteSpace())
-                entity.Rank = this.Rank.IsNullOrEmptyOrWhiteSpace() ? "--" : this.Rank;
+                entity.Rank = this.Rank.IsNullOrEmptyOrWhiteSpace() ? defaultValue : this.Rank;
 
             entity.SeedNumber = GetPropertyValue<int>(this.SeedNumber);
             entity.SeedNumber_Display = GetPropertyDisplay(this.SeedNumber);
@@ -166,8 +168,21 @@ namespace YU.Core.DataEntity
             entity.SeedRate = GetPropertyValue<double>(this.SeedRate);
             entity.SeedRate_Display = GetPropertyDisplay(this.SeedRate);
 
-            entity.ShareRate = GetPropertyValue<double>(this.ShareRate);
-            entity.ShareRate_Display = GetPropertyDisplay(this.ShareRate);
+            if (entity.DownSize == 0 && entity.UpSize == 0)
+            {
+                entity.ShareRate = 0D;
+                entity.ShareRate_Display = defaultValue;
+            }
+            else if (entity.UpSize > 0 && entity.DownSize == 0)
+            {
+                entity.ShareRate = double.MaxValue;
+                entity.ShareRate_Display = "inf";
+            }
+            else
+            {
+                entity.ShareRate = GetPropertyValue<double>(this.ShareRate);
+                entity.ShareRate_Display = GetPropertyDisplay(this.ShareRate);
+            }
 
             entity.Name = GetPropertyDisplay(this.Name);
             entity.SiteId = (int)this.SiteId;
@@ -176,9 +191,8 @@ namespace YU.Core.DataEntity
             return entity;
         }
 
-        public string GetPropertyDisplay<T>(T propertyValue)
+        public string GetPropertyDisplay<T>(T propertyValue, string defaultValue = "--")
         {
-            string defaultValue = "--";
             Type t = typeof(T);
             if (t == typeof(int))
                 return propertyValue.TryPareValue<int>() == 0 ? defaultValue : propertyValue.TryPareValue<string>();

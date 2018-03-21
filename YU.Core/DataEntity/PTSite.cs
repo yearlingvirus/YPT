@@ -11,30 +11,76 @@ namespace YU.Core.DataEntity
     [Serializable]
     public class PTSite
     {
+
+        /// <summary>
+        /// 站点Id
+        /// </summary>
+        public YUEnums.PTEnum Id { get; set; }
+
+
+        /// <summary>
+        /// URL
+        /// </summary>
         public string Url { get; set; }
 
+        /// <summary>
+        /// 站点名称
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// 登录URL
+        /// </summary>
         public string LoginUrl { get; set; }
 
+        /// <summary>
+        /// 签到URL
+        /// </summary>
         public string SignUrl { get; set; }
 
+        /// <summary>
+        /// 个人信息URL
+        /// </summary>
         public string InfoUrl { get; set; }
 
+        /// <summary>
+        /// 是否启用安全问题
+        /// </summary>
         public bool IsEableSecurityQuestion { get; set; }
 
+        /// <summary>
+        /// 是否启用验证码
+        /// </summary>
         public bool IsEnableVerificationCode { get; set; }
 
+        /// <summary>
+        /// 是否启用两步验证
+        /// </summary>
         public bool isEnableTwo_StepVerification { get; set; }
 
+        /// <summary>
+        /// 是否通过邮箱登陆
+        /// </summary>
         public bool IsLoginByMail { get; set; }
 
+        /// <summary>
+        /// 顺序
+        /// </summary>
         public int Order { get; set; }
 
+        /// <summary>
+        /// 板块
+        /// </summary>
         public List<PTForum> Forums { get; set; }
 
+        /// <summary>
+        /// 个人信息映射
+        /// </summary>
         private Dictionary<YUEnums.PersonInfoMap, string[]> _personInfoMaps;
 
+        /// <summary>
+        /// 个人信息映射
+        /// </summary>
         public Dictionary<YUEnums.PersonInfoMap, string[]> PersonInfoMaps
         {
             get
@@ -45,8 +91,14 @@ namespace YU.Core.DataEntity
             }
         }
 
+        /// <summary>
+        /// 种子信息映射
+        /// </summary>
         private Dictionary<YUEnums.TorrentMap, string[]> _torrentMaps;
 
+        /// <summary>
+        /// 种子信息映射
+        /// </summary>
         public Dictionary<YUEnums.TorrentMap, string[]> TorrentMaps
         {
             get
@@ -57,20 +109,46 @@ namespace YU.Core.DataEntity
             }
         }
 
-        private Dictionary<string, string> _searchColUrlMaps;
+        /// <summary>
+        /// 搜索排序URL映射
+        /// </summary>
+        private Dictionary<string, string> _searchColOrderUrlMaps;
 
-        public Dictionary<string, string> SearchColUrlMaps
+        /// <summary>
+        /// 搜索排序URL映射
+        /// </summary>
+        public Dictionary<string, string> SearchColOrderUrlMaps
         {
             get
             {
-                if (_searchColUrlMaps == null)
-                    _searchColUrlMaps = GetDefaultSearchOrderMaps();
-                return _searchColUrlMaps;
+                if (_searchColOrderUrlMaps == null)
+                    _searchColOrderUrlMaps = GetDefaultSearchOrderUrlMaps();
+                return _searchColOrderUrlMaps;
             }
         }
 
-        public YUEnums.PTEnum Id { get; set; }
+        /// <summary>
+        /// 促销搜索URL映射
+        /// </summary>
+        private Dictionary<YUEnums.PromotionType, string> _promotionSearchUrlMaps;
 
+        /// <summary>
+        /// 促销搜索URL映射
+        /// </summary>
+        public Dictionary<YUEnums.PromotionType, string> PromotionSearchUrlMaps
+        {
+            get
+            {
+                if (_promotionSearchUrlMaps == null)
+                    _promotionSearchUrlMaps = GetDefaultPromotionSearchUrlMaps();
+                return _promotionSearchUrlMaps;
+            }
+        }
+
+        /// <summary>
+        /// 获取默认种子映射
+        /// </summary>
+        /// <returns></returns>
         private Dictionary<YUEnums.TorrentMap, string[]> GetDefaultTorrentMaps()
         {
             return new Dictionary<YUEnums.TorrentMap, string[]>()
@@ -87,6 +165,10 @@ namespace YU.Core.DataEntity
             };
         }
 
+        /// <summary>
+        /// 获取默认个人信息映射
+        /// </summary>
+        /// <returns></returns>
         private Dictionary<YUEnums.PersonInfoMap, string[]> GetDefaultPersonInfoMaps()
         {
             return new Dictionary<YUEnums.PersonInfoMap, string[]>()
@@ -104,7 +186,11 @@ namespace YU.Core.DataEntity
             };
         }
 
-        private Dictionary<string, string> GetDefaultSearchOrderMaps()
+        /// <summary>
+        /// 获取默认搜索排序映射
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<string, string> GetDefaultSearchOrderUrlMaps()
         {
             return new Dictionary<string, string>()
             {
@@ -115,6 +201,26 @@ namespace YU.Core.DataEntity
                 { "LeecherNumber","8" },
                 { "SnatchedNumber","6" },
                 { "UpLoader","9" },
+            };
+        }
+
+        /// <summary>
+        /// 获取默认促销搜索URL映射
+        /// </summary>
+        /// <returns></returns>
+        private Dictionary<YUEnums.PromotionType, string> GetDefaultPromotionSearchUrlMaps()
+        {
+            return new Dictionary<YUEnums.PromotionType, string>()
+            {
+                { YUEnums.PromotionType.ALL, "0" },
+                { YUEnums.PromotionType.NORMAL, "1" },
+                { YUEnums.PromotionType.FREE, "2" },
+                { YUEnums.PromotionType.TWOUP, "3" },
+                { YUEnums.PromotionType.FREE2UP, "4" },
+                { YUEnums.PromotionType.HALFDOWN, "5" },
+                { YUEnums.PromotionType.HALF2X, "6" },
+                { YUEnums.PromotionType.THIRTYPERDOWN, "7" },
+                { YUEnums.PromotionType.OTHER, "8" },
             };
         }
 
@@ -176,6 +282,19 @@ namespace YU.Core.DataEntity
                     new PTForum() { SiteId = YUEnums.PTEnum.CHDBits, Name = "CHDBits", SearchUrl = "https://chdbits.co/torrents.php", Visable = true, Order = 1 },
                 },
                 Order = (int)YUEnums.PTEnum.CHDBits,
+            },
+            new PTSite() {
+                Url = "https://hdcmct.org",
+                Name = "CMCT",
+                Id = YUEnums.PTEnum.CMCT,
+                IsEnableVerificationCode = true,
+                LoginUrl =  "https://hdcmct.org/takelogin.php",
+                InfoUrl = "https://hdcmct.org/userdetails.php?id={0}",
+                Forums = new List<PTForum>()
+                {
+                    new PTForum() { SiteId = YUEnums.PTEnum.CMCT, Name = "CMCT", SearchUrl = "https://hdcmct.org/torrents.php", Visable = true, Order = 1 },
+                },
+                Order = (int)YUEnums.PTEnum.CMCT,
             },
             new PTSite() {
                 Url = "https://ourbits.club",
