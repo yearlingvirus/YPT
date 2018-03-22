@@ -650,7 +650,7 @@ namespace YU.PT
 
         protected virtual void SetTorrentFreeTime(HtmlNode node, PTTorrent torrent)
         {
-            var freeNode = node.SelectSingleNode(".//td[contains(concat(' ', normalize-space(@class), ' '), ' embedded ')]//span[not(@class)][last()]");
+            var freeNode = node.SelectSingleNode(".//td[contains(concat(' ', normalize-space(@class), ' '), ' embedded ')]//span[not(@class)][not(@style)][last()]");
 
             if (freeNode != null && !freeNode.InnerText.IsNullOrEmptyOrWhiteSpace())
             {

@@ -10,6 +10,7 @@ using YU.Core.Utils;
 using System.Net;
 using YU.Core.Event;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace YU.PT
 {
@@ -185,9 +186,10 @@ namespace YU.PT
         protected override void PreSetPersonInfo(HtmlDocument htmlDocument, PTInfo info)
         {
             //做种数
-            var node = htmlDocument.DocumentNode.SelectSingleNode("//img[contains(concat(' ', normalize-space(@alt), ' '), ' Torrents leeching ')]/preceding-sibling::a[1]");
-            if (node != null)
-                info.SeedNumber = node.InnerText.Trim().TryPareValue<string>();
+            string regex = "[^.0-9]";
+            var node = htmlDocument.DocumentNode.SelectSingleNode("//img[contains(concat(' ', normalize-space(@alt), ' '), ' Torrents seeding ')]");
+            if (node != null && node.NextSibling != null)
+                info.SeedNumber = Regex.Replace(node.NextSibling.InnerText.Trim(), regex, "", RegexOptions.IgnoreCase);
         }
 
 
