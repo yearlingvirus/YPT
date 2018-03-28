@@ -253,7 +253,7 @@ namespace YU.Core.DataEntity
                 Forums = new List<PTForum>()
                 {
                     new PTForum() { SiteId = YUEnums.PTEnum.MTeam, Name = "MTeam", SearchUrl = "https://tp.m-team.cc/torrents.php", Visable = true, Order = 1 },
-                    new PTForum() { SiteId = YUEnums.PTEnum.MTeam, Name = "MTeam_Adult", SearchUrl = "https://tp.m-team.cc/adult.php", Visable = true, Order = 2 },
+                    new PTForum() { SiteId = YUEnums.PTEnum.MTeam, Name = "MTeam_Adult", SearchUrl = "https://tp.m-team.cc/adult.php", Visable = false, Order = 2 },
                 },
                 Order = (int)YUEnums.PTEnum.MTeam,
             },
@@ -350,6 +350,22 @@ namespace YU.Core.DataEntity
                     new PTForum() { SiteId = YUEnums.PTEnum.HDHome, Name = "HDHome", SearchUrl = "https://hdhome.org/torrents.php", Visable = true, Order = 1 },
                 },
                 Order = (int)YUEnums.PTEnum.HDHome,
+            },
+            new PTSite() {
+                Url = "https://open.cd/",
+                Name = "OpenCD",
+                Id = YUEnums.PTEnum.OpenCD,
+                IsEnableVerificationCode = true,
+                LoginUrl =  "https://open.cd/takelogin.php",
+                InfoUrl = "https://open.cd/userdetails.php?id={0}",
+                SignUrl = "https://open.cd/plugin_sign-in.php",
+                Forums = new List<PTForum>()
+                {
+                    new PTForum() { SiteId = YUEnums.PTEnum.OpenCD, Name = "OpenCD", SearchUrl = "https://open.cd/torrents.php", Visable = true, Order = 1 },
+                    new PTForum() { SiteId = YUEnums.PTEnum.OpenCD, Name = "OpenCD_Music", SearchUrl = "https://open.cd/torrents.php?boardid=1", Visable = false, Order = 2 },
+                    new PTForum() { SiteId = YUEnums.PTEnum.OpenCD, Name = "OpenCD_Catch", SearchUrl = "https://open.cd/torrents.php?boardid=2", Visable = false, Order = 3 },
+                },
+                Order = (int)YUEnums.PTEnum.OpenCD,
             },
             new PTSite() {
                 Url = "https://pt.gztown.net",

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using YU.Core.DataEntity;
@@ -72,6 +73,25 @@ namespace YU.Core.Utils
             catch
             {
                 return defaultValue;
+            }
+        }
+
+        /// <summary>
+        /// 数值转换
+        /// </summary>
+        /// <param name="o"></param>
+        /// <returns></returns>
+        public static int ParseNumber(this string o)
+        {
+            if (o == null)
+                return 0;
+            try
+            {
+                return int.Parse(Convert.ToString(o), NumberStyles.AllowThousands | NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingSign);
+            }
+            catch
+            {
+                return 0;
             }
         }
 

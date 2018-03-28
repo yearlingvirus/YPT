@@ -20,7 +20,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\bin\Debug\YU.PT.XML</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -71,6 +72,7 @@
     <Compile Include="PT\KEEPFRDS.cs" />
     <Compile Include="PT\MTEAM.cs" />
     <Compile Include="PT\NY.cs" />
+    <Compile Include="PT\OPENCD.cs" />
     <Compile Include="PT\OURBITS.cs" />
     <Compile Include="PT\PTFactory.cs" />
     <Compile Include="PT\TTG.cs" />

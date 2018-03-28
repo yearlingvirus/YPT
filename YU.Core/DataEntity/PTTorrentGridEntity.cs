@@ -57,7 +57,7 @@ namespace YU.Core.DataEntity
         /// <summary>
         /// 标题
         /// </summary>
-        [GridView("标题", true, 650)]
+        [GridView("标题", true, 700)]
         public string Title { get; set; }
 
         /// <summary>
@@ -95,19 +95,19 @@ namespace YU.Core.DataEntity
         /// <summary>
         /// 做种人数
         /// </summary>
-        [GridView("做种", true, 60)]
+        [GridView("做种", true, 80)]
         public int SeederNumber { get; set; }
 
         /// <summary>
         /// 下载人数
         /// </summary>
-        [GridView("下载", true, 60)]
+        [GridView("下载", true, 80)]
         public int LeecherNumber { get; set; }
 
         /// <summary>
         /// 完成人数
         /// </summary>
-        [GridView("完成", true, 60)]
+        [GridView("完成", true, 80)]
         public int SnatchedNumber { get; set; }
 
         /// <summary>

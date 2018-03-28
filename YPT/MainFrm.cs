@@ -1227,7 +1227,10 @@ namespace YPT
             if (dgvPersonInfo.SelectedRows != null && dgvPersonInfo.SelectedRows.Count > 0)
             {
                 string url = dgvPersonInfo.SelectedRows[0].Cells["Url"].Value.TryPareValue<string>();
-                System.Diagnostics.Process.Start(url);
+                if (url.IsNullOrEmptyOrWhiteSpace())
+                    FormUtils.ShowErrMessage("无法获取到个人信息链接，请重新同步。");
+                else
+                    System.Diagnostics.Process.Start(url);
             }
         }
 

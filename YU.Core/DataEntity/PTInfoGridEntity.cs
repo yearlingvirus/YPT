@@ -43,25 +43,25 @@ namespace YU.Core.DataEntity
         /// <summary>
         /// 上传量
         /// </summary>
-        [GridView("上传量", true, 100)]
+        [GridView("上传量", true, 120)]
         public string UpSize_Display { get; set; }
 
         /// <summary>
         /// 上传量
         /// </summary>
-        [GridView("上传量", false, 100)]
+        [GridView("上传量", false, 120)]
         public double UpSize { get; set; }
 
         /// <summary>
         /// 下载量
         /// </summary>
-        [GridView("下载量", true, 100)]
+        [GridView("下载量", true, 120)]
         public string DownSize_Display { get; set; }
 
         /// <summary>
         /// 下载量
         /// </summary>
-        [GridView("下载量", false, 100)]
+        [GridView("下载量", false, 120)]
         public double DownSize { get; set; }
 
 

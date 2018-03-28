@@ -229,7 +229,6 @@ namespace YPT
             this.dgvTorrent.Location = new System.Drawing.Point(0, 0);
             this.dgvTorrent.Name = "dgvTorrent";
             this.dgvTorrent.RowTemplate.Height = 23;
-            this.dgvTorrent.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvTorrent.Size = new System.Drawing.Size(1185, 471);
             this.dgvTorrent.TabIndex = 0;
             this.dgvTorrent.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvTorrent_CellMouseDown);

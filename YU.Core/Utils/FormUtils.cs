@@ -48,7 +48,7 @@ namespace YU.Core.Utils
             gridView.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             gridView.DefaultCellStyle.Font = new Font("微软雅黑", 9, FontStyle.Regular);
 
-            gridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            gridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
 
             gridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCellsExceptHeader;
             gridView.RowTemplate.Height = 36;
@@ -97,7 +97,6 @@ namespace YU.Core.Utils
                 if (att.ColumnWidth != -1)
                 {
                     colNew.Width = att.ColumnWidth;
-                    //colNew.MinimumWidth = att.ColumnWidth / 2;
                     colNew.FillWeight = att.ColumnWidth;
                 }
                 else

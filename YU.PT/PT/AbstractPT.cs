@@ -14,6 +14,7 @@ using YU.Core.Utils;
 using System.Web;
 using System.Drawing;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace YU.PT
 {
@@ -375,7 +376,7 @@ namespace YU.PT
             htmlDocument.OptionOutputAsXml = false;
             htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
 
-            HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"info_block\"]/tr/td/table/tr/td//a");//跟Xpath一样
+            HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"info_block\"]/tr/td/table/tr/td//span//a");//跟Xpath一样
                                                                                                                        //这里不用User_Name判断，因为不同等级的User，Class也会不一样。
                                                                                                                        //HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//a[contains(concat(' ', normalize-space(@class), ' '), ' User_Name ')]");
             return node;
@@ -704,10 +705,10 @@ namespace YU.PT
                     torrent.UpLoadTime = string.Format("{0} {1}", dateStr, timeStr).TryPareValue<DateTime>();
                 }
             }
-            torrent.Size = nodes[torrentMaps[YUEnums.TorrentMap.Size]].InnerText;
-            torrent.SeederNumber = nodes[torrentMaps[YUEnums.TorrentMap.SeederNumber]].InnerText.TryPareValue<int>();
-            torrent.LeecherNumber = nodes[torrentMaps[YUEnums.TorrentMap.LeecherNumber]].InnerText.TryPareValue<int>();
-            torrent.SnatchedNumber = nodes[torrentMaps[YUEnums.TorrentMap.SnatchedNumber]].InnerText.TryPareValue<int>();
+            torrent.Size = HttpUtility.HtmlDecode(nodes[torrentMaps[YUEnums.TorrentMap.Size]].InnerText);
+            torrent.SeederNumber = nodes[torrentMaps[YUEnums.TorrentMap.SeederNumber]].InnerText.ParseNumber();
+            torrent.LeecherNumber = nodes[torrentMaps[YUEnums.TorrentMap.LeecherNumber]].InnerText.ParseNumber();
+            torrent.SnatchedNumber = nodes[torrentMaps[YUEnums.TorrentMap.SnatchedNumber]].InnerText.ParseNumber();
             torrent.UpLoader = nodes[torrentMaps[YUEnums.TorrentMap.UpLoader]].InnerText;
         }
 
@@ -980,25 +981,6 @@ namespace YU.PT
 
         protected virtual void PreSetPersonInfo(HtmlDocument htmlDocument, PTInfo info)
         {
-            ////魔力值
-            //var node = htmlDocument.DocumentNode.SelectSingleNode("//font[contains(concat(' ', normalize-space(@class), ' '), ' color_invite ')]");
-            //if (node != null && node.PreviousSibling != null)
-            //    info.Bonus = node.PreviousSibling.InnerText.Replace("]", "").Replace(":", "").Trim().TryPareValue<double>();
-
-            ////分享率
-            //node = htmlDocument.DocumentNode.SelectSingleNode("//font[contains(concat(' ', normalize-space(@class), ' '), ' color_uploaded ')]");
-            //if (node != null && node.PreviousSibling != null)
-            //    info.ShareRate = node.PreviousSibling.InnerText.Trim().TryPareValue<string>();
-
-            ////上传量
-            //node = htmlDocument.DocumentNode.SelectSingleNode("//font[contains(concat(' ', normalize-space(@class), ' '), ' color_downloaded ')]");
-            //if (node != null && node.PreviousSibling != null)
-            //    info.UpSize = node.PreviousSibling.InnerText.Trim().TryPareValue<string>();
-
-            ////下载量
-            //node = htmlDocument.DocumentNode.SelectSingleNode("//font[contains(concat(' ', normalize-space(@class), ' '), ' color_active ')]");
-            //if (node != null && node.PreviousSibling != null)
-            //    info.DownSize = node.PreviousSibling.InnerText.Trim().TryPareValue<string>();
 
             //做种数
             var node = htmlDocument.DocumentNode.SelectSingleNode("//img[contains(concat(' ', normalize-space(@alt), ' '), ' Torrents leeching ')]");
