@@ -1,4 +1,6 @@
 ﻿using HtmlAgilityPack;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -143,5 +145,88 @@ namespace YU.PT
             }
             return checkCodeKey;
         }
+
+        public override string Sign(bool isAuto = false)
+        {
+            return Sign(isAuto, true, 1);
+        }
+
+        private string Sign(bool isAuto, bool isAutoOrc, int count)
+        {
+            //获取ImageHash
+            string hostUrl = Site.Url;
+            string hashUrl = UrlUtils.CombileUrl(hostUrl, "/image_code_ajax.php");
+            string postData = "action=new";
+            var result = HttpUtils.PostData(hashUrl, postData, _cookie);
+            if (HttpUtils.IsErrorRequest(result.Item1))
+                return result.Item1;
+            JObject o = JsonConvert.DeserializeObject(result.Item1) as JObject;
+            if (o["success"].TryPareValue<bool>())
+            {
+                string checkCodeHash = o["code"].TryPareValue<string>();
+                string imgUrl = UrlUtils.CombileUrl(hostUrl, string.Format("image.php?action=regimage&imagehash={0}", checkCodeHash));
+                string checkCodeKey = string.Empty;
+                Bitmap bmp = null;
+                if (isAutoOrc)
+                {
+                    try
+                    {
+                        bmp = ImageUtils.GetOrcImage((Bitmap)ImageUtils.ImageFromWebTest(imgUrl, _cookie));
+                        if (bmp != null)
+                        {
+                            var orcResults = BaiDuApiUtil.WebImage(bmp);
+                            if (orcResults.Any())
+                            {
+                                checkCodeKey = orcResults.FirstOrDefault();
+                                string regEx = @"[^a-z0-9]";
+                                checkCodeKey = Regex.Replace(checkCodeKey, regEx, "", RegexOptions.IgnoreCase);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(string.Format("{0} 验证码识别异常。异常原因：{1}", Site.Name, ex.GetInnerExceptionMessage()), ex);
+                    }
+                }
+                if (!isAutoOrc)
+                {
+                    OnVerificationCodeEventArgs args = new OnVerificationCodeEventArgs();
+                    args.VerificationCodeUrl = imgUrl;
+                    args.Site = Site;
+                    checkCodeKey = OnVerificationCode(args);
+                }
+
+                postData = string.Format("action=showup&imagehash={0}&imagestring={1}", checkCodeHash, checkCodeKey);
+                result = HttpUtils.PostData(Site.SignUrl, postData, _cookie);
+                if (HttpUtils.IsErrorRequest(result.Item1))
+                    return result.Item1;
+
+                o = JsonConvert.DeserializeObject(result.Item1) as JObject;
+                string message = o["message"].TryPareValue<string>();
+                if (o["success"].TryPareValue<bool>())
+                    return string.Format("签到成功，积分：{0}", message);
+                
+                if(message.EqualIgnoreCase("date_unmatch"))
+                    return string.Format("签到失败，失败原因：{0}", message);
+
+                if (!isAuto && count <= 1)
+                {
+                    //如果签到失败且之前是自动签到
+                    Logger.Info(string.Format("{0} 签到失败，识别到的验证码为{1}。", Site.Name, checkCodeKey));
+                    return Sign(isAuto, false, ++count);
+                }
+                else if (isAuto && count <= 2)
+                    return Sign(isAuto, true, ++count);
+                else
+                    return string.Format("签到失败，失败原因：{0}", message);
+                
+
+            }
+            else
+            {
+                return "签到失败，获取签到验证码失败。";
+            }
+        }
+
     }
 }

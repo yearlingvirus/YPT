@@ -39,7 +39,7 @@ namespace YU.PT
             torrent.IsHR = YUEnums.HRType.HR;
         }
 
-        public override string Sign()
+        public override string Sign(bool isAuto = false)
         {
             if (_cookie != null && _cookie.Count > 0)
             {

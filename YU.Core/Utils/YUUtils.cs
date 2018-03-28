@@ -102,7 +102,7 @@ namespace YU.Core.Utils
         /// <returns></returns>
         public static string RetainNDecimal(double decimalValue, int n = 2)
         {
-            string format = "{0:N" + n + "}";
+            string format = "{0:F" + n + "}";
             return string.Format(format, decimalValue);
         }
 

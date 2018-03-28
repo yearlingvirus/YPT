@@ -31,7 +31,7 @@ namespace YU.PT
 
 
 
-        public override string Sign()
+        public override string Sign(bool isAuto = false)
         {
             if (_cookie != null && _cookie.Count > 0)
             {

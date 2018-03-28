@@ -84,7 +84,7 @@ namespace YU.PT
             return HttpUtils.PostData(Site.LoginUrl, postData, _cookie, true);
         }
 
-        public override string Sign()
+        public override string Sign(bool isAuto = false)
         {
             if (_cookie != null && _cookie.Count > 0)
             {

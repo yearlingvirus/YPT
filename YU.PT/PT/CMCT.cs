@@ -44,7 +44,6 @@ namespace YU.PT
                 info.Bonus = bonusString.Trim().TryPareValue<double>();
             }
 
-
             //分享率
             node = htmlDocument.DocumentNode.SelectSingleNode("//font[contains(concat(' ', normalize-space(@class), ' '), ' color_uploaded ')]");
             if (node != null && node.PreviousSibling != null)

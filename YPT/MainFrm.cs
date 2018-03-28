@@ -79,6 +79,22 @@ namespace YPT
         public MainFrm()
         {
             InitializeComponent();
+            if (YPT.Properties.Settings.Default.MainFrmState == FormWindowState.Maximized)
+            {
+                this.WindowState = YPT.Properties.Settings.Default.MainFrmState;
+                this.Location = new Point(SystemInformation.PrimaryMonitorSize.Width / 2 - this.Size.Width / 2, SystemInformation.PrimaryMonitorSize.Height / 2 - this.Size.Height / 2);
+            }
+            else if (YPT.Properties.Settings.Default.MainFrmLoacation.X != 0 && YPT.Properties.Settings.Default.MainFrmLoacation.Y != 0)
+            {
+                this.Location = YPT.Properties.Settings.Default.MainFrmLoacation;
+                this.Size = YPT.Properties.Settings.Default.MainFrmSize;
+                this.StartPosition = FormStartPosition.Manual;
+            }
+            else
+                this.StartPosition = FormStartPosition.CenterScreen;
+
+
+
             this.Text = string.Format("YPT {0}", YUUtils.GetVersion());
         }
 
@@ -113,7 +129,7 @@ namespace YPT
         private void SignTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             SignTimer.Interval = 24 * 60 * 60 * 1000;
-            Sign();
+            Sign(true);
         }
 
         private string Pt_VerificationCode(object sender, YU.Core.Event.OnVerificationCodeEventArgs e)
@@ -183,15 +199,16 @@ namespace YPT
             }
         }
 
-        private void Sign()
+        private void Sign(bool isAuto = false)
         {
             if (Global.Users != null && Global.Users.Count > 0)
             {
                 LogMessage(null, "正在启动签到。");
                 foreach (var user in Global.Users)
                 {
-                    IPT pt = PTFactory.GetPT(user.Site.Id, user);
-                    string msg = pt.Sign();
+                    AbstractPT pt = PTFactory.GetPT(user.Site.Id, user) as AbstractPT;
+                    pt.VerificationCode += Pt_VerificationCode;
+                    string msg = pt.Sign(isAuto);
                     LogMessage(user.Site, msg);
                 }
                 LogMessage(null, "全部签到完毕。");
@@ -311,7 +328,7 @@ namespace YPT
         private void 签到ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             tabMain.SelectTab("tabLog");
-            Task t = Task.Factory.StartNew(() => Sign());
+            Task t = Task.Factory.StartNew(() => Sign(false));
         }
 
         private void 同步StripMenuItem_Click(object sender, EventArgs e)
@@ -321,14 +338,21 @@ namespace YPT
 
         private void MainFrm_SizeChanged(object sender, EventArgs e)
         {
-            if (this.WindowState == FormWindowState.Minimized)  //判断是否最小化
-            {
-                nfyMain.Visible = true;  //托盘图标可见
-            }
+            YPT.Properties.Settings.Default.MainFrmSize = this.Size;
+        }
+
+
+        private void MainFrm_LocationChanged(object sender, EventArgs e)
+        {
+            YPT.Properties.Settings.Default.MainFrmLoacation = this.Location;
         }
 
         private void toolStripMenuQuit_Click(object sender, EventArgs e)
         {
+            YPT.Properties.Settings.Default.MainFrmState = this.WindowState;
+            YPT.Properties.Settings.Default.MainFrmLoacation = this.Location;
+            YPT.Properties.Settings.Default.MainFrmSize = this.Size;
+            YPT.Properties.Settings.Default.Save();
             this.Close();
             Application.Exit();
         }
@@ -339,36 +363,37 @@ namespace YPT
                 return;
             else if (e.Button == MouseButtons.Left)
             {
+                this.WindowState = YPT.Properties.Settings.Default.MainFrmState;
+                this.Location = YPT.Properties.Settings.Default.MainFrmLoacation;
+                this.Size = YPT.Properties.Settings.Default.MainFrmSize;
                 this.ShowInTaskbar = true;  //显示在系统任务栏
                 this.Show();
                 this.BringToFront();
-                this.WindowState = FormWindowState.Normal;  //还原窗体
             }
         }
 
         private void MainFrm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // 注意判断关闭事件reason来源于窗体按钮，否则用菜单退出时无法退出!
+            YPT.Properties.Settings.Default.MainFrmState = this.WindowState;
+            YPT.Properties.Settings.Default.MainFrmLoacation = this.Location;
+            YPT.Properties.Settings.Default.MainFrmSize = this.Size;
+            YPT.Properties.Settings.Default.Save();
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 if (Global.Config.IsFirstOpen)
                 {
                     Global.Config.IsFirstOpen = false;
                     if (MessageBox.Show("是否最小化到系统托盘?", "温馨提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                    {
                         Global.Config.IsMiniWhenClose = true;
-                    }
                     else
-                    {
                         Global.Config.IsMiniWhenClose = false;
-                    }
+
                     AppService.SetConfig(YUConst.CONFIG_ISFIRSTOPEN, Global.Config.IsFirstOpen);
                     AppService.SetConfig(YUConst.CONFIG_ISMINIWHENCLOSE, Global.Config.IsMiniWhenClose);
                 }
                 if (Global.Config.IsMiniWhenClose)
                 {
                     e.Cancel = true;    //取消"关闭窗口"事件
-                    this.WindowState = FormWindowState.Minimized;    //使关闭时窗口向右下角缩小的效果
                     this.nfyMain.Visible = true;
                     this.Hide();
                     return;
@@ -1228,6 +1253,5 @@ namespace YPT
             }
 
         }
-
     }
 }

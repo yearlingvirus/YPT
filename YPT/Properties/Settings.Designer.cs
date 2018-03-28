@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace YU.Properties {
+namespace YPT.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -20,6 +20,42 @@ namespace YU.Properties {
         public static Settings Default {
             get {
                 return defaultInstance;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Normal")]
+        public global::System.Windows.Forms.FormWindowState MainFrmState {
+            get {
+                return ((global::System.Windows.Forms.FormWindowState)(this["MainFrmState"]));
+            }
+            set {
+                this["MainFrmState"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
+        public global::System.Drawing.Point MainFrmLoacation {
+            get {
+                return ((global::System.Drawing.Point)(this["MainFrmLoacation"]));
+            }
+            set {
+                this["MainFrmLoacation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1376, 693")]
+        public global::System.Drawing.Size MainFrmSize {
+            get {
+                return ((global::System.Drawing.Size)(this["MainFrmSize"]));
+            }
+            set {
+                this["MainFrmSize"] = value;
             }
         }
     }

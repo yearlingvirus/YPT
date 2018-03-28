@@ -24,7 +24,9 @@ namespace YU.PT
         /// <summary>
         /// 签到
         /// </summary>
-        string Sign();
+        /// <param name="isAuto"></param>
+        /// <returns></returns>
+        string Sign(bool isAuto = false);
 
         /// <summary>
         /// 验证码事件

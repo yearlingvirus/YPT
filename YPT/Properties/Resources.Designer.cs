@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace YU.Properties {
+namespace YPT.Properties {
     using System;
     
     

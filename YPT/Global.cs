@@ -36,6 +36,7 @@ namespace YPT
 
         public static void Init()
         {
+            //YU.WebUI.App.Start(4004);
             InitSites();
             Config = new Config();
             string dbName = ConfigUtil.GetConfigValue(YUConst.SETTING_SQLLITEDB);

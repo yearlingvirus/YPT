@@ -27,7 +27,7 @@ namespace YU.PT
             }
         }
 
-        public override string Sign()
+        public override string Sign(bool isAuto = false)
         {
             return "暂未支持该站点，请登录网页端签到。";
         }

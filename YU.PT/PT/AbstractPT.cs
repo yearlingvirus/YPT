@@ -399,7 +399,7 @@ namespace YU.PT
         /// <summary>
         /// 签到
         /// </summary>
-        public virtual string Sign()
+        public virtual string Sign(bool isAuto = false)
         {
             if (Site.SignUrl.IsNullOrEmptyOrWhiteSpace())
                 return "该站点并没有签到，无能为力啊。";

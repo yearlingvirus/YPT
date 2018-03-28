@@ -265,6 +265,7 @@ namespace YU.Core.DataEntity
                 isEnableTwo_StepVerification = true,
                 LoginUrl =  "https://hdsky.me/takelogin.php",
                 InfoUrl = "https://hdsky.me/userdetails.php?id={0}",
+                SignUrl = "https://hdsky.me/showup.php",
                 Forums = new List<PTForum>()
                 {
                     new PTForum() { SiteId = YUEnums.PTEnum.HDSky, Name = "HDSky", SearchUrl = "https://hdsky.me/torrents.php", Visable = true, Order = 1 },

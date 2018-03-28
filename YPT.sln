@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YU.Core", "YU.Core\YU.Core.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YU.PT", "YU.PT\YU.PT.csproj", "{416373F6-9D46-477D-9E97-0C994E71DDD7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YU.WebUI", "YU.WebUI\YU.WebUI.csproj", "{BF700E8B-F05E-46F1-84D6-1F550FC89CA7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{416373F6-9D46-477D-9E97-0C994E71DDD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{416373F6-9D46-477D-9E97-0C994E71DDD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{416373F6-9D46-477D-9E97-0C994E71DDD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF700E8B-F05E-46F1-84D6-1F550FC89CA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF700E8B-F05E-46F1-84D6-1F550FC89CA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF700E8B-F05E-46F1-84D6-1F550FC89CA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF700E8B-F05E-46F1-84D6-1F550FC89CA7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
