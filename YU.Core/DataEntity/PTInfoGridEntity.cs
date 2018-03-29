@@ -140,13 +140,13 @@ namespace YU.Core.DataEntity
         /// <summary>
         /// 注册日期
         /// </summary>
-        [GridView("注册日期", false, 100)]
+        [GridView("注册日期", false, 120)]
         public DateTime RegisterDate { get; set; }
 
         /// <summary>
         /// 注册日期
         /// </summary>
-        [GridView("注册日期", true, 100)]
+        [GridView("注册日期", true, 120)]
         public string RegisterDate_Display { get; set; }
 
         /// <summary>
@@ -170,13 +170,13 @@ namespace YU.Core.DataEntity
         /// <summary>
         /// 上次同步时间
         /// </summary>
-        [GridView("同步时间", false, 100)]
+        [GridView("同步时间", false, 120)]
         public DateTime LastSyncDate { get; set; }
 
         /// <summary>
         /// 上次同步时间
         /// </summary>
-        [GridView("同步时间", true, 100)]
+        [GridView("同步时间", true, 120)]
         public string LastSyncDate_Display { get; set; }
     }
 }

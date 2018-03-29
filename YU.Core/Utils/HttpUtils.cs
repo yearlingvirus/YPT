@@ -22,19 +22,20 @@ namespace YU.Core.Utils
 
         public static Tuple<string, HttpWebRequest, HttpWebResponse> PostData(string url, string postData, CookieContainer cookie, bool isFormDataType = false)
         {
+            HttpWebRequest req = null;
+            HttpWebResponse res = null;
             try
             {
                 byte[] data = Encoding.UTF8.GetBytes(postData);
                 Uri uri = new Uri(url);
-                HttpWebRequest req = WebRequest.Create(uri) as HttpWebRequest;
+                req = WebRequest.Create(uri) as HttpWebRequest;
                 if (req == null)
                 {
-                    return new Tuple<string, HttpWebRequest, HttpWebResponse>("Network error:" + new ArgumentNullException("httpWebRequest").Message, req, null);
+                    return new Tuple<string, HttpWebRequest, HttpWebResponse>("Network error:" + new ArgumentNullException("req").Message, req, null);
                 }
                 req.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*;q=0.8";
                 req.Method = "POST";
                 req.UserAgent = YUConst.HTTP_CHROME_UA;
-                req.KeepAlive = true;
                 if (isFormDataType)
                 {
                     req.ContentType = string.Format("multipart/form-data; boundary=----{0}", YUConst.POST_BOUNDARY);
@@ -61,7 +62,7 @@ namespace YU.Core.Utils
                 outStream.Write(data, 0, data.Length);
                 outStream.Close();
 
-                var res = req.GetResponse() as HttpWebResponse;
+                res = req.GetResponse() as HttpWebResponse;
                 if (res == null)
                 {
                     return new Tuple<string, HttpWebRequest, HttpWebResponse>("Network error:" + new ArgumentNullException("HttpWebResponse").Message, req, null);
@@ -77,23 +78,31 @@ namespace YU.Core.Utils
                 Logger.Error(msg, ex);
                 return new Tuple<string, HttpWebRequest, HttpWebResponse>(msg, null, null);
             }
+            finally
+            {
+                if (req != null)
+                    req.Abort();//销毁关闭连接
+                if (res != null)
+                    res.Close();//销毁关闭响应
+            }
         }
 
         public static string PostDataGetHtml(string url, string postData, CookieContainer cookie, bool isFormDataType = false)
         {
+            HttpWebRequest req = null;
+            HttpWebResponse res = null;
             try
             {
                 byte[] data = Encoding.UTF8.GetBytes(postData);
                 Uri uri = new Uri(url);
-                HttpWebRequest req = WebRequest.Create(uri) as HttpWebRequest;
+                req = WebRequest.Create(uri) as HttpWebRequest;
                 if (req == null)
                 {
-                    return "Network error:" + new ArgumentNullException("httpWebRequest").Message;
+                    return "Network error:" + new ArgumentNullException("req").Message;
                 }
                 req.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*;q=0.8";
                 req.Method = "POST";
                 req.UserAgent = YUConst.HTTP_CHROME_UA;
-                req.KeepAlive = true;
                 if (isFormDataType)
                 {
                     req.ContentType = string.Format("multipart/form-data; boundary=----{0}", YUConst.POST_BOUNDARY);
@@ -120,8 +129,7 @@ namespace YU.Core.Utils
                 Stream outStream = req.GetRequestStream();
                 outStream.Write(data, 0, data.Length);
                 outStream.Close();
-
-                var res = req.GetResponse() as HttpWebResponse;
+                res = req.GetResponse() as HttpWebResponse;
                 if (res == null)
                 {
                     return "Network error:" + new ArgumentNullException("HttpWebResponse").Message;
@@ -137,6 +145,13 @@ namespace YU.Core.Utils
                 Logger.Error(msg, ex);
                 return msg;
             }
+            finally
+            {
+                if (req != null)
+                    req.Abort();//销毁关闭连接
+                if (res != null)
+                    res.Close();//销毁关闭响应
+            }
         }
 
         /// <summary>
@@ -146,31 +161,32 @@ namespace YU.Core.Utils
         /// <returns></returns>
         public static string GetDataGetHtml(string url, CookieContainer cookie)
         {
+            HttpWebRequest req = null;
+            HttpWebResponse res = null;
             try
             {
-                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-
-                httpWebRequest.ContentType = "application/x-www-form-urlencoded";
-                httpWebRequest.Method = "GET";
-                httpWebRequest.UserAgent = YUConst.HTTP_CHROME_UA;
+                req = (HttpWebRequest)WebRequest.Create(url);
+                req.ContentType = "application/x-www-form-urlencoded";
+                req.Method = "GET";
+                req.UserAgent = YUConst.HTTP_CHROME_UA;
                 //对发送的数据不使用缓存
-                httpWebRequest.AllowWriteStreamBuffering = false;
-                httpWebRequest.Timeout = 10000;
-                httpWebRequest.ServicePoint.Expect100Continue = false;
+                req.AllowWriteStreamBuffering = false;
+                req.Timeout = 10000;
+                req.ServicePoint.Expect100Continue = false;
 
                 if (cookie == null || cookie.Count == 0)
                 {
-                    httpWebRequest.CookieContainer = new CookieContainer();
-                    cookie = httpWebRequest.CookieContainer;
+                    req.CookieContainer = new CookieContainer();
+                    cookie = req.CookieContainer;
                 }
                 else
                 {
-                    httpWebRequest.Headers.Add(HttpRequestHeader.Cookie, YUUtils.GetCookieFromContainer(cookie, new Uri(url)));
-                    //httpWebRequest.CookieContainer = cookie;
+                    req.Headers.Add(HttpRequestHeader.Cookie, YUUtils.GetCookieFromContainer(cookie, new Uri(url)));
+                    //req.CookieContainer = cookie;
                 }
 
-                HttpWebResponse webRespon = (HttpWebResponse)httpWebRequest.GetResponse();
-                Stream webStream = webRespon.GetResponseStream();
+                res = (HttpWebResponse)req.GetResponse();
+                Stream webStream = res.GetResponseStream();
                 if (webStream == null)
                 {
                     return "网络错误(Network error)：" + new ArgumentNullException("webStream");
@@ -178,7 +194,7 @@ namespace YU.Core.Utils
                 StreamReader streamReader = new StreamReader(webStream, Encoding.UTF8);
                 string responseContent = streamReader.ReadToEnd();
 
-                webRespon.Close();
+                res.Close();
                 streamReader.Close();
 
                 return responseContent;
@@ -188,6 +204,13 @@ namespace YU.Core.Utils
                 string msg = "网络错误(Network error)：" + ex.GetInnerExceptionMessage();
                 Logger.Error(msg, ex);
                 return msg;
+            }
+            finally
+            {
+                if (req != null)
+                    req.Abort();//销毁关闭连接
+                if (res != null)
+                    res.Close();//销毁关闭响应
             }
         }
 
@@ -199,48 +222,57 @@ namespace YU.Core.Utils
         /// <returns></returns>
         public static Tuple<string, HttpWebRequest, HttpWebResponse> GetData(string url, CookieContainer cookie)
         {
+            HttpWebRequest req = null;
+            HttpWebResponse res = null;
             try
             {
-                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                req = (HttpWebRequest)WebRequest.Create(url);
 
-                httpWebRequest.ContentType = "application/x-www-form-urlencoded";
-                httpWebRequest.Method = "GET";
-                httpWebRequest.UserAgent = YUConst.HTTP_CHROME_UA;
+                req.ContentType = "application/x-www-form-urlencoded";
+                req.Method = "GET";
+                req.UserAgent = YUConst.HTTP_CHROME_UA;
                 //对发送的数据不使用缓存
-                httpWebRequest.AllowWriteStreamBuffering = false;
-                httpWebRequest.Timeout = 10000;
-                httpWebRequest.ServicePoint.Expect100Continue = false;
+                req.AllowWriteStreamBuffering = false;
+                req.Timeout = 10000;
+                req.ServicePoint.Expect100Continue = false;
 
                 if (cookie == null || cookie.Count == 0)
                 {
-                    httpWebRequest.CookieContainer = new CookieContainer();
-                    cookie = httpWebRequest.CookieContainer;
+                    req.CookieContainer = new CookieContainer();
+                    cookie = req.CookieContainer;
                 }
                 else
                 {
-                    //httpWebRequest.Headers.Add(HttpRequestHeader.Cookie, YUUtils.GetCookieFromContainer(cookie, new Uri(url)));
-                    httpWebRequest.CookieContainer = cookie;
+                    //req.Headers.Add(HttpRequestHeader.Cookie, YUUtils.GetCookieFromContainer(cookie, new Uri(url)));
+                    req.CookieContainer = cookie;
                 }
 
-                HttpWebResponse webRespon = (HttpWebResponse)httpWebRequest.GetResponse();
-                Stream webStream = webRespon.GetResponseStream();
+                res = (HttpWebResponse)req.GetResponse();
+                Stream webStream = res.GetResponseStream();
                 if (webStream == null)
                 {
-                    return new Tuple<string, HttpWebRequest, HttpWebResponse>("网络错误(Network error)：" + new ArgumentNullException("webStream").Message, httpWebRequest, webRespon);
+                    return new Tuple<string, HttpWebRequest, HttpWebResponse>("网络错误(Network error)：" + new ArgumentNullException("webStream").Message, req, res);
                 }
                 StreamReader streamReader = new StreamReader(webStream, Encoding.UTF8);
                 string responseContent = streamReader.ReadToEnd();
 
-                webRespon.Close();
+                res.Close();
                 streamReader.Close();
 
-                return new Tuple<string, HttpWebRequest, HttpWebResponse>(responseContent, httpWebRequest, webRespon);
+                return new Tuple<string, HttpWebRequest, HttpWebResponse>(responseContent, req, res);
             }
             catch (Exception ex)
             {
                 string msg = "网络错误(Network error)：" + ex.GetInnerExceptionMessage();
                 Logger.Error(msg, ex);
                 return new Tuple<string, HttpWebRequest, HttpWebResponse>(msg, null, null);
+            }
+            finally
+            {
+                if (req != null)
+                    req.Abort();//销毁关闭连接
+                if (res != null)
+                    res.Close();//销毁关闭响应
             }
         }
 

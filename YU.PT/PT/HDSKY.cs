@@ -148,7 +148,11 @@ namespace YU.PT
 
         public override string Sign(bool isAuto = false)
         {
-            return Sign(isAuto, true, 1);
+            if (_cookie != null && _cookie.Count > 0)
+                return Sign(isAuto, true, 1);
+            else
+                return "无法获取Cookie信息，签到失败，请重新登录系统。";
+
         }
 
         private string Sign(bool isAuto, bool isAutoOrc, int count)
@@ -205,8 +209,8 @@ namespace YU.PT
                 string message = o["message"].TryPareValue<string>();
                 if (o["success"].TryPareValue<bool>())
                     return string.Format("签到成功，积分：{0}", message);
-                
-                if(message.EqualIgnoreCase("date_unmatch"))
+
+                if (message.EqualIgnoreCase("date_unmatch"))
                     return string.Format("签到失败，失败原因：{0}", message);
 
                 if (!isAuto && count <= 1)
@@ -219,7 +223,7 @@ namespace YU.PT
                     return Sign(isAuto, true, ++count);
                 else
                     return string.Format("签到失败，失败原因：{0}", message);
-                
+
 
             }
             else

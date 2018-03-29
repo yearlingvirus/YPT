@@ -798,31 +798,33 @@ namespace YU.PT
             {
                 string filefullPath = string.Empty;
                 string fileName = string.Format("[{0}].{1}.{2}", SiteId, torrent.Title.Trim(), "torrent");
+                HttpWebRequest req = null;
+                HttpWebResponse res = null;
                 try
                 {
                     var url = torrent.DownUrl;
 
-                    HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                    httpWebRequest.Method = "POST";
+                    req = (HttpWebRequest)WebRequest.Create(url);
+                    req.Method = "POST";
                     //使用用IE9下载（解决中文乱码问题）
-                    httpWebRequest.UserAgent = IsUseIEDownload() ? YUConst.HTTP_IE9_UA : YUConst.HTTP_CHROME_UA;
-                    httpWebRequest.Timeout = 10000;
-                    httpWebRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*;q=0.8";
-                    httpWebRequest.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip, deflate, br");
-                    httpWebRequest.Headers.Add(HttpRequestHeader.AcceptLanguage, "zh");
-                    httpWebRequest.Headers.Add(HttpRequestHeader.Cookie, YUUtils.GetCookieFromContainer(_cookie, new Uri(url)));
-                    httpWebRequest.AllowAutoRedirect = false;
-                    HttpWebResponse webRespon = (HttpWebResponse)httpWebRequest.GetResponse();
+                    req.UserAgent = IsUseIEDownload() ? YUConst.HTTP_IE9_UA : YUConst.HTTP_CHROME_UA;
+                    req.Timeout = 10000;
+                    req.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*;q=0.8";
+                    req.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip, deflate, br");
+                    req.Headers.Add(HttpRequestHeader.AcceptLanguage, "zh");
+                    req.Headers.Add(HttpRequestHeader.Cookie, YUUtils.GetCookieFromContainer(_cookie, new Uri(url)));
+                    req.AllowAutoRedirect = false;
+                    res = (HttpWebResponse)req.GetResponse();
 
-                    if (!webRespon.GetResponseHeader("Location").IsNullOrEmptyOrWhiteSpace())
+                    if (!res.GetResponseHeader("Location").IsNullOrEmptyOrWhiteSpace())
                         throw new Exception("下载种子失败，也许是二级验证等原因，请关闭后再尝试，你也可以通过删除Cookie后使用程序自带的登录后再尝试。");
 
                     //如果需要请求服务器文件名的话
                     if (isPostFileName)
                     {
-                        if (webRespon.Headers.AllKeys.Contains("Content-Disposition"))
+                        if (res.Headers.AllKeys.Contains("Content-Disposition"))
                         {
-                            string contentDis = webRespon.Headers.Get("Content-Disposition");
+                            string contentDis = res.Headers.Get("Content-Disposition");
                             if (!contentDis.IsNullOrEmptyOrWhiteSpace())
                             {
                                 string[] headers = contentDis.Split(';', '=');
@@ -849,7 +851,7 @@ namespace YU.PT
                             fileName = fileName.Replace(car, '_');
                     }
 
-                    Stream webStream = webRespon.GetResponseStream();
+                    Stream webStream = res.GetResponseStream();
                     if (webStream == null)
                     {
                         throw new ArgumentNullException("网络错误(Network error)");
@@ -878,7 +880,7 @@ namespace YU.PT
                         length = webStream.Read(buffer, 0, buffer.Length);
                     }
                     fs.Close();
-                    webRespon.Close();
+                    res.Close();
 
                     if (isOpen)
                         System.Diagnostics.Process.Start(filefullPath);
@@ -886,6 +888,13 @@ namespace YU.PT
                 catch (Exception ex)
                 {
                     throw new Exception(string.Format("文件[{0}]下载失败，失败原因：{1}", filefullPath, ex.GetInnerExceptionMessage()), ex);
+                }
+                finally
+                {
+                    if (req != null)
+                        req.Abort();//销毁关闭连接
+                    if (res != null)
+                        res.Close();//销毁关闭响应
                 }
             }
             else

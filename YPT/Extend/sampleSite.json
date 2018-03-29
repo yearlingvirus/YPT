@@ -1,5 +1,6 @@
 ﻿[
   {
+    "Id": 1,
     "Url": "https://totheglory.im",
     "Name": "TTG",
     "LoginUrl": "https://totheglory.im/takelogin.php",
@@ -8,6 +9,7 @@
     "IsEableSecurityQuestion": true,
     "IsEnableVerificationCode": false,
     "isEnableTwo_StepVerification": true,
+    "IsLoginByMail": false,
     "Order": 1,
     "Forums": [
       {
@@ -17,10 +19,10 @@
         "Order": 1,
         "Visable": true
       }
-    ],
-    "Id": 1
+    ]
   },
   {
+    "Id": 2,
     "Url": "https://tp.m-team.cc",
     "Name": "MTeam",
     "LoginUrl": "https://tp.m-team.cc/takelogin.php",
@@ -29,6 +31,7 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": false,
     "isEnableTwo_StepVerification": true,
+    "IsLoginByMail": false,
     "Order": 2,
     "Forums": [
       {
@@ -40,62 +43,24 @@
       },
       {
         "SiteId": 2,
-        "Name": "MTeam_4k",
-        "SearchUrl": "https://tp.m-team.cc/torrents.php?standard6=1",
-        "Order": 2,
-        "Visable": true
-      },
-      {
-        "SiteId": 2,
         "Name": "MTeam_Adult",
         "SearchUrl": "https://tp.m-team.cc/adult.php",
-        "Order": 3,
-        "Visable": true
+        "Order": 2,
+        "Visable": false
       }
-    ],
-    "PersonInfoMaps": {
-      "Bonus": [ "魔力值", "魔力豆", "积分", "Karma Points", "Bonus", "포인트" ],
-      "RegisterDate": [ "Join date", "加入日期", "注册日期", "가입 날짜" ],
-      "ShareRate": [ "Transfers", "传输", "傳送", "分享率", "Ratio" ],
-      "DownSize": [ "Transfers", "传输", "傳送", "下载量", "Downloaded", "다운로드" ],
-      "UpSize": [ "Transfers", "传输", "傳送", "上传量", "Uploaded", "업로드" ],
-      "SeedRate": [ "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedTimes": [ "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "DownTimes": [ "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "SeedNumber": [ "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
-      "Rank": [ "Class", "等级", "等級", "등급" ]
-    },
-    "TorrentMaps": {
-      "ResourceType": [ "类型", "类别", "類型", "Cat.", "Type" ],
-      "Detail": [ "标题", "標題", "Name", "名称" ],
-      "PromotionType": [ "标题", "標題", "Name", "名称" ],
-      "TimeAlive": [ "time", "存活时间", "存活時間", "TTL" ],
-      "Size": [ "size", "大小" ],
-      "SeederNumber": [ "seeders", "做种", "种子数", "種子數" ],
-      "LeecherNumber": [ "leechers", "下载", "下載數" ],
-      "SnatchedNumber": [ "snatched", "完成", "完成數" ],
-      "UpLoader": [ "发布者", "發佈者", "上传者" ]
-    },
-    "SearchColUrlMaps": {
-      "Title": "1",
-      "Size": "5",
-      "UpLoadTime": "4",
-      "SeederNumber": "7",
-      "LeecherNumber": "8",
-      "SnatchedNumber": "6",
-      "UpLoader": "9"
-    },
-    "Id": 2
+    ]
   },
   {
+    "Id": 3,
     "Url": "https://hdsky.me",
     "Name": "HDSky",
     "LoginUrl": "https://hdsky.me/takelogin.php",
-    "SignUrl": null,
+    "SignUrl": "https://hdsky.me/showup.php",
     "InfoUrl": "https://hdsky.me/userdetails.php?id={0}",
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": true,
+    "IsLoginByMail": false,
     "Order": 3,
     "Forums": [
       {
@@ -105,10 +70,10 @@
         "Order": 1,
         "Visable": true
       }
-    ],
-    "Id": 3
+    ]
   },
   {
+    "Id": 5,
     "Url": "https://chdbits.co",
     "Name": "CHDBits",
     "LoginUrl": "https://chdbits.co/takelogin.php",
@@ -117,6 +82,7 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": false,
     "isEnableTwo_StepVerification": false,
+    "IsLoginByMail": false,
     "Order": 5,
     "Forums": [
       {
@@ -126,10 +92,32 @@
         "Order": 1,
         "Visable": true
       }
-    ],
-    "Id": 5
+    ]
   },
   {
+    "Id": 6,
+    "Url": "https://hdcmct.org",
+    "Name": "CMCT",
+    "LoginUrl": "https://hdcmct.org/takelogin.php",
+    "SignUrl": null,
+    "InfoUrl": "https://hdcmct.org/userdetails.php?id={0}",
+    "IsEableSecurityQuestion": false,
+    "IsEnableVerificationCode": true,
+    "isEnableTwo_StepVerification": false,
+    "IsLoginByMail": false,
+    "Order": 6,
+    "Forums": [
+      {
+        "SiteId": 6,
+        "Name": "CMCT",
+        "SearchUrl": "https://hdcmct.org/torrents.php",
+        "Order": 1,
+        "Visable": true
+      }
+    ]
+  },
+  {
+    "Id": 7,
     "Url": "https://ourbits.club",
     "Name": "OurBits",
     "LoginUrl": "https://ourbits.club/takelogin.php",
@@ -138,6 +126,7 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": false,
     "isEnableTwo_StepVerification": false,
+    "IsLoginByMail": false,
     "Order": 7,
     "Forums": [
       {
@@ -147,10 +136,10 @@
         "Order": 1,
         "Visable": true
       }
-    ],
-    "Id": 7
+    ]
   },
   {
+    "Id": 8,
     "Url": "https://pt.keepfrds.com",
     "Name": "KeepFrds",
     "LoginUrl": "https://pt.keepfrds.com/takelogin.php",
@@ -159,6 +148,7 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
+    "IsLoginByMail": false,
     "Order": 8,
     "Forums": [
       {
@@ -168,10 +158,32 @@
         "Order": 1,
         "Visable": true
       }
-    ],
-    "Id": 8
+    ]
   },
   {
+    "Id": 9,
+    "Url": "https://u2.dmhy.org",
+    "Name": "U2",
+    "LoginUrl": "https://u2.dmhy.org/takelogin.php",
+    "SignUrl": null,
+    "InfoUrl": "https://u2.dmhy.org/userdetails.php?id={0}",
+    "IsEableSecurityQuestion": false,
+    "IsEnableVerificationCode": true,
+    "isEnableTwo_StepVerification": false,
+    "IsLoginByMail": true,
+    "Order": 9,
+    "Forums": [
+      {
+        "SiteId": 9,
+        "Name": "U2",
+        "SearchUrl": "https://u2.dmhy.org/torrents.php",
+        "Order": 1,
+        "Visable": true
+      }
+    ]
+  },
+  {
+    "Id": 10,
     "Url": "https://hdhome.org/",
     "Name": "HDHome",
     "LoginUrl": "https://hdhome.org/takelogin.php",
@@ -180,6 +192,7 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
+    "IsLoginByMail": false,
     "Order": 10,
     "Forums": [
       {
@@ -189,10 +202,46 @@
         "Order": 1,
         "Visable": true
       }
-    ],
-    "Id": 10
+    ]
   },
   {
+    "Id": 11,
+    "Url": "https://open.cd/",
+    "Name": "OpenCD",
+    "LoginUrl": "https://open.cd/takelogin.php",
+    "SignUrl": "https://open.cd/plugin_sign-in.php",
+    "InfoUrl": "https://open.cd/userdetails.php?id={0}",
+    "IsEableSecurityQuestion": false,
+    "IsEnableVerificationCode": true,
+    "isEnableTwo_StepVerification": false,
+    "IsLoginByMail": false,
+    "Order": 11,
+    "Forums": [
+      {
+        "SiteId": 11,
+        "Name": "OpenCD",
+        "SearchUrl": "https://open.cd/torrents.php",
+        "Order": 1,
+        "Visable": true
+      },
+      {
+        "SiteId": 11,
+        "Name": "OpenCD_Music",
+        "SearchUrl": "https://open.cd/torrents.php?boardid=1",
+        "Order": 2,
+        "Visable": false
+      },
+      {
+        "SiteId": 11,
+        "Name": "OpenCD_Catch",
+        "SearchUrl": "https://open.cd/torrents.php?boardid=2",
+        "Order": 3,
+        "Visable": false
+      }
+    ]
+  },
+  {
+    "Id": 12,
     "Url": "https://pt.gztown.net",
     "Name": "GZTown",
     "LoginUrl": "https://pt.gztown.net/takelogin.php",
@@ -201,6 +250,7 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
+    "IsLoginByMail": false,
     "Order": 12,
     "Forums": [
       {
@@ -210,10 +260,10 @@
         "Order": 1,
         "Visable": true
       }
-    ],
-    "Id": 12
+    ]
   },
   {
+    "Id": 13,
     "Url": "http://pt.btschool.net",
     "Name": "BTSchool",
     "LoginUrl": "http://pt.btschool.net/takelogin.php",
@@ -222,6 +272,7 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
+    "IsLoginByMail": false,
     "Order": 13,
     "Forums": [
       {
@@ -231,10 +282,10 @@
         "Order": 1,
         "Visable": true
       }
-    ],
-    "Id": 13
+    ]
   },
   {
+    "Id": 14,
     "Url": "https://pt.upxin.net",
     "Name": "HDU",
     "LoginUrl": "https://pt.upxin.net/takelogin.php",
@@ -243,6 +294,7 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
+    "IsLoginByMail": false,
     "Order": 14,
     "Forums": [
       {
@@ -252,10 +304,10 @@
         "Order": 1,
         "Visable": true
       }
-    ],
-    "Id": 14
+    ]
   },
   {
+    "Id": 15,
     "Url": "https://nanyangpt.com/",
     "Name": "NYPT",
     "LoginUrl": "https://nanyangpt.com/takelogin.php",
@@ -264,6 +316,7 @@
     "IsEableSecurityQuestion": false,
     "IsEnableVerificationCode": true,
     "isEnableTwo_StepVerification": false,
+    "IsLoginByMail": false,
     "Order": 15,
     "Forums": [
       {
@@ -274,6 +327,48 @@
         "Visable": true
       }
     ],
-    "Id": 15
+    "PersonInfoMaps": {
+      "Bonus": [ "魔力值", "魔力豆", "积分", "UCoin", "Karma Points", "Bonus", "포인트" ],
+      "RegisterDate": [ "Join date", "加入日期", "注册日期", "가입 날짜" ],
+      "ShareRate": [ "Transfers", "传输", "傳送", "分享率", "Ratio" ],
+      "DownSize": [ "Transfers", "传输", "傳送", "下载量", "Downloaded", "다운로드" ],
+      "UpSize": [ "Transfers", "传输", "傳送", "上传量", "Uploaded", "업로드" ],
+      "SeedRate": [ "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
+      "SeedTimes": [ "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
+      "DownTimes": [ "做种率", "Torrenting Time", "BT时间", "BT時間", "做种/下载时间比率", "Seed/Leech time ratio", "시딩/리칭 시간 비율" ],
+      "SeedNumber": [ "当前做种", "當前做種", "Currently Seeding" ],
+      "Rank": [ "Class", "等级", "等級", "등급" ]
+    },
+    "TorrentMaps": {
+      "ResourceType": [ "类型", "类别", "類型", "分类", "Cat.", "Type" ],
+      "Detail": [ "标题", "標題", "Name", "名称" ],
+      "PromotionType": [ "标题", "標題", "Name", "名称" ],
+      "TimeAlive": [ "time", "存活时间", "存活時間", "生存时间", "TTL" ],
+      "Size": [ "size", "大小" ],
+      "SeederNumber": [ "seeders", "做种", "种子数", "種子數" ],
+      "LeecherNumber": [ "leechers", "下载", "下載數" ],
+      "SnatchedNumber": [ "snatched", "完成", "完成數" ],
+      "UpLoader": [ "发布者", "發佈者", "上传者" ]
+    },
+    "SearchColOrderUrlMaps": {
+      "Title": "1",
+      "Size": "5",
+      "UpLoadTime": "4",
+      "SeederNumber": "7",
+      "LeecherNumber": "8",
+      "SnatchedNumber": "6",
+      "UpLoader": "9"
+    },
+    "PromotionSearchUrlMaps": {
+      "ALL": "0",
+      "NORMAL": "1",
+      "FREE": "2",
+      "TWOUP": "3",
+      "FREE2UP": "4",
+      "HALFDOWN": "5",
+      "HALF2X": "6",
+      "THIRTYPERDOWN": "7",
+      "OTHER": "8"
+    }
   }
 ]

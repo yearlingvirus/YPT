@@ -32,7 +32,10 @@ namespace YU.PT
 
         public override string Sign(bool isAuto = false)
         {
-            return Sign(isAuto, true, 1);
+            if (_cookie != null && _cookie.Count > 0)
+                return Sign(isAuto, true, 1);
+            else
+                return "无法获取Cookie信息，签到失败，请重新登录系统。";
         }
 
         private string Sign(bool isAuto, bool isAutoOrc, int count)
@@ -100,7 +103,7 @@ namespace YU.PT
                 }
                 else
                 {
-                    if(message.IsNullOrEmptyOrWhiteSpace())
+                    if (message.IsNullOrEmptyOrWhiteSpace())
                         return string.Format("签到失败，失败原因：{0}", "你可能已经签过到了。");
                 }
 
@@ -121,6 +124,11 @@ namespace YU.PT
             {
                 return "签到失败，获取签到验证码失败。";
             }
+        }
+
+        protected override void SetTorrentHR(HtmlNode node, PTTorrent torrent)
+        {
+            torrent.IsHR = YUEnums.HRType.HR;
         }
 
 
@@ -174,10 +182,10 @@ namespace YU.PT
                     {
                         string sizeString = childNode.InnerText.Substring(index + 1).Trim();
                         index = sizeString.IndexOf("(");
-                        if(index > -1)
+                        if (index > -1)
                             info.UpSize = sizeString.Substring(0, index).Trim();
                     }
-                    
+
                 }
             }
 
