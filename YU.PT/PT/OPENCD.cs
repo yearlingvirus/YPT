@@ -32,10 +32,10 @@ namespace YU.PT
 
         public override string Sign(bool isAuto = false)
         {
-            if (_cookie != null && _cookie.Count > 0)
-                return Sign(isAuto, true, 1);
-            else
-                return "无法获取Cookie信息，签到失败，请重新登录系统。";
+            string signMsg = string.Empty;
+            if (!VerifySign(ref signMsg))
+                return signMsg;
+            return Sign(isAuto, true, 1);
         }
 
         private string Sign(bool isAuto, bool isAutoOrc, int count)
@@ -95,7 +95,7 @@ namespace YU.PT
 
                 var o = JsonConvert.DeserializeObject(result.Item1) as JObject;
                 string message = o["msg"].TryPareValue<string>();
-                if (o["state"].TryPareValue<bool>())
+                if (o["state"].TryPareValue<string>().EqualIgnoreCase("success"))
                 {
                     string signDay = o["signindays"].TryPareValue<string>();
                     string bonus = o["integral"].TryPareValue<string>();

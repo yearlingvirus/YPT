@@ -61,27 +61,23 @@ namespace YU.PT
 
         public override string Sign(bool isAuto = false)
         {
-            if (_cookie != null && _cookie.Count > 0)
-            {
-                string htmlResult = HttpUtils.GetDataGetHtml(Site.SignUrl, _cookie);
+            string signMsg = string.Empty;
+            if (!VerifySign(ref signMsg))
+                return signMsg;
 
-                HtmlDocument htmlDocument = new HtmlDocument();
-                htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
+            string htmlResult = HttpUtils.GetDataGetHtml(Site.SignUrl, _cookie);
+            HtmlDocument htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
 
-                //这个是每次第一次签到的
-                HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"outer\"]/table/tr/td/table/tr/td/p");//跟Xpath一样，轻松的定位到相应节点下
-                if (node == null)
-                    //这个是已经签到过的
-                    node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"outer\"]/table/tr/td/table/tr/td");
-                if (node != null)
-                    return node.InnerText;
-                else
-                    return htmlResult;
-            }
+            //这个是每次第一次签到的
+            HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"outer\"]/table/tr/td/table/tr/td/p");//跟Xpath一样，轻松的定位到相应节点下
+            if (node == null)
+                //这个是已经签到过的
+                node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"outer\"]/table/tr/td/table/tr/td");
+            if (node != null)
+                return node.InnerText;
             else
-            {
-                return "无法获取Cookie信息，签到失败，请重新登录系统。";
-            }
+                return htmlResult;
         }
     }
 }

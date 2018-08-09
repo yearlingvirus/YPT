@@ -424,7 +424,7 @@ namespace YPT
                 SearchTimer.Elapsed -= SearchTimer_Elapsed;
                 SearchTimer.Enabled = true;
                 SearchTimer.AutoReset = true;
-                SearchTimer.Interval = Global.Config.SearchTimeSpan * 1000;
+                SearchTimer.Interval = (double)Global.Config.SearchTimeSpan * 1000;
                 SearchTimer.Elapsed += SearchTimer_Elapsed;
                 SearchTimer.Start();
             }
@@ -660,7 +660,7 @@ namespace YPT
         private void btnSearch_Click(object sender, EventArgs e)
         {
             if (SearchTimer != null && Global.Config.IsSearchTiming)
-                SearchTimer.Interval = Global.Config.SearchTimeSpan * 1000;
+                SearchTimer.Interval = (double)Global.Config.SearchTimeSpan * 1000;
 
             if (IsSearching)
                 return;

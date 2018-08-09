@@ -86,43 +86,40 @@ namespace YU.PT
 
         public override string Sign(bool isAuto = false)
         {
-            if (_cookie != null && _cookie.Count > 0)
-            {
-                //TTG签到需要时间戳和TOKEN，所以这里需要用Cookie请求一下网页拿到
-                string htmlResult = HttpUtils.PostDataGetHtml(Site.Url, "", _cookie);
-                int signStart = htmlResult.IndexOf("signed_timestamp");
-                if (signStart != -1 && htmlResult.Length > (signStart + 81))
-                {
-                    string signJson = htmlResult.Substring(signStart - 1, 82);
-                    string signed_timestamp = string.Empty;
-                    string signed_token = string.Empty;
-                    if (signJson.IsNullOrEmptyOrWhiteSpace())
-                        return "无法获取签到Token";
-                    try
-                    {
-                        JObject signO = JsonConvert.DeserializeObject<JObject>(signJson);
-                        signed_timestamp = signO["signed_timestamp"].TryPareValue<string>();
-                        signed_token = signO["signed_token"].TryPareValue<string>();
-                    }
-                    catch (Exception ex)
-                    {
-                        string errMsg = string.Format("TTG 签到失败，无法获取到正确的TOKEN信息，失败原因：{0}", ex.GetInnerExceptionMessage());
-                        Logger.Error(errMsg, ex);
-                        return ex.GetInnerExceptionMessage();
-                    }
+            string signMsg = string.Empty;
+            if (!VerifySign(ref signMsg))
+                return signMsg;
 
-                    string postData = string.Format("signed_timestamp={0}&signed_token={1}", signed_timestamp, signed_token);
-                    htmlResult = HttpUtils.PostDataGetHtml(Site.SignUrl, postData, _cookie);
-                    return htmlResult;
-                }
-                else
-                {
+            //TTG签到需要时间戳和TOKEN，所以这里需要用Cookie请求一下网页拿到
+            string htmlResult = HttpUtils.PostDataGetHtml(Site.Url, "", _cookie);
+            int signStart = htmlResult.IndexOf("signed_timestamp");
+            if (signStart != -1 && htmlResult.Length > (signStart + 81))
+            {
+                string signJson = htmlResult.Substring(signStart - 1, 82);
+                string signed_timestamp = string.Empty;
+                string signed_token = string.Empty;
+                if (signJson.IsNullOrEmptyOrWhiteSpace())
                     return "无法获取签到Token";
+                try
+                {
+                    JObject signO = JsonConvert.DeserializeObject<JObject>(signJson);
+                    signed_timestamp = signO["signed_timestamp"].TryPareValue<string>();
+                    signed_token = signO["signed_token"].TryPareValue<string>();
                 }
+                catch (Exception ex)
+                {
+                    string errMsg = string.Format("TTG 签到失败，无法获取到正确的TOKEN信息，失败原因：{0}", ex.GetInnerExceptionMessage());
+                    Logger.Error(errMsg, ex);
+                    return ex.GetInnerExceptionMessage();
+                }
+
+                string postData = string.Format("signed_timestamp={0}&signed_token={1}", signed_timestamp, signed_token);
+                htmlResult = HttpUtils.PostDataGetHtml(Site.SignUrl, postData, _cookie);
+                return htmlResult;
             }
             else
             {
-                return "无法获取Cookie信息，签到失败，请重新登录系统。";
+                return "无法获取签到Token";
             }
         }
 

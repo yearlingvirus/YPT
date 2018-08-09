@@ -15,6 +15,7 @@ using System.Web;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using Newtonsoft.Json;
 
 namespace YU.PT
 {
@@ -169,6 +170,7 @@ namespace YU.PT
                 string errMsg = htmlResult;
                 if (node != null)
                     errMsg = node.InnerText;
+                Logger.Info(string.Format("{0} 登录失败，失败信息：{1}", Site.Name, JsonConvert.SerializeObject(result)));
                 return string.Format("登录失败，失败原因：{0}", errMsg);
             }
         }
@@ -327,7 +329,6 @@ namespace YU.PT
         }
 
 
-
         protected bool IsLoginSuccess(HttpWebResponse httpResponse)
         {
             if (httpResponse != null && (httpResponse.ResponseUri.AbsoluteUri.EndsWith("index.php") || httpResponse.ResponseUri.AbsoluteUri.EndsWith("my.php") || httpResponse.ResponseUri.OriginalString.Equals(Site.Url)))
@@ -377,11 +378,10 @@ namespace YU.PT
             htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
 
             HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"info_block\"]/tr/td/table/tr/td//span//a");//跟Xpath一样
-                                                                                                                       //这里不用User_Name判断，因为不同等级的User，Class也会不一样。
-                                                                                                                       //HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//a[contains(concat(' ', normalize-space(@class), ' '), ' User_Name ')]");
+                                                                                                                             //这里不用User_Name判断，因为不同等级的User，Class也会不一样。
+                                                                                                                             //HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//a[contains(concat(' ', normalize-space(@class), ' '), ' User_Name ')]");
             return node;
         }
-
 
         protected PTUser UpdateUserWhileChange(string htmlResult, PTUser user)
         {
@@ -395,6 +395,26 @@ namespace YU.PT
                 user.UserName = node.InnerText;
             }
             return user;
+        }
+
+        /// <summary>
+        /// 校验签到
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <returns></returns>
+        protected bool VerifySign(ref string msg)
+        {
+            if (_cookie == null || _cookie.Count <= 0)
+            {
+                msg = "无法获取Cookie信息，签到失败，请重新登录系统。";
+                return false;
+            }
+            if (Site.SignUrl.IsNullOrEmptyOrWhiteSpace())
+            {
+                msg = "无法获取到签到URL，请检查扩展URL。";
+                return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -427,7 +447,7 @@ namespace YU.PT
             string htmlResult = HttpUtils.GetDataGetHtml(searchUrl, _cookie);
 
             HtmlDocument htmlDocument = new HtmlDocument();
-            
+
             htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
             var trNodes = GetTorrentNodes(htmlDocument);
             //如果只有一个节点，那么应该是Table的标题，这里忽略，从第二个节点开始算。
@@ -1038,6 +1058,17 @@ namespace YU.PT
                     if (index > -1)
                         info.UpSize = childNode.InnerText.Substring(index + 1).Trim();
                 }
+                else
+                {
+                    //当下载量为0，上传量不为0时，这里有可能会出现分享率不显示的情况，所以这里需要取第一行的数据。
+                    childNode = node.SelectSingleNode(".//tr/td/text()[last()]");
+                    if (childNode != null)
+                    {
+                        var index = childNode.InnerText.IndexOf(":");
+                        if (index > -1)
+                            info.UpSize = childNode.InnerText.Substring(index + 1).Trim();
+                    }
+                }
             }
 
             //下载量
@@ -1050,6 +1081,17 @@ namespace YU.PT
                     var index = childNode.InnerText.IndexOf(":");
                     if (index > -1)
                         info.DownSize = childNode.InnerText.Substring(index + 1).Trim();
+                }
+                else
+                {
+                    //当下载量为0，上传量不为0时，这里有可能会出现分享率不显示的情况，所以这里需要取第一行的数据。
+                    childNode = node.SelectSingleNode(".//tr/td[2]/text()[2]");
+                    if (childNode != null)
+                    {
+                        var index = childNode.InnerText.IndexOf(":");
+                        if (index > -1)
+                            info.DownSize = childNode.InnerText.Substring(index + 1).Trim();
+                    }
                 }
             }
 
@@ -1073,6 +1115,17 @@ namespace YU.PT
                     if (index > -1)
                         info.SeedTimes = childNode.InnerText.Substring(index + 1).Trim();
                 }
+                else
+                {
+                    //当下载时间为0，做种时间不为0时，这里有可能会出现做种率不显示的情况，所以这里需要取第一行的数据。
+                    childNode = node.SelectSingleNode(".//tr/td/text()[last()]");
+                    if (childNode != null)
+                    {
+                        var index = childNode.InnerText.IndexOf(":");
+                        if (index > -1)
+                            info.SeedTimes = childNode.InnerText.Substring(index + 1).Trim();
+                    }
+                }
             }
 
             //下载时间
@@ -1085,6 +1138,17 @@ namespace YU.PT
                     var index = childNode.InnerText.IndexOf(":");
                     if (index > -1)
                         info.DownTimes = childNode.InnerText.Substring(index + 1).Trim();
+                }
+                else
+                {
+                    //当下载时间为0，做种时间不为0时，这里有可能会出现做种率不显示的情况，所以这里需要取第一行的数据。
+                    childNode = node.SelectSingleNode(".//tr/td[2]/text()[last()]");
+                    if (childNode != null)
+                    {
+                        var index = childNode.InnerText.IndexOf(":");
+                        if (index > -1)
+                            info.DownTimes = childNode.InnerText.Substring(index + 1).Trim();
+                    }
                 }
             }
 

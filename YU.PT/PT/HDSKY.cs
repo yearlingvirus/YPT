@@ -148,11 +148,10 @@ namespace YU.PT
 
         public override string Sign(bool isAuto = false)
         {
-            if (_cookie != null && _cookie.Count > 0)
-                return Sign(isAuto, true, 1);
-            else
-                return "无法获取Cookie信息，签到失败，请重新登录系统。";
-
+            string signMsg = string.Empty;
+            if (!VerifySign(ref signMsg))
+                return signMsg;
+            return Sign(isAuto, true, 1);
         }
 
         private string Sign(bool isAuto, bool isAutoOrc, int count)
@@ -223,8 +222,6 @@ namespace YU.PT
                     return Sign(isAuto, true, ++count);
                 else
                     return string.Format("签到失败，失败原因：{0}", message);
-
-
             }
             else
             {

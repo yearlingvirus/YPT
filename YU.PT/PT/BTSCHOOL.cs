@@ -41,24 +41,21 @@ namespace YU.PT
 
         public override string Sign(bool isAuto = false)
         {
-            if (_cookie != null && _cookie.Count > 0)
-            {
-                string htmlResult = HttpUtils.GetDataGetHtml(Site.SignUrl, _cookie);
+            string signMsg = string.Empty;
+            if (!VerifySign(ref signMsg))
+                return signMsg;
 
-                HtmlDocument htmlDocument = new HtmlDocument();
-                htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
+            string htmlResult = HttpUtils.GetDataGetHtml(Site.SignUrl, _cookie);
 
-                //这个是每次第一次签到的
-                HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"outer\"]//tr//a");
-                if (node != null)
-                    return node.InnerText.Contains("魔力值") ? node.InnerText : "无法获取签到信息，可能已经签到成功。";
-                else
-                    return "签到失败，请登录网站签到。";
-            }
+            HtmlDocument htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(htmlResult);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
+
+            //这个是每次第一次签到的
+            HtmlNode node = htmlDocument.DocumentNode.SelectSingleNode("//*[@id=\"outer\"]//tr//a");
+            if (node != null)
+                return node.InnerText.Contains("魔力值") ? node.InnerText : "无法获取签到信息，可能已经签到成功。";
             else
-            {
-                return "无法获取Cookie信息，签到失败，请重新登录系统。";
-            }
+                return "签到失败，请登录网站签到。";
         }
 
     }

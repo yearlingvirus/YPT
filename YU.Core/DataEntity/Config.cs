@@ -64,7 +64,7 @@ namespace YU.Core.DataEntity
         /// <summary>
         /// 定时搜索间隔
         /// </summary>
-        public int SearchTimeSpan { get; set; }
+        public decimal SearchTimeSpan { get; set; }
 
      
 

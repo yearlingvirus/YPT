@@ -67,7 +67,7 @@ namespace YPT
                 Config.IsPostSiteOrder = AppService.GetConfig(YUConst.CONFIG_SEARCH_POSTSITEORDER, false);
                 Config.IsIngoreTop = AppService.GetConfig(YUConst.CONFIG_SEARCH_INGORETOP, false);
                 Config.IsLastSort = AppService.GetConfig(YUConst.CONFIG_SEARCH_ISLASTSORT, false);
-                Config.SearchTimeSpan = AppService.GetConfig(YUConst.CONFIG_SEARCH_TIMESPAN, 300);
+                Config.SearchTimeSpan = AppService.GetConfig(YUConst.CONFIG_SEARCH_TIMESPAN, 300M);
             }
         }
 

@@ -27,16 +27,13 @@ namespace YU.PT
 
         public override string Sign(bool isAuto = false)
         {
-            if (_cookie != null && _cookie.Count > 0)
-            {
-                string postData = "action=qiandao";
-                string htmlResult = HttpUtils.PostDataGetHtml(Site.SignUrl, postData, _cookie);
-                return htmlResult;
-            }
-            else
-            {
-                return "无法获取Cookie信息，签到失败，请重新登录系统。";
-            }
+            string signMsg = string.Empty;
+            if (!VerifySign(ref signMsg))
+                return signMsg;
+
+            string postData = "action=qiandao";
+            string htmlResult = HttpUtils.PostDataGetHtml(Site.SignUrl, postData, _cookie);
+            return htmlResult;
         }
     }
 }
