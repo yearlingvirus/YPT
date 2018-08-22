@@ -7,8 +7,10 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using YU.Core.Log;
 
@@ -28,6 +30,7 @@ namespace YU.Core.Utils
             {
                 byte[] data = Encoding.UTF8.GetBytes(postData);
                 Uri uri = new Uri(url);
+                ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(CheckValidationResult);
                 req = WebRequest.Create(uri) as HttpWebRequest;
                 if (req == null)
                 {
@@ -95,6 +98,7 @@ namespace YU.Core.Utils
             {
                 byte[] data = Encoding.UTF8.GetBytes(postData);
                 Uri uri = new Uri(url);
+                ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(CheckValidationResult);
                 req = WebRequest.Create(uri) as HttpWebRequest;
                 if (req == null)
                 {
@@ -165,6 +169,7 @@ namespace YU.Core.Utils
             HttpWebResponse res = null;
             try
             {
+                ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(CheckValidationResult);
                 req = (HttpWebRequest)WebRequest.Create(url);
                 req.ContentType = "application/x-www-form-urlencoded";
                 req.Method = "GET";
@@ -226,6 +231,7 @@ namespace YU.Core.Utils
             HttpWebResponse res = null;
             try
             {
+                ServicePointManager.ServerCertificateValidationCallback = new System.Net.Security.RemoteCertificateValidationCallback(CheckValidationResult);
                 req = (HttpWebRequest)WebRequest.Create(url);
 
                 req.ContentType = "application/x-www-form-urlencoded";
@@ -284,6 +290,11 @@ namespace YU.Core.Utils
         public static bool IsErrorRequest(string result)
         {
             return result.Contains("Network error");
+        }
+
+        public static bool CheckValidationResult(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors errors)
+        {  // 总是接受  
+            return true;
         }
     }
 }

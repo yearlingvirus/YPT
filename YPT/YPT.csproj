@@ -274,10 +274,6 @@
       <Project>{416373f6-9d46-477d-9e97-0c994e71ddd7}</Project>
       <Name>YU.PT</Name>
     </ProjectReference>
-    <ProjectReference Include="..\YU.WebUI\YU.WebUI.csproj">
-      <Project>{bf700e8b-f05e-46f1-84d6-1f550fc89ca7}</Project>
-      <Name>YU.WebUI</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions />
