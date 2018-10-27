@@ -273,6 +273,21 @@ namespace YU.Core.DataEntity
                 Order = (int)YUEnums.PTEnum.HDSky,
             },
             new PTSite() {
+                Url = "https://hdchina.org",
+                Name = "HDChina",
+                Id = YUEnums.PTEnum.HDChina,
+                IsEnableVerificationCode = true,
+                isEnableTwo_StepVerification = true,
+                LoginUrl =  "https://hdchina.org/takelogin.php",
+                InfoUrl = "https://hdchina.org/userdetails.php?id={0}",
+                SignUrl = "https://hdchina.org/plugin_sign-in.php?cmd=signin",
+                Forums = new List<PTForum>()
+                {
+                    new PTForum() { SiteId = YUEnums.PTEnum.HDChina, Name = "HDChina", SearchUrl = "https://hdchina.org/torrents.php", Visable = true, Order = 1 },
+                },
+                Order = (int)YUEnums.PTEnum.HDChina,
+            },
+            new PTSite() {
                 Url = "https://chdbits.co",
                 Name = "CHDBits",
                 Id = YUEnums.PTEnum.CHDBits,

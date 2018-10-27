@@ -65,6 +65,7 @@
     <Compile Include="PT\CMCT.cs" />
     <Compile Include="PT\ExtendPT.cs" />
     <Compile Include="PT\GZTOWN.cs" />
+    <Compile Include="PT\HDCHINA.cs" />
     <Compile Include="PT\HDHOME.cs" />
     <Compile Include="PT\HDSKY.cs" />
     <Compile Include="PT\HDU.cs" />
@@ -79,14 +80,14 @@
     <Compile Include="PT\U2.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\YU.Core\YU.Core.csproj">
       <Project>{ff9098c6-4e96-43db-957c-c111976e87c7}</Project>
       <Name>YU.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

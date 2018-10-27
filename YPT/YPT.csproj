@@ -115,9 +115,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="YU.Core">
-      <HintPath>..\YU.Core\obj\Debug\YU.Core.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Forms\AboutFrm.cs">
@@ -270,6 +267,10 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\YU.Core\YU.Core.csproj">
+      <Project>{ff9098c6-4e96-43db-957c-c111976e87c7}</Project>
+      <Name>YU.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\YU.PT\YU.PT.csproj">
       <Project>{416373f6-9d46-477d-9e97-0c994e71ddd7}</Project>
       <Name>YU.PT</Name>

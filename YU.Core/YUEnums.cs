@@ -72,7 +72,7 @@ namespace YU.Core
             Size,
 
             /// <summary>
-            /// 存货时长
+            /// 存活时长
             /// </summary>
             TimeAlive,
 

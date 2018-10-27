@@ -36,6 +36,7 @@ namespace YU.PT
                 _mapServer.Add(YUEnums.PTEnum.HDSky, "YU.PT.HDSKY,YU.PT");
                 _mapServer.Add(YUEnums.PTEnum.U2, "YU.PT.U2,YU.PT");
                 _mapServer.Add(YUEnums.PTEnum.OpenCD, "YU.PT.OPENCD,YU.PT");
+                _mapServer.Add(YUEnums.PTEnum.HDChina, "YU.PT.HDCHINA,YU.PT");
                 notRegistered = false;
             }
 

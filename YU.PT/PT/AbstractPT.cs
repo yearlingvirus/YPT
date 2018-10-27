@@ -1008,6 +1008,8 @@ namespace YU.PT
             }
         }
 
+
+
         protected virtual void PreSetPersonInfo(HtmlDocument htmlDocument, PTInfo info)
         {
 
@@ -1069,6 +1071,10 @@ namespace YU.PT
                             info.UpSize = childNode.InnerText.Substring(index + 1).Trim();
                     }
                 }
+
+                var endIndex = info.UpSize.IndexOf("(");
+                if (endIndex > -1)
+                    info.UpSize = info.UpSize.Substring(0, endIndex).Trim();
             }
 
             //下载量
@@ -1093,6 +1099,9 @@ namespace YU.PT
                             info.DownSize = childNode.InnerText.Substring(index + 1).Trim();
                     }
                 }
+                var endIndex = info.DownSize.IndexOf("(");
+                if (endIndex > -1)
+                    info.DownSize = info.DownSize.Substring(0, endIndex).Trim();
             }
 
             //做种率
