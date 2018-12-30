@@ -206,10 +206,18 @@ namespace YPT
                 LogMessage(null, "正在启动签到。");
                 foreach (var user in Global.Users)
                 {
-                    AbstractPT pt = PTFactory.GetPT(user.Site.Id, user) as AbstractPT;
-                    pt.VerificationCode += Pt_VerificationCode;
-                    string msg = pt.Sign(isAuto);
-                    LogMessage(user.Site, msg);
+                    string msg = string.Empty;
+                    try
+                    {
+                        AbstractPT pt = PTFactory.GetPT(user.Site.Id, user) as AbstractPT;
+                        pt.VerificationCode += Pt_VerificationCode;
+                        msg = pt.Sign(isAuto);
+                        LogMessage(user.Site, msg);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogMessage(user.Site, $"签到失败，失败原因：{ex.Message}");
+                    }
                 }
                 LogMessage(null, "全部签到完毕。");
             }

@@ -200,7 +200,7 @@ namespace YU.PT
                     case "success":
                         return $"签到成功，您已连续签到{resultJson.Value<string>("signindays")}天，本次增加魔力:{resultJson.Value<string>("integral")}。";
                     default:
-                        if (resultJson.Value<string>("msg").IsNullOrEmptyOrWhiteSpace())
+                        if (!resultJson.Value<string>("msg").IsNullOrEmptyOrWhiteSpace())
                             return resultJson.Value<string>("msg");
                         else
                             return "签到失败";
