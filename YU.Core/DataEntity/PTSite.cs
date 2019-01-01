@@ -293,6 +293,7 @@ namespace YU.Core.DataEntity
                 Id = YUEnums.PTEnum.CHDBits,
                 LoginUrl =  "https://chdbits.co/takelogin.php",
                 InfoUrl = "https://chdbits.co/userdetails.php?id={0}",
+                IsEnableVerificationCode = true,
                 Forums = new List<PTForum>()
                 {
                     new PTForum() { SiteId = YUEnums.PTEnum.CHDBits, Name = "CHDBits", SearchUrl = "https://chdbits.co/torrents.php", Visable = true, Order = 1 },

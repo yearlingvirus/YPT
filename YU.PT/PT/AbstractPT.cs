@@ -296,7 +296,9 @@ namespace YU.PT
                 if (checkCodeKey.IsNullOrEmptyOrWhiteSpace() || checkCodeHash.IsNullOrEmptyOrWhiteSpace())
                     return new Tuple<string, HttpWebRequest, HttpWebResponse>("无法获取到验证码，登录失败，请稍后重试。", null, null);
 
-                string postData = string.Format("username={0}&password={1}&imagestring={2}&imagehash={3}", User.UserName, User.PassWord, checkCodeKey, checkCodeHash);
+                
+
+                string postData = string.Format("username={0}&password={1}&imagestring={2}&imagehash={3}", HttpUtility.UrlEncode(User.UserName), HttpUtility.UrlEncode(User.PassWord), checkCodeKey, checkCodeHash);
                 if (new Uri(Site.LoginUrl).Scheme == "https")
                     postData += string.Format("&ssl=yes&trackerssl=yes");
 
