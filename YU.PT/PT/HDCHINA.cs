@@ -131,6 +131,14 @@ namespace YU.PT
             }
         }
 
+        protected override void PreSetPersonInfo(HtmlDocument htmlDocument, PTInfo info)
+        {
+            //做种数
+            var node = htmlDocument.DocumentNode.SelectSingleNode("//div[contains(concat(' ', normalize-space(@class), ' '), ' userinfo ')]//i[contains(concat(' ', normalize-space(@class), ' '), ' fa-arrow-up ')]");
+            if (node != null && node.PreviousSibling != null)
+                info.SeedNumber = node.NextSibling.InnerText.Trim().TryPareValue<string>();
+        }
+
         /// <summary>
         /// 设置种子Id，链接和标题
         /// </summary>
