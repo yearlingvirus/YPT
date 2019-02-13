@@ -202,16 +202,44 @@ namespace YU.PT
         {
             if (_cookie != null && _cookie.Count > 0)
             {
-                var resultJson = JsonConvert.DeserializeObject<JObject>(HttpUtils.PostData(Site.SignUrl, "{}", _cookie).Item1);
-                switch (resultJson.Value<string>("state"))
+                var result = HttpUtils.GetData(Site.Url, _cookie);
+                if (HttpUtils.IsErrorRequest(result.Item1))
+                    return $"签到失败，失败原因：{result.Item1}";
+
+                if (IsLoginSuccess(result.Item3))
                 {
-                    case "success":
-                        return $"签到成功，您已连续签到{resultJson.Value<string>("signindays")}天，本次增加魔力:{resultJson.Value<string>("integral")}。";
-                    default:
-                        if (!resultJson.Value<string>("msg").IsNullOrEmptyOrWhiteSpace())
-                            return resultJson.Value<string>("msg");
-                        else
-                            return "签到失败";
+                    string crsfContent = string.Empty;
+                    HtmlDocument htmlDocument = new HtmlDocument();
+                    htmlDocument.LoadHtml(result.Item1);//加载HTML字符串，如果是文件可以用htmlDocument.Load方法加载
+                    var crsfNode = htmlDocument.DocumentNode.SelectSingleNode("//meta[contains(concat(' ', normalize-space(@name), ' '), ' x-csrf ')]");
+                    if (crsfNode != null && crsfNode.Attributes != null && crsfNode.Attributes.Any())
+                    {
+                        var attr = crsfNode.Attributes.Where(x => x.Name.EqualIgnoreCase("content")).FirstOrDefault();
+                        if (attr != null)
+                        {
+                            crsfContent = attr.Value;
+                        }
+                    }
+
+                    if (crsfContent.IsNullOrEmptyOrWhiteSpace())
+                        return "签到失败，无法获取到Crsf Token";
+
+                    ////< meta name = "x-csrf" content = "6fcd41b521d85e4e0cc1da9a2cbbd780634e91be" />
+                    var resultJson = JsonConvert.DeserializeObject<JObject>(HttpUtils.PostData(Site.SignUrl, $"csrf={crsfContent}", _cookie).Item1);
+                    switch (resultJson.Value<string>("state"))
+                    {
+                        case "success":
+                            return $"签到成功，您已连续签到{resultJson.Value<string>("signindays")}天，本次增加魔力:{resultJson.Value<string>("integral")}。";
+                        default:
+                            if (!resultJson.Value<string>("msg").IsNullOrEmptyOrWhiteSpace())
+                                return resultJson.Value<string>("msg");
+                            else
+                                return "签到失败，你可能已经签过到了。";
+                    }
+                }
+                else
+                {
+                    return "登录异常，无法正常签到，请重新登录系统。";
                 }
             }
             else
