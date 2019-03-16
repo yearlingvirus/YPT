@@ -146,9 +146,8 @@ namespace YU.PT
         /// <returns></returns>
         protected override bool SetTorrentTitleAndLink(HtmlNode node, PTTorrent torrent)
         {
-
             var titleNode = node.SelectSingleNode(".//td/h3/a");
-            var downNode = node.SelectSingleNode(".//td[contains(concat(' ', normalize-space(@class), ' '), ' act ')]/a[1]");
+            var imgDownNode = node.SelectSingleNode(".//td[contains(concat(' ', normalize-space(@class), ' '), ' act ')]//img[contains(concat(' ', normalize-space(@class), ' '), ' download ')]");
             if (titleNode != null && titleNode.Attributes.Contains("title") && titleNode.Attributes.Contains("href"))
             {
                 var linkUrl = HttpUtility.HtmlDecode(titleNode.Attributes["href"].Value);
@@ -159,11 +158,10 @@ namespace YU.PT
             else
                 return false;
 
-            if (downNode != null && downNode.Attributes.Contains("href"))
+            if (imgDownNode != null && imgDownNode.ParentNode.Attributes.Contains("href"))
             {
+                var downNode = imgDownNode.ParentNode;
                 torrent.DownUrl = string.Join("/", Site.Url, HttpUtility.HtmlDecode(downNode.Attributes["href"].Value));
-                if (!(torrent.DownUrl.Contains("download") && torrent.DownUrl.Contains(torrent.Id)))
-                    torrent.DownUrl = string.Join("/", Site.Url, string.Format("download.php?id={0}", torrent.Id));
             }
             else
                 return false;
