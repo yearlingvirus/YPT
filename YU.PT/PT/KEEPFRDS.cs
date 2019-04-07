@@ -32,9 +32,27 @@ namespace YU.PT
             }
         }
 
-        protected override HtmlNodeCollection GetTorrentNodes(HtmlDocument htmlDocument)
+        protected override Tuple<string, HttpWebRequest, HttpWebResponse> DoLoginWhenEnableTwo_StepVerification(Tuple<string, HttpWebRequest, HttpWebResponse> cookieResult, string otpCode)
         {
-            return htmlDocument.DocumentNode.SelectNodes("//table[contains(concat(' ', normalize-space(@class), ' '), ' torrents ')]/form/tr");
+            string postData = $"username={User.UserName}&password={User.PassWord}&g2fa_code={otpCode}";
+            var result = HttpUtils.PostData(Site.LoginUrl, postData, _cookie);
+            return result;
+        }
+
+        protected override void AfterSetPersonInfo(Dictionary<YUEnums.PersonInfoMap, int> infoMaps, HtmlNodeCollection nodes, PTInfo info)
+        {
+            //积分
+            var node = nodes[infoMaps[YUEnums.PersonInfoMap.Bonus]];
+            if (node != null)
+            {
+                node = node.SelectSingleNode(".//tr[2]/td/text()");
+                string bonusString = node.InnerText;
+                //移除空白之前的字符串
+                bonusString = bonusString.Substring(bonusString.IndexOf(" "));
+                //移除空格之后的字符串
+                bonusString = bonusString.Substring(0, bonusString.IndexOf("&nbsp"));
+                info.Bonus = bonusString.Trim().TryPareValue<double>();
+            }
         }
 
 

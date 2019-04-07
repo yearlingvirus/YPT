@@ -1006,6 +1006,7 @@ namespace YU.PT
                 else
                     SetPersonInfo(infoMaps, nodes, info);
 
+                AfterSetPersonInfo(infoMaps, nodes, info);
                 return info;
             }
         }
@@ -1014,12 +1015,10 @@ namespace YU.PT
 
         protected virtual void PreSetPersonInfo(HtmlDocument htmlDocument, PTInfo info)
         {
-
             //做种数
             var node = htmlDocument.DocumentNode.SelectSingleNode("//img[contains(concat(' ', normalize-space(@alt), ' '), ' Torrents leeching ')]");
             if (node != null && node.PreviousSibling != null)
                 info.SeedNumber = node.PreviousSibling.InnerText.Trim().TryPareValue<string>();
-
         }
 
         /// <summary>
@@ -1200,6 +1199,17 @@ namespace YU.PT
             info.Name = User.UserName;
 
             #endregion
+        }
+
+        /// <summary>
+        /// 设置PersonInfo后处理
+        /// </summary>
+        /// <param name="infoMaps"></param>
+        /// <param name="nodes"></param>
+        /// <param name="info"></param>
+        protected virtual void AfterSetPersonInfo(Dictionary<YUEnums.PersonInfoMap, int> infoMaps, HtmlNodeCollection nodes, PTInfo info)
+        {
+        
         }
 
         /// <summary>

@@ -330,7 +330,8 @@ namespace YU.Core.DataEntity
                 Url = "https://pt.keepfrds.com",
                 Name = "KeepFrds",
                 Id = YUEnums.PTEnum.KeepFrds,
-                IsEnableVerificationCode = true,
+                IsEnableVerificationCode = false,
+                isEnableTwo_StepVerification = true,
                 LoginUrl =  "https://pt.keepfrds.com/takelogin.php",
                 InfoUrl = "https://pt.keepfrds.com/userdetails.php?id={0}",
                 Forums = new List<PTForum>()
