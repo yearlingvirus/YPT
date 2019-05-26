@@ -399,16 +399,16 @@ namespace YU.Core.DataEntity
                 Order = (int)YUEnums.PTEnum.GZTown,
             },
             new PTSite() {
-                Url = "http://pt.btschool.net",
+                Url = "http://pt.btschool.club",
                 Name = "BTSchool",
                 Id = YUEnums.PTEnum.BTSchool,
                 IsEnableVerificationCode = true,
-                LoginUrl =  "http://pt.btschool.net/takelogin.php",
-                InfoUrl = "http://pt.btschool.net/userdetails.php?id={0}",
-                SignUrl = "http://pt.btschool.net/index.php?action=addbonus",
+                LoginUrl =  "http://pt.btschool.club/takelogin.php",
+                InfoUrl = "http://pt.btschool.club/userdetails.php?id={0}",
+                SignUrl = "http://pt.btschool.club/index.php?action=addbonus",
                 Forums = new List<PTForum>()
                 {
-                    new PTForum() { SiteId = YUEnums.PTEnum.BTSchool, Name = "BTSchool", SearchUrl = "http://pt.btschool.net/torrents.php", Visable = true, Order = 1 },
+                    new PTForum() { SiteId = YUEnums.PTEnum.BTSchool, Name = "BTSchool", SearchUrl = "http://pt.btschool.club/torrents.php", Visable = true, Order = 1 },
                 },
                 Order = (int)YUEnums.PTEnum.BTSchool,
             },
